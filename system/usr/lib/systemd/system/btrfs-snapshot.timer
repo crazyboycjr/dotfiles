@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily backup of Btrfs filesystem
+
+[Timer]
+OnCalendar=*-*-* 05:35:00
+RandomizedDelaySec=10min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=Btrfs snapshot
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/do-btrfs-snapshot.sh
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
