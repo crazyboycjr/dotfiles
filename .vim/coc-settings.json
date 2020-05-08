@@ -1,0 +1,9 @@
+{
+	"suggest.autoTrigger": "always",
+	"suggest.noselect": false,
+	"suggest.timeout": 500,
+	"suggest.detailMaxLength": 1000,
+	"list.maxPreviewHeight": 50,
+    "highlight.document.enable": true,
+    "highlight.color.enable": true
+}
