@@ -1,0 +1,22 @@
+{
+    "terminal.integrated.scrollback": 10000000,
+    "window.zoomLevel": -1,
+    "editor.tabSize": 2,
+    "workbench.colorCustomizations": {
+        "editor.selectionHighlightBackground": "#f5ce23"
+    },
+    "window.titleBarStyle": "custom",
+    "explorer.confirmDelete": false,
+    "workbench.colorTheme": "Solarized Light",
+    "vim.cursorStylePerMode.insert": "block",
+    "vim.cursorStylePerMode.normal": "block",
+
+    // Path to a Chromium or Chrome executable to run instead of the bundled Chromium.
+    "markdown-pdf.executablePath": "/usr/bin/google-chrome-stable",
+    "C_Cpp.updateChannel": "Insiders",
+    "[cpp]": {},
+    "C_Cpp.enhancedColorization": "Disabled",
+    "[rust]": {
+        "editor.tabSize": 4
+    }
+}
