@@ -1,0 +1,26 @@
+zsh
+vim
+tmux
+-[x] gitconfig
+x config
+xmonad config
+gtkrc
+screenlayout
+bashrc
+font config
+gdbinit
+-[x] nix config
+system
+	- pacman, makepkg
+	- udev
+	- systemd
+	- btrfs snapshot
+	- ssh
+	- bootloader
+xdg config
+	- vscode
+	- polybar
+	- tilda
+	- alacritty
+	- xdg autostart
+	- clustershell
