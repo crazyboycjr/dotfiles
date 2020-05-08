@@ -1,0 +1,9 @@
+#
+# This file is parsed by pam_env module
+#
+# Syntax: simple "KEY=VAL" pairs on separate lines
+#
+#_JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd'
+#_JAVA_OPTIONS='-Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
+
+JAVA_FONTS=/usr/share/fonts/TTF
