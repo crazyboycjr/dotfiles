@@ -170,8 +170,8 @@ autocmd filetype scala map <C-F9> :!scala %< <cr>
 autocmd filetype haskell map <C-F9> :!runhaskell %< <cr>
 autocmd filetype rust map == :RustFmtRange <cr>
 "autocmd filetype rust vnoremap = :'<,'>RustFmtRange <cr>
-autocmd filetype cpp map == :FormatLines <cr>
-autocmd filetype cpp vnoremap = :'<,'>FormatLines <cr>
+autocmd filetype cpp,cuda map == :FormatLines <cr>
+autocmd filetype cpp,cuda vnoremap = :'<,'>FormatLines <cr>
 
 
 " Multi panel
@@ -183,7 +183,7 @@ nnoremap <C-h> <C-w><C-h>
 map <F8> :let @+=@" <cr>
 
 " lshift hurts my little finger
-map <leader>w :w<cr>
+map <leader><leader> :w<cr>
 
 " Search result centered
 noremap <silent> n nzz

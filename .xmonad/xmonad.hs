@@ -67,11 +67,11 @@ myManageHook = composeAll . concat $
     , [(isPrefixOf "Minecraft") <$> className --> doShift "ent"]
     ]
 
-myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
+myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Spawn the launcher using command specified by myLauncher.
-    [ ((modMask, xK_p), spawn myLauncher)
+    [ ((modm, xK_p), spawn myLauncher)
 
-    , ((modMask, xK_f), sendMessage $ Toggle FULL)
+    , ((modm, xK_f), sendMessage $ Toggle FULL)
 
     -- Scratchpad
     , ((0, xK_F1), scratchpadAction scratchpads "terminal-0")
@@ -79,10 +79,10 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((0, xK_F4), scratchpadAction scratchpads "terminal-2")
 
     -- Overloaded by boringWindows to skip boring windows
-    , ((modMask, xK_j), focusDown)
-    , ((modMask, xK_k), focusUp)
-    , ((modMask, xK_m), focusMaster)
-    , ((modMask, xK_Tab), focusDown)
+    , ((modm, xK_Tab), focusDown)
+    , ((modm, xK_j), focusDown)
+    , ((modm, xK_k), focusUp)
+    , ((modm, xK_m), focusMaster)
 
     -- Screenshot
     , ((0, xK_Print), spawn "xfce4-screenshooter")
