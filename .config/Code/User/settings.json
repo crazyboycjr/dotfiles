@@ -10,6 +10,26 @@
     "workbench.colorTheme": "Solarized Light",
     "vim.cursorStylePerMode.insert": "block",
     "vim.cursorStylePerMode.normal": "block",
+    "vim.leader": "\\",
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["<leader>", "<leader>"],
+            "commands": [":w"]
+        },
+        {
+            "before": ["Z", "Z"],
+            "commands": [
+                {
+                    "command": "workbench.action.files.save",
+                    "args": []
+                },
+                {
+                    "command": "workbench.action.closeActiveEditor",
+                    "args": []
+                }
+            ]
+        }
+    ],
 
     // Path to a Chromium or Chrome executable to run instead of the bundled Chromium.
     "markdown-pdf.executablePath": "/usr/bin/google-chrome-stable",

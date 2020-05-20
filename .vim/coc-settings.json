@@ -1,9 +1,24 @@
 {
-	"suggest.autoTrigger": "always",
-	"suggest.noselect": false,
-	"suggest.timeout": 500,
-	"suggest.detailMaxLength": 1000,
-	"list.maxPreviewHeight": 50,
+    "suggest.autoTrigger": "always",
+    "suggest.noselect": false,
+    "suggest.timeout": 500,
+    "suggest.detailMaxLength": 1000,
+    "list.maxPreviewHeight": 50,
     "highlight.document.enable": true,
-    "highlight.color.enable": true
+    "highlight.color.enable": true,
+    "languageserver": {
+        "haskell": {
+            "command": "hie-wrapper",
+            "args": ["--lsp"],
+            "rootPatterns": ["*.cabal", ".stack.yaml", "cabal.config", "cabal.project", "package.yaml"],
+            "filetypes": ["hs", "lhs", "haskell"],
+            "initializationOptions": {
+                "languageServerHaskell": {
+                    "hlintOn": true,
+                    "maxNumberOfProblems": 10,
+                    "completionSnippetsOn": true
+                }
+            }
+        }
+    }
 }
