@@ -1,7 +1,7 @@
 if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+	silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+		\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 " Specify a directory for plugins
@@ -10,7 +10,7 @@ endif
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 call plug#begin('~/.vim/plugged')
 
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'editorconfig/editorconfig-vim'
 Plug 'rakr/vim-one'
 Plug 'vim-airline/vim-airline'
@@ -36,7 +36,7 @@ Plug 'fatih/vim-go'
 
 " haskell indent, just put this before haskell-vim
 Plug 'itchyny/vim-haskell-indent'
-"haskell-vim
+" haskell-vim
 Plug 'neovimhaskell/haskell-vim'
 
 Plug 'alx741/vim-hindent'
@@ -51,7 +51,7 @@ Plug 'morhetz/gruvbox'
 
 " All of your Plugins must be added before the following line
 call plug#end()
-filetype plugin indent on    " required
+filetype plugin indent on	" required
 
 
 set tags=./tags,tags;$HOME
@@ -110,17 +110,17 @@ augroup END
 
 " reliative number
 augroup numbertoggle
-  autocmd!
-  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+	autocmd!
+	autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+	autocmd BufLeave,FocusLost,InsertEnter	* set norelativenumber
 augroup END
 
 " set cursorline
 nnoremap <Leader>c :set cursorline!<CR>
 augroup CursorLine
-  autocmd!
-  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-  autocmd WinLeave * setlocal nocursorline
+	autocmd!
+	autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+	autocmd WinLeave * setlocal nocursorline
 augroup END
 
 " Compile various languages
@@ -168,18 +168,35 @@ autocmd filetype tex map <C-F9> :!okular %<.pdf<cr>
 autocmd filetype java map <C-F9> :!java %< <cr>
 autocmd filetype scala map <C-F9> :!scala %< <cr>
 autocmd filetype haskell map <C-F9> :!runhaskell %< <cr>
-autocmd filetype rust map == :RustFmtRange <cr>
-"autocmd filetype rust vnoremap = :'<,'>RustFmtRange <cr>
+autocmd filetype rust map == :FormatLines <cr>
+autocmd filetype rust vnoremap = :'<,'>FormatLines <cr>
 autocmd filetype cpp,cuda map == :FormatLines <cr>
 autocmd filetype cpp,cuda vnoremap = :'<,'>FormatLines <cr>
 
 
 " Multi panel
-nnoremap <C-j> <C-w><C-j>
-nnoremap <C-k> <C-w><C-k>
-nnoremap <C-l> <C-w><C-l>
-nnoremap <C-h> <C-w><C-h>
+for i in range(char2nr('a'), char2nr('z'))
+	let i = nr2char(i)
+	exec "set <M-".i.">=\<Esc>".i
+	exec "inoremap \<Esc>".i." <M-".i.">"
+endfor
 
+" move focus
+nnoremap <cr> <C-w>w
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+nnoremap <C-h> <C-w>h
+"nnoremap <M-j> <C-w>w
+"nnoremap <M-k> <C-w>W
+" change layout
+nnoremap <M-r> <C-w>r
+nnoremap <M-j> <C-w>J
+nnoremap <M-k> <C-w>K
+nnoremap <M-l> <C-w>L
+nnoremap <M-h> <C-w>H
+
+" Duplicate default register to system clipboard register
 map <F8> :let @+=@" <cr>
 
 " lshift hurts my little finger
@@ -199,10 +216,10 @@ noremap <Left> <nop>
 noremap <Right> <nop>
 
 " Faster resize
-noremap <silent> <C-S-Up> :resize +2<cr>
-noremap <silent> <C-S-Down> :resize -2<cr>
-noremap <silent> <C-S-Left> :vertical resize -2<cr>
-noremap <silent> <C-S-Right> :vertical resize +2<cr>
+noremap <silent> <C-S-Up> :resize +5<cr>
+noremap <silent> <C-S-Down> :resize -5<cr>
+noremap <silent> <C-S-Left> :vertical resize -5<cr>
+noremap <silent> <C-S-Right> :vertical resize +5<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NERDTree
@@ -266,6 +283,7 @@ function! ToggleTransparent()
 		call SetTermGuiColors()
 		let g:is_transparent = 0
 	else
+		set background=dark
 		hi! Normal ctermbg=NONE guibg=NONE
 		"call SetNoTermGuiColors()
 		let g:is_transparent = 1
@@ -322,7 +340,7 @@ noremap <M-p> :LeaderfFunction<cr>
 noremap <M-n> :LeaderfBuffer<cr>
 noremap <M-m> :LeaderfTag<cr>
 let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
- 
+
 let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
 let g:Lf_WorkingDirectoryMode = 'Ac'
 let g:Lf_WindowHeight = 0.30
@@ -331,15 +349,15 @@ let g:Lf_ShowRelativePath = 0
 let g:Lf_HideHelp = 1
 let g:Lf_StlColorscheme = 'powerline'
 let g:Lf_PreviewResult = {'Function':0}
- 
+
 let g:Lf_NormalMap = {
-    \ "File":   [["<ESC>", ':exec g:Lf_py "fileExplManager.quit()"<CR>']],
-    \ "Buffer": [["<ESC>", ':exec g:Lf_py "bufExplManager.quit()"<CR>']],
-    \ "Mru":    [["<ESC>", ':exec g:Lf_py "mruExplManager.quit()"<CR>']],
-    \ "Tag":    [["<ESC>", ':exec g:Lf_py "tagExplManager.quit()"<CR>']],
-    \ "Function":    [["<ESC>", ':exec g:Lf_py "functionExplManager.quit()"<CR>']],
-    \ "Colorscheme":    [["<ESC>", ':exec g:Lf_py "colorschemeExplManager.quit()"<CR>']],
-    \ }
+	\ "File":   [["<ESC>", ':exec g:Lf_py "fileExplManager.quit()"<CR>']],
+	\ "Buffer": [["<ESC>", ':exec g:Lf_py "bufExplManager.quit()"<CR>']],
+	\ "Mru":    [["<ESC>", ':exec g:Lf_py "mruExplManager.quit()"<CR>']],
+	\ "Tag":    [["<ESC>", ':exec g:Lf_py "tagExplManager.quit()"<CR>']],
+	\ "Function":    [["<ESC>", ':exec g:Lf_py "functionExplManager.quit()"<CR>']],
+	\ "Colorscheme":    [["<ESC>", ':exec g:Lf_py "colorschemeExplManager.quit()"<CR>']],
+	\ }
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -379,7 +397,7 @@ call s:plugin.Flag('hindent_line_length', '100')
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:highlightedyank_highlight_duration = 250
 if !exists('##TextYankPost')
-  map y <Plug>(highlightedyank)
+	map y <Plug>(highlightedyank)
 endif
 " hi! HighlightedyankRegion cterm=reverse gui=reverse
 
@@ -397,14 +415,14 @@ function! SetupCoc() abort
 	" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 	" other plugin before putting this into your config.
 	inoremap <silent><expr> <TAB>
-		  \ pumvisible() ? "\<C-n>" :
-		  \ <SID>check_back_space() ? "\<TAB>" :
-		  \ coc#refresh()
+		\ pumvisible() ? "\<C-n>" :
+		\ <SID>check_back_space() ? "\<TAB>" :
+		\ coc#refresh()
 	inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 	function! s:check_back_space() abort
-	  let col = col('.') - 1
-	  return !col || getline('.')[col - 1]  =~# '\s'
+		let col = col('.') - 1
+		return !col || getline('.')[col - 1] =~# '\s'
 	endfunction
 
 	" Use <c-space> to trigger completion.
@@ -413,14 +431,14 @@ function! SetupCoc() abort
 	" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
 	" position. Coc only does snippet and additional edit on confirm.
 	if exists('*complete_info')
-	  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-	  " Use Enter to choose the first item in the popup menu
-	  "  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : 
-	  "      \ pumvisible() ? "\<C-n><C-y>" :
-	  "      \ <SID>check_back_space() ? "\<CR>" :
-	  "      \ "\<C-g>u\<CR>"
+		inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+		" Use Enter to choose the first item in the popup menu
+		"  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" :
+		"      \ pumvisible() ? "\<C-n><C-y>" :
+		"      \ <SID>check_back_space() ? "\<CR>" :
+		"      \ "\<C-g>u\<CR>"
 	else
-	  imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+		imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 	endif
 
 	" Use <leader>j and <leader>k to navigate diagnostics
@@ -438,11 +456,11 @@ function! SetupCoc() abort
 	"vnoremap <silent> K :call <SID>show_documentation()<CR>
 
 	function! s:show_documentation()
-	  if (index(['vim','help'], &filetype) >= 0)
-		execute 'h '.expand('<cword>')
-	  else
-		call CocAction('doHover')
-	  endif
+		if (index(['vim','help'], &filetype) >= 0)
+			execute 'h '.expand('<cword>')
+		else
+			call CocAction('doHover')
+		endif
 	endfunction
 
 	function! Highlight() abort
@@ -459,19 +477,19 @@ function! SetupCoc() abort
 	nmap <leader>rn <Plug>(coc-rename)
 
 	" Formatting selected code.
-	xmap <leader>f  <Plug>(coc-format-selected)
-	nmap <leader>f  <Plug>(coc-format-selected)
+	xmap <leader>f <Plug>(coc-format-selected)
+	nmap <leader>f <Plug>(coc-format-selected)
 endfunction
 
 " This below prevents diagnostic style disappearing after switching
 " colorscheme
 function! CocHighlights() abort
 	highlight link CocErrorSign GruvboxRed
-	highlight link CocWarningSign  GruvboxYello
-	highlight link CocInfoSign  GruvboxBlue
-	highlight link CocHintSign  GruvboxGreen
-	highlight CocUnderline  cterm=underline gui=underline
-	highlight CocHighlightText  term=bold,reverse cterm=bold ctermfg=0 ctermbg=121 gui=bold guifg=bg guibg=LightGreen
+	highlight link CocWarningSign GruvboxYello
+	highlight link CocInfoSign GruvboxBlue
+	highlight link CocHintSign GruvboxGreen
+	highlight CocUnderline cterm=underline gui=underline
+	highlight CocHighlightText term=bold,reverse cterm=bold ctermfg=0 ctermbg=121 gui=bold guifg=bg guibg=LightGreen
 	" use highlight! to overwrite any default
 	highlight! link CocErrorHighlight CocUnderline
 	highlight! link CocWarningHighlight CocUnderline
@@ -481,8 +499,8 @@ function! CocHighlights() abort
 endfunction
 
 augroup CocHighlights
-    autocmd!
-    autocmd ColorScheme * call CocHighlights()
+	autocmd!
+	autocmd ColorScheme * call CocHighlights()
 augroup END
 call CocHighlights()
 
@@ -492,7 +510,7 @@ endif
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" caenrique / nvim-maximize-window-toggle 
+" caenrique / nvim-maximize-window-toggle
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " ToggleOnly
 ""
@@ -501,25 +519,25 @@ endif
 " opened in a new tab page.
 ""
 function! ToggleOnly()
-  if winnr("$") > 1
-  " There are more than one window in this tab
-    if exists("b:maximized_window_id")
-      call win_gotoid(b:maximized_window_id)
-    else
-      let b:origin_window_id = win_getid()
-      tab sp
-      let b:maximized_window_id = win_getid()
-    endif
-  else
-  " This is the only window in this tab
-    if exists("b:origin_window_id")
-      let l:origin_window_id = b:origin_window_id
-      tabclose
-      call win_gotoid(l:origin_window_id)
-      unlet b:maximized_window_id
-      unlet b:origin_window_id
-    endif
-  endif
+	if winnr("$") > 1
+	" There are more than one window in this tab
+		if exists("b:maximized_window_id")
+			call win_gotoid(b:maximized_window_id)
+		else
+			let b:origin_window_id = win_getid()
+			tab sp
+			let b:maximized_window_id = win_getid()
+		endif
+	else
+	" This is the only window in this tab
+		if exists("b:origin_window_id")
+			let l:origin_window_id = b:origin_window_id
+			tabclose
+			call win_gotoid(l:origin_window_id)
+			unlet b:maximized_window_id
+			unlet b:origin_window_id
+		endif
+	endif
 endfunction
 
 ""
