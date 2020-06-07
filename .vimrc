@@ -173,7 +173,6 @@ autocmd filetype rust vnoremap = :'<,'>FormatLines <cr>
 autocmd filetype cpp,cuda map == :FormatLines <cr>
 autocmd filetype cpp,cuda vnoremap = :'<,'>FormatLines <cr>
 
-
 " Multi panel
 for i in range(char2nr('a'), char2nr('z'))
 	let i = nr2char(i)

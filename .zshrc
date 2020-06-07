@@ -40,6 +40,7 @@ alias dig=drill
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 alias open='xdg-open'
+alias ghci='LANG=C.UTF-8 ghci'
 
 if [ -r ~/.zshrc -a -r ~/.zshrc.global -a ! -r ~/.zshrc.local ] ; then
     printf '-!-\n'
@@ -53,7 +54,6 @@ if [ -r ~/.zshrc -a -r ~/.zshrc.global -a ! -r ~/.zshrc.local ] ; then
 fi
 
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-#source /etc/zsh/powerline.zsh
 
 export HISTFILESIZE=400000000
 export HISTSIZE=1000000  # how many lines of history to keep in memory
