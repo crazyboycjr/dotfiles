@@ -20,7 +20,7 @@ import Graphics.X11.ExtraTypes.XF86
 import qualified XMonad.Util.Brightness as Bright
 
 import XMonad.Util.MyExclusiveScratchpads
-import XMonad.Layout.BoringWindows  -- required for Scratchpads
+import XMonad.Layout.MyBoringWindows  -- required for Scratchpads
 import XMonad.Layout.Minimize  -- required for Scratchpads
 
 import XMonad.Actions.CopyWindow
@@ -80,9 +80,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- Overloaded by boringWindows to skip boring windows
     , ((modm, xK_Tab), focusDown)
+    , ((modm .|. shiftMask, xK_Tab), focusUp)
     , ((modm, xK_j), focusDown)
     , ((modm, xK_k), focusUp)
     , ((modm, xK_m), focusMaster)
+    , ((modm .|. shiftMask, xK_k), swapUp)
+    , ((modm .|. shiftMask, xK_j), swapDown)
 
     -- Screenshot
     , ((0, xK_Print), spawn "xfce4-screenshooter")
