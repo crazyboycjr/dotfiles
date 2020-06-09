@@ -47,7 +47,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'rust-lang/rust.vim'
 
-Plug 'morhetz/gruvbox'
+Plug 'gruvbox-community/gruvbox'
 
 " All of your Plugins must be added before the following line
 call plug#end()
@@ -232,6 +232,8 @@ let NERDTreeMinimalUI=1
 set background=light
 let g:one_allow_italics = 1
 "colorscheme one
+let g:gruvbox_contrast_dark='soft'
+let g:gruvbox_contrast_light='soft'
 colorscheme gruvbox
 "colorscheme desert
 "hi! Normal ctermbg=NONE guibg=NONE
