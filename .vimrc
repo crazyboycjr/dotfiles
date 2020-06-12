@@ -1,6 +1,5 @@
 if empty(glob('~/.vim/autoload/plug.vim'))
-	silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-		\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
@@ -17,9 +16,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-python/python-syntax'
 Plug 'chriskempson/tomorrow-theme'
-"Plug 'jeaye/color_coded'
 Plug 'octol/vim-cpp-enhanced-highlight'
-"Plug 'vim-syntastic/syntastic'
 "Plug 'vivien/vim-linux-coding-style'
 
 Plug 'skywind3000/asyncrun.vim'
@@ -359,19 +356,6 @@ let g:Lf_NormalMap = {
 	\ "Function":    [["<ESC>", ':exec g:Lf_py "functionExplManager.quit()"<CR>']],
 	\ "Colorscheme":    [["<ESC>", ':exec g:Lf_py "colorschemeExplManager.quit()"<CR>']],
 	\ }
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Syntasitc
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:syntastic_cpp_cpplint_exec = 'cpplint'
-let g:syntastic_cpp_checkers = ['cpplint', 'gcc']
-let g:syntastic_cpp_cpplint_thres = 1
-let syntastic_aggregate_errors = 1
-let g:syntastic_error_symbol = "✗"
-let g:syntastic_warning_symbol = "⚠"
-let g:syntastic_style_error_symbol = '!'
-let g:syntastic_style_warning_symbol = '?'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
