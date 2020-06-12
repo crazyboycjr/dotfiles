@@ -5,7 +5,7 @@ UUID=836f8280-0e68-48d4-9bbe-1cbc8bf0f487	/         	btrfs     	rw,noatime,compr
 UUID=836f8280-0e68-48d4-9bbe-1cbc8bf0f487	/home     	btrfs     	rw,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,subvol=/home	0 0
 
 # /dev/nvme0n1p2
-UUID=B41F-5BEC      	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro	0 2
+UUID=CB10-9A22      	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro	0 2
 
 # /dev/nvme0n1p9
 UUID=836f8280-0e68-48d4-9bbe-1cbc8bf0f487	/nix     	btrfs     	rw,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,subvol=/nix	0 0
