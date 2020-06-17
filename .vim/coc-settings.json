@@ -6,6 +6,8 @@
     "list.maxPreviewHeight": 50,
     "highlight.document.enable": true,
     "highlight.color.enable": true,
+    "coc.preferences.maxFileSize": "1MB",
+    "rust-analyzer.serverPath": "/usr/bin/rust-analyzer",
     "languageserver": {
         "haskell": {
             "command": "hie-wrapper",
