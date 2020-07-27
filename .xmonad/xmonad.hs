@@ -21,7 +21,7 @@ import qualified XMonad.Util.Brightness as Bright
 
 import XMonad.Util.MyExclusiveScratchpads
 import XMonad.Layout.MyBoringWindows  -- required for Scratchpads
-import XMonad.Layout.Minimize  -- required for Scratchpads
+import XMonad.Layout.MyMinimize  -- required for Scratchpads
 
 import XMonad.Actions.CopyWindow
 
@@ -84,8 +84,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm, xK_j), focusDown)
     , ((modm, xK_k), focusUp)
     , ((modm, xK_m), focusMaster)
-    , ((modm .|. shiftMask, xK_k), swapUp)
     , ((modm .|. shiftMask, xK_j), swapDown)
+    , ((modm .|. shiftMask, xK_k), swapUp)
 
     -- Screenshot
     , ((0, xK_Print), spawn "xfce4-screenshooter")
@@ -137,6 +137,7 @@ main = do
     xmonad $ ewmh desktopConfig
         { modMask     = myModMask
         , terminal    = myTerminal
+        , borderWidth = 2
         , focusFollowsMouse = myFocusFollowsMouse
         , clickJustFocuses  = myClickJustFocuses
         , workspaces  = myWorkspaces

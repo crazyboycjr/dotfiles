@@ -76,17 +76,17 @@ set hlsearch
 set mouse=a
 set ttymouse=sgr
 set ttimeout		" time out for key codes
-set ttimeoutlen=0	" wait up to 100ms after Esc for special key
+set ttimeoutlen=0	" wait up to 0ms after Esc for special key
 set splitright
 set splitbelow
 
 autocmd filetype c,h,lex,yacc setlocal st=8 ts=8 sw=8
-"autocmd filetype cpp,hpp setlocal st=4 ts=4 sw=4 expandtab
 autocmd filetype cpp,hpp,cuda setlocal st=2 ts=2 sw=2 expandtab
 "autocmd filetype python setlocal ts=4 sw=4 st=4 expandtab
 autocmd filetype javascript setlocal ts=2 sw=2 sts=0 noexpandtab
 autocmd filetype css,html,htmldjango setlocal st=2 ts=2 sw=2 expandtab
 autocmd filetype haskell setlocal expandtab
+autocmd filetype cmake setlocal st=4 ts=4 sw=4 expandtab
 
 autocmd BufNewFile,BufRead *.toml,Gopkg.lock,Cargo.lock,*/.cargo/config,*/.cargo/credentials,Pipfile set filetype=toml
 autocmd filetype toml setlocal st=2 ts=2 sw=2 expandtab
