@@ -60,6 +60,14 @@ export HISTSIZE=1000000  # how many lines of history to keep in memory
 export SAVEHIST=1000000  # how many lines to keep in the history file
 
 
+if [ -e ~/.nix-profile/bin/ghc ]; then
+  export NIX_GHC="$HOME/.nix-profile/bin/ghc"
+  export NIX_GHCPKG="$HOME/.nix-profile/bin/ghc-pkg"
+  export NIX_GHC_DOCDIR="$HOME/.nix-profile/share/doc/ghc/html"
+  export NIX_GHC_LIBDIR="$HOME/.nix-profile/lib/ghc-$($NIX_GHC --numeric-version)"
+fi
+
+
 ## Settings for umask
 #if (( EUID == 0 )); then
 #    umask 002
