@@ -26,7 +26,8 @@ Plug 'machakann/vim-highlightedyank'
 
 "Google vim-codefmt
 Plug 'google/vim-maktaba'
-Plug 'google/vim-codefmt'
+" Plug 'crazyboycjr/vim-codefmt'
+Plug 'crazyboycjr/vim-codefmt'
 
 "vim-go
 Plug 'fatih/vim-go'
@@ -169,6 +170,8 @@ autocmd filetype rust map == :FormatLines <cr>
 autocmd filetype rust vnoremap = :'<,'>FormatLines <cr>
 autocmd filetype cpp,cuda map == :FormatLines <cr>
 autocmd filetype cpp,cuda vnoremap = :'<,'>FormatLines <cr>
+autocmd filetype haskell map == :FormatLines <cr>
+autocmd filetype haskell vnoremap = :'<,'>FormatLines <cr>
 
 " Multi panel
 for i in range(char2nr('a'), char2nr('z'))
@@ -376,6 +379,8 @@ let g:hindent_command = "/usr/bin/hindent"
 let s:plugin = maktaba#plugin#Get('codefmt')
 call s:plugin.Flag('hindent_indent_size', '4')
 call s:plugin.Flag('hindent_line_length', '100')
+" call s:plugin.Flag('brittany_indent', '2')
+" call s:plugin.Flag('brittany_columns', '80')
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Highlightedyank
