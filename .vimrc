@@ -291,7 +291,9 @@ function! ToggleTransparent()
 	endif
 endfunction
 
-"call ToggleTransparent()
+if exists('$TMUX')
+	call ToggleTransparent()
+endif
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -421,13 +423,13 @@ function! SetupCoc() abort
 	" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
 	" position. Coc only does snippet and additional edit on confirm.
 	if exists('*complete_info')
-		inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+		" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 		" Use Enter to choose the first item in the popup menu
-		"  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" :
-		"      \ pumvisible() ? "\<C-n><C-y>" :
-		"      \ <SID>check_back_space() ? "\<CR>" :
-		"      \ "\<C-g>u\<CR>"
-	else
+		inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" :
+		    \ pumvisible() ? "\<C-y>" :
+		    \ <SID>check_back_space() ? "\<CR>" :
+		    \ "\<C-g>u\<CR>"
+	els
 		imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 	endif
 
@@ -437,6 +439,8 @@ function! SetupCoc() abort
 
 	" GoTo code navigation.
 	nmap <silent> gd <Plug>(coc-definition)
+	nmap <silent> gs :sp<CR><Plug>(coc-definition)
+	nmap <silent> gv :vsp<CR><Plug>(coc-definition)
 	nmap <silent> gy <Plug>(coc-type-definition)
 	nmap <silent> gi <Plug>(coc-implementation)
 	nmap <silent> gr <Plug>(coc-references)
