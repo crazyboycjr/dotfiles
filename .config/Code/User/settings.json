@@ -1,7 +1,8 @@
 {
     "terminal.integrated.scrollback": 10000000,
-    "window.zoomLevel": -1,
+    "window.zoomLevel": 1,
     "editor.tabSize": 2,
+    "editor.autoClosingBrackets": "never",
     "workbench.colorCustomizations": {
         "editor.selectionHighlightBackground": "#f5ce23"
     },
@@ -11,6 +12,7 @@
     "vim.cursorStylePerMode.insert": "block",
     "vim.cursorStylePerMode.normal": "block",
     "vim.leader": "\\",
+    "vim.hlsearch": true,
     "vim.normalModeKeyBindingsNonRecursive": [
         {
             "before": ["<leader>", "<leader>"],
@@ -38,5 +40,8 @@
     "C_Cpp.enhancedColorization": "Disabled",
     "[rust]": {
         "editor.tabSize": 4
-    }
+    },
+    "latex-workshop.view.pdf.viewer": "tab",
+    "editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "rust-client.engine": "rust-analyzer"
 }
