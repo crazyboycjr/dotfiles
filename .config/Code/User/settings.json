@@ -8,18 +8,26 @@
     },
     "window.titleBarStyle": "custom",
     "explorer.confirmDelete": false,
-    "workbench.colorTheme": "Solarized Light",
+    "workbench.colorTheme": "Gruvbox Material Light",
     "vim.cursorStylePerMode.insert": "block",
     "vim.cursorStylePerMode.normal": "block",
     "vim.leader": "\\",
     "vim.hlsearch": true,
     "vim.normalModeKeyBindingsNonRecursive": [
         {
-            "before": ["<leader>", "<leader>"],
-            "commands": [":w"]
+            "before": [
+                "<leader>",
+                "<leader>"
+            ],
+            "commands": [
+                ":w"
+            ]
         },
         {
-            "before": ["Z", "Z"],
+            "before": [
+                "Z",
+                "Z"
+            ],
             "commands": [
                 {
                     "command": "workbench.action.files.save",
@@ -30,9 +38,20 @@
                     "args": []
                 }
             ]
+        },
+        {
+            "before": [
+                "=",
+                "="
+            ],
+            "commands": [
+                {
+                    "command": "editor.action.formatDocument",
+                    "args": []
+                }
+            ]
         }
     ],
-
     // Path to a Chromium or Chrome executable to run instead of the bundled Chromium.
     "markdown-pdf.executablePath": "/usr/bin/google-chrome-stable",
     "C_Cpp.updateChannel": "Insiders",
@@ -43,5 +62,10 @@
     },
     "latex-workshop.view.pdf.viewer": "tab",
     "editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "rust-client.engine": "rust-analyzer"
+    "gruvboxMaterial.italicKeywords": true,
+    "gruvboxMaterial.lightContrast": "soft",
+    "gruvboxMaterial.lightPalette": "original",
+    "gruvboxMaterial.lightWorkbench": "high-contrast",
+    "gruvboxMaterial.darkContrast": "soft",
+    "gruvboxMaterial.darkPalette": "original"
 }

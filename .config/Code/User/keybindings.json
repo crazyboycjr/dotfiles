@@ -39,5 +39,10 @@
   {
     "key": "ctrl+shift+tab",
     "command": "workbench.action.previousEditorInGroup"
+  },
+  {
+    "key": "shift+k",
+    "command": "editor.action.showDefinitionPreviewHover",
+    "when": "editorTextFocus && vim.active && vim.use<C-f> && !inDebugRepl && vim.mode != 'Insert'"
   }
 ]
