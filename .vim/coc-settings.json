@@ -10,7 +10,7 @@
     "rust-analyzer.serverPath": "/usr/bin/rust-analyzer",
     "languageserver": {
         "haskell": {
-            "command": "hie-wrapper",
+            "command": "haskell-language-server-wrapper",
             "args": ["--lsp"],
             "rootPatterns": ["*.cabal", ".stack.yaml", "cabal.config", "cabal.project", "package.yaml"],
             "filetypes": ["hs", "lhs", "haskell"],
@@ -18,7 +18,8 @@
                 "languageServerHaskell": {
                     "hlintOn": true,
                     "maxNumberOfProblems": 10,
-                    "completionSnippetsOn": true
+                    "completionSnippetsOn": true,
+                    "formattingProvider": "brittany"
                 }
             }
         }

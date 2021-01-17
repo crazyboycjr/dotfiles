@@ -67,6 +67,10 @@ if [ -e ~/.nix-profile/bin/ghc ]; then
   export NIX_GHC_LIBDIR="$HOME/.nix-profile/lib/ghc-$($NIX_GHC --numeric-version)"
 fi
 
+# stack completion
+autoload -U +X compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
+eval "$(stack --bash-completion-script stack)"
 
 ## Settings for umask
 #if (( EUID == 0 )); then

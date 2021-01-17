@@ -1,0 +1,5 @@
+# Turn on system GHC
+system-ghc: true
+
+ghc-options:
+  "$everything": -haddock -j

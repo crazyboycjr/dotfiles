@@ -381,8 +381,8 @@ let g:hindent_command = "/usr/bin/hindent"
 let s:plugin = maktaba#plugin#Get('codefmt')
 call s:plugin.Flag('hindent_indent_size', '4')
 call s:plugin.Flag('hindent_line_length', '100')
-" call s:plugin.Flag('brittany_indent', '2')
-" call s:plugin.Flag('brittany_columns', '80')
+call s:plugin.Flag('brittany_indent', '4')
+call s:plugin.Flag('brittany_columns', '100')
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Highlightedyank
