@@ -1,3 +1,0 @@
-ACTION=="add", KERNEL=="hidraw[0-9]*", RUN+="/usr/bin/su cjr -c \"DISPLAY=:1 XAUTHORITY=/home/cjr/.Xauthority xset r rate 200 36\""
-ACTION=="add", KERNEL=="hidraw[0-9]*", RUN+="/usr/bin/su cjr -c \"DISPLAY=:1 XAUTHORITY=/home/cjr/.Xauthority setxkbmap -option 'ctrl:nocaps'\""
-ACTION=="add", KERNEL=="hidraw[0-9]*", RUN+="/usr/bin/su cjr -c \"DISPLAY=:1 XAUTHORITY=/home/cjr/.Xauthority xmodmap /home/cjr/.Xmodmap\""

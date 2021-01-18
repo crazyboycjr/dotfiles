@@ -60,7 +60,7 @@ window:
   #
   # Values for `startup_mode` (macOS only):
   #   - SimpleFullscreen
-  startup_mode: Fullscreen
+  startup_mode: SimpleFullscreen
 
   # Window title
   #title: Alacritty
@@ -136,7 +136,7 @@ font:
     #style: Bold Italic
 
   # Point size
-  size: 14.5
+  size: 23.0
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -639,6 +639,8 @@ key_bindings:
   #- { key: W,      mods: Command,            action: Quit             }
   #- { key: N,      mods: Command,            action: SpawnNewInstance }
   #- { key: F,      mods: Command|Control,    action: ToggleFullscreen }
+  - { key: F,      mods: Command|Control|Shift,    action: ToggleSimpleFullscreen }
+  - { key: Period,        mods: Alt,     chars: "\x1b."                       }
 
 #debug:
   # Display the time it takes to redraw each frame.

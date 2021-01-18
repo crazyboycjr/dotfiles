@@ -1,12 +1,25 @@
 {
-  packageOverrides = super: let self = super.pkgs; in
-  {
-    myHaskellEnv = self.haskellPackages.ghcWithHoogle
-                     (haskellPackages: with haskellPackages; [
-                       # libraries
-                       bytestring
-                       # tools
-					   cabal2nix brittany xmonad
-                     ]);
-  };
+  packageOverrides = super:
+    let pkgs = super.pkgs;
+    in rec {
+      myHaskellEnv = pkgs.haskellPackages.ghcWithHoogle (haskellPkgs:
+        with haskellPkgs; [
+          # libraries
+          bytestring
+
+          # tools
+          cabal2nix
+          stack
+          brittany
+          haskell-language-server
+        ]);
+
+      myPackages = pkgs.buildEnv {
+        name = "my-packages";
+        paths = with pkgs; [
+          myHaskellEnv
+          ghcid
+        ];
+      };
+    };
 }
