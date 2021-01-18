@@ -47,6 +47,8 @@ Plug 'rust-lang/rust.vim'
 
 Plug 'gruvbox-community/gruvbox'
 
+Plug 'LnL7/vim-nix'
+
 " All of your Plugins must be added before the following line
 call plug#end()
 filetype plugin indent on	" required
