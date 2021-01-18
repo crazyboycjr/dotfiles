@@ -1,0 +1,19 @@
+[core]
+	editor = vim
+[color]
+	ui = true
+[user]
+	email = crazyboycjr@gmail.com
+	name = Jingrong Chen
+	signingkey = FD5C09B4C593D94E
+[merge]
+	tool = meld
+[commit]
+	gpgsign = true
+[alias]
+	c = commit
+	s = status
+	st = status
+	graph = log --all --graph --pretty=format:'%C(auto)%h%C(auto)%d %s %C(dim white)(%aN, %ar)'
+[pull]
+	rebase = false
