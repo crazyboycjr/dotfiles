@@ -1,3 +1,11 @@
+if !empty(glob('~/.vim/autoload/archlinux.vim'))
+	source ~/.vim/autoload/archlinux.vim
+endif
+
+if !empty(glob('~/.vim/autoload/global.vim'))
+	source ~/.vim/autoload/global.vim
+endif
+
 if empty(glob('~/.vim/autoload/plug.vim'))
 	silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
@@ -26,7 +34,6 @@ Plug 'machakann/vim-highlightedyank'
 
 "Google vim-codefmt
 Plug 'google/vim-maktaba'
-" Plug 'crazyboycjr/vim-codefmt'
 Plug 'crazyboycjr/vim-codefmt'
 
 "vim-go
@@ -37,8 +44,6 @@ Plug 'itchyny/vim-haskell-indent'
 " haskell-vim
 Plug 'neovimhaskell/haskell-vim'
 
-Plug 'alx741/vim-hindent'
-
 "Plug 'rhysd/vim-clang-format'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -46,6 +51,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'rust-lang/rust.vim'
 
 Plug 'gruvbox-community/gruvbox'
+
+Plug 'LnL7/vim-nix'
 
 " All of your Plugins must be added before the following line
 call plug#end()
@@ -63,6 +70,8 @@ endif
 "set backupdir^=/tmp
 "set undodir-=.
 "set undodir^=/tmp
+" set backup
+" set undofile
 
 syntax on
 set nu rnu
@@ -229,7 +238,7 @@ let NERDTreeMinimalUI=1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Config Colorscheme, Enable truecolor support
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set background=light
+set background=dark
 let g:one_allow_italics = 1
 "colorscheme one
 let g:gruvbox_contrast_dark='soft'
@@ -280,7 +289,7 @@ let g:is_transparent = 0
 
 function! ToggleTransparent()
 	if g:is_transparent
-		set background=light
+		set background=dark
 		call SetTermGuiColors()
 		let g:is_transparent = 0
 	else
@@ -291,9 +300,7 @@ function! ToggleTransparent()
 	endif
 endfunction
 
-if exists('$TMUX')
-	call ToggleTransparent()
-endif
+"call ToggleTransparent()
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -368,21 +375,11 @@ let g:Lf_NormalMap = {
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim-hindent
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:hindent_on_save = 0
-let g:hindent_indent_size = 4
-let g:hindent_line_length = 100
-let g:hindent_command = "/usr/bin/hindent"
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " codefmt
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:plugin = maktaba#plugin#Get('codefmt')
-call s:plugin.Flag('hindent_indent_size', '4')
-call s:plugin.Flag('hindent_line_length', '100')
-" call s:plugin.Flag('brittany_indent', '2')
-" call s:plugin.Flag('brittany_columns', '80')
+call s:plugin.Flag('brittany_indent', '4')
+call s:plugin.Flag('brittany_columns', '100')
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Highlightedyank
@@ -423,13 +420,13 @@ function! SetupCoc() abort
 	" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
 	" position. Coc only does snippet and additional edit on confirm.
 	if exists('*complete_info')
-		" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+		inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 		" Use Enter to choose the first item in the popup menu
-		inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" :
-		    \ pumvisible() ? "\<C-y>" :
-		    \ <SID>check_back_space() ? "\<CR>" :
-		    \ "\<C-g>u\<CR>"
-	els
+		"  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" :
+		"      \ pumvisible() ? "\<C-n><C-y>" :
+		"      \ <SID>check_back_space() ? "\<CR>" :
+		"      \ "\<C-g>u\<CR>"
+	else
 		imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 	endif
 
@@ -439,8 +436,6 @@ function! SetupCoc() abort
 
 	" GoTo code navigation.
 	nmap <silent> gd <Plug>(coc-definition)
-	nmap <silent> gs :sp<CR><Plug>(coc-definition)
-	nmap <silent> gv :vsp<CR><Plug>(coc-definition)
 	nmap <silent> gy <Plug>(coc-type-definition)
 	nmap <silent> gi <Plug>(coc-implementation)
 	nmap <silent> gr <Plug>(coc-references)
