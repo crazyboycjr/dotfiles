@@ -26,11 +26,12 @@
           mtr htop
           # user softwares
           zsh-syntax-highlighting
+          nix-zsh-completions
           tmux
-          gnupg
+          gnupg pinentry-curses
           wget
           # darwin.iproute2mac # cannot be built, see https://github.com/NixOS/nixpkgs/pull/109003
-          # alacritty_0_6_0 # use the one installed from .dmg
+          alacritty_0_6_0
           tinc
           rust-analyzer
           gnuplot_qt
