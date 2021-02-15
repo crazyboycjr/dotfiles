@@ -41,33 +41,18 @@ myLauncher = "rofi -modi drun,run -show drun -font \"DejaVu Sans 16\" -show-icon
 
 appFloat    = ["Dia", "Gimp", "krita"]
 appCenter   = ["feh", "MPlayer", "Zenity", "Pavucontrol", "Org.gnome.Nautilus", "Eog"]
-appIgnore   = ["Peek"]
-
-appWeb  = ["firefox", "Google-chrome"]
-appCode = ["Code", "Gvim"]
-appIM   = ["dingtalk", "TelegramDesktop", "wechat.exe"]
-appDoc  = ["Wps", "Wpp", "okular", "krita", "Zeal"]
-appEnt  = [ "teeworlds"
-          , "netease-cloud-music"
-          , "Steam"
-          ]
-appMisc = ["VirtualBox"]
+appIgnore   = []
+appIM       = ["dingtalk", "wechat.exe"]
 
 myManageHook = composeAll . concat $
     [ [isFullscreen --> doFullFloat]
     , [className =? a --> doFloat | a <- appFloat]
     , [className =? a --> doCenterFloat  | a <- appCenter]
     , [className =? a --> doIgnore       | a <- appIgnore]
-    , [className =? a --> doShift "web"  | a <- appWeb]
-    , [className =? a --> doShift "code" | a <- appCode]
     , [className =? a --> doShift "im"   | a <- appIM]
-    , [className =? a --> idHook         | a <- appDoc]
-    , [className =? a --> doShift "VII"  | a <- appEnt]
-    , [className =? a --> doShift "misc" | a <- appMisc]
-    , [(isPrefixOf "Minecraft") <$> className --> doShift "ent"]
     ]
 
-myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
+myKeys conf@XConfig {XMonad.modMask = modm} = M.fromList
     -- Spawn the launcher using command specified by myLauncher.
     [ ((modm, xK_p), spawn myLauncher)
 
