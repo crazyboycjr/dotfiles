@@ -1,8 +1,8 @@
 {
     "terminal.integrated.scrollback": 10000000,
-    "window.zoomLevel": 1,
     "editor.tabSize": 2,
     "editor.autoClosingBrackets": "never",
+    "editor.autoClosingQuotes": "never",
     "workbench.colorCustomizations": {
         "editor.selectionHighlightBackground": "#f5ce23"
     },
@@ -67,5 +67,8 @@
     "gruvboxMaterial.lightPalette": "original",
     "gruvboxMaterial.lightWorkbench": "high-contrast",
     "gruvboxMaterial.darkContrast": "soft",
-    "gruvboxMaterial.darkPalette": "original"
+    "gruvboxMaterial.darkPalette": "original",
+    "haskell.formattingProvider": "brittany",
+    "editor.minimap.enabled": false,
+    "window.zoomLevel": 1
 }
