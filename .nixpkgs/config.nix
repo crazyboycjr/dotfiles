@@ -22,6 +22,7 @@
           jupyterlab
           tqdm
           matplotlib
+          seaborn
         ]);
 
       alacritty_0_6_0 = import ./alacritty.nix;
