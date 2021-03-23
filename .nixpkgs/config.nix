@@ -12,6 +12,16 @@
           stack
           brittany
           haskell-language-server
+          pandoc
+        ]);
+
+      myPythonEnv = pkgs.python3.withPackages (ps: # python3Packages
+        with ps; [
+          pypdf2
+          jupyter
+          jupyterlab
+          tqdm
+          matplotlib
         ]);
 
       alacritty_0_6_0 = import ./alacritty.nix;
@@ -22,6 +32,8 @@
           # haskell dev
           myHaskellEnv
           ghcid
+          # python dev
+          myPythonEnv
           # admin tools
           mtr htop
           # user softwares
@@ -30,11 +42,14 @@
           tmux
           gnupg pinentry-curses
           wget
+          bat
           # darwin.iproute2mac # cannot be built, see https://github.com/NixOS/nixpkgs/pull/109003
           alacritty_0_6_0
           tinc
           rust-analyzer
           gnuplot_qt
+          graphviz
+          jq
         ];
       };
     };
