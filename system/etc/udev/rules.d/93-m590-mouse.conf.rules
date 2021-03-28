@@ -1,0 +1,2 @@
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", SUBSYSTEMS=="input", 
+ATTRS{name}=="Logitech M585/M590", SYMLINK+="my_m590_mouse", MODE="640"

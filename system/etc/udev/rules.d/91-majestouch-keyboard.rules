@@ -1,0 +1,2 @@
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", SUBSYSTEMS=="input", 
+ATTRS{name}=="Majestouch Convertible 2", SYMLINK+="my_majestouch_keyboard", MODE="640"
