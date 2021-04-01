@@ -40,7 +40,7 @@ import Control.Applicative ((<$>))
 import Control.Monad ((<=<),filterM,liftM2)
 import Data.Monoid (appEndo)
 import XMonad
-import XMonad.Actions.Minimize
+import XMonad.Actions.MyMinimize
 import XMonad.Actions.TagWindows (addTag,delTag)
 import XMonad.Hooks.ManageHelpers (doRectFloat,isInProperty)
 
