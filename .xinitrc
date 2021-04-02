@@ -20,7 +20,7 @@ fi
 
 # set screenlayout to my dormitory setting
 # gpu=`optimus-manager --print-mode | awk 'NF {print $NF}'` # this is not working
-location='dorm' # {dorm, lab, laptop}
+location='dorm' # {dorm, lab, laptop, external}
 gpu='nvidia' # {nvidia, intel}
 source ~/.screenlayout/${location}-${gpu}.sh
 
@@ -31,6 +31,9 @@ feh --bg-fill ~/.xmonad/background.jpg
 /usr/bin/gnome-keyring-daemon --daemonize --login &
 # /usr/lib/gnome-shell-calendar-server &
 # /usr/bin/gnome-calendar --gapplication-service &
+
+# start mousemap
+/usr/local/bin/mousemap &
 
 # start compositor
 xcompmgr &
