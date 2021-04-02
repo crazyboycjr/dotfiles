@@ -38,7 +38,7 @@ myModMask = mod4Mask
 altMask   = mod1Mask
 myTerminal = "alacritty --config-file ~/.config/alacritty/xmonad.yml"
 myFocusFollowsMouse = False
-myClickJustFocuses = True
+myClickJustFocuses = False
 
 myStartupHook :: X ()
 myStartupHook = do
