@@ -8,6 +8,7 @@
     "highlight.color.enable": true,
     "coc.preferences.maxFileSize": "1MB",
     "rust-analyzer.serverPath": "/usr/bin/rust-analyzer",
+    "rust-analyzer.procMacro.enable": true,
     "languageserver": {
         "haskell": {
             "command": "haskell-language-server-wrapper",

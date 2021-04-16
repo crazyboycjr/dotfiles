@@ -56,9 +56,24 @@ appCenter   = ["feh", "MPlayer", "Zenity", "Pavucontrol", "Org.gnome.Nautilus", 
 appIgnore   = []
 appIM       = ["dingtalk", "wechat.exe"]
 
+-- | Helper to read a property
+-- getProp :: Atom -> Window -> X (Maybe [CLong])
+getProp a w = withDisplay $ \dpy -> io $ getWindowProperty32 dpy a w
+
+-- | Check if window is DIALOG window
+checkDialog :: Query Bool
+checkDialog = ask >>= \w -> liftX $ do
+    a      <- getAtom "_NET_WM_WINDOW_TYPE"
+    dialog <- getAtom "_NET_WM_WINDOW_TYPE_DIALOG"
+    mbr    <- getProp a w
+    case mbr of
+        Just [r] -> return $ fromIntegral r == dialog
+        _        -> return False
+
 myManageHook' :: ManageHook
 myManageHook' = (composeAll . concat)
     [ [isFullscreen --> doFullFloat]
+    , [ checkDialog --> doCenterFloat ]
     , [ className =? a --> doFloat       | a <- appFloat ]
     , [ className =? a --> doCenterFloat | a <- appCenter ]
     , [ className =? a --> doIgnore      | a <- appIgnore ]
