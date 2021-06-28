@@ -1,4 +1,5 @@
 {
+  allowUnfree = true;
   packageOverrides = super:
     let pkgs = super.pkgs;
     in rec {
@@ -23,6 +24,8 @@
           tqdm
           matplotlib
           seaborn
+          scikitlearn
+          pip
         ]);
 
       alacritty_0_6_0 = import ./alacritty.nix;
@@ -37,10 +40,12 @@
           myPythonEnv
           # admin tools
           mtr htop
-          # user softwares
+          # user GUI softwares
+          vscode
+          # user commandline softwares
           zsh-syntax-highlighting
           nix-zsh-completions
-          tmux
+          tmux tmuxPlugins.resurrect
           gnupg pinentry-curses
           wget
           bat
@@ -51,6 +56,18 @@
           gnuplot_qt
           graphviz
           jq
+          fuse
+          ntfs3g
+          shadowsocks-rust
+          hwloc
+          # Better userland for macOS
+          coreutils
+          diffutils
+          findutils
+          gnugrep
+          gnused
+          # latex
+          texlive.combined.scheme-full
         ];
       };
     };
