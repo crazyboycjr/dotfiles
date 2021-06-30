@@ -1,5 +1,8 @@
 {
   allowUnfree = true;
+
+  permittedInsecurePackages = [ "openssl-1.0.2u" ];
+
   packageOverrides = super:
     let pkgs = super.pkgs;
     in rec {
@@ -40,8 +43,6 @@
           myPythonEnv
           # admin tools
           mtr htop
-          # user GUI softwares
-          vscode
           # user commandline softwares
           zsh-syntax-highlighting
           nix-zsh-completions
@@ -49,7 +50,7 @@
           gnupg pinentry-curses
           wget
           bat
-          # darwin.iproute2mac # cannot be built, see https://github.com/NixOS/nixpkgs/pull/109003
+          # darwin.iproute2mac # cannot be built unless allow insecure openssl_1_0_2, see https://github.com/NixOS/nixpkgs/pull/109003
           alacritty_0_6_0
           tinc
           rust-analyzer
@@ -59,15 +60,18 @@
           fuse
           ntfs3g
           shadowsocks-rust
-          hwloc
           # Better userland for macOS
           coreutils
           diffutils
           findutils
           gnugrep
           gnused
+          tree
+          hwloc # lstopo
           # latex
           texlive.combined.scheme-full
+          # unfree softwares
+          vscode
         ];
       };
     };
