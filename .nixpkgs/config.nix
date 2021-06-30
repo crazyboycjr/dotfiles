@@ -52,6 +52,7 @@
           bat
           # darwin.iproute2mac # cannot be built unless allow insecure openssl_1_0_2, see https://github.com/NixOS/nixpkgs/pull/109003
           alacritty_0_6_0
+          ubuntu_font_family
           tinc
           rust-analyzer
           gnuplot_qt
@@ -61,12 +62,7 @@
           ntfs3g
           shadowsocks-rust
           # Better userland for macOS
-          coreutils
-          diffutils
-          findutils
-          gnugrep
-          gnused
-          tree
+          coreutils diffutils findutils gnugrep gnused tree
           hwloc # lstopo
           # latex
           texlive.combined.scheme-full

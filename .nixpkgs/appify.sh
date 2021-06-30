@@ -10,10 +10,24 @@ baseDir="$HOME/Applications/Nix Apps"
 mkdir -p "$baseDir"
 
 nixAppsDir="$HOME/.nix-profile/Applications"
-for app in ${nixAppsDir}/*; do
+for app in "${nixAppsDir}"/*; do
 	appFile=`readlink -f "${app}"`
 	# echo $appFile
-	target="$baseDir/$(basename "$appFile")"
 	cp -fHRL "$appFile" "$baseDir"
+	target="$baseDir/$(basename "$appFile")"
+	chmod -R +w "$target"
+done
+
+
+
+# install fonts to ~/Library/Fonts
+fontDir="$HOME/Library/Fonts"
+
+nixFontDir="$HOME/.nix-profile/share/fonts"
+for font in "${nixFontDir}"/*; do
+	fontFile=`readlink -f "$font"`
+	# echo $fontFile
+	cp -fHRL "$fontFile" "$fontDir"
+	target="$fontDir/$(basename "$fontFile")"
 	chmod -R +w "$target"
 done
