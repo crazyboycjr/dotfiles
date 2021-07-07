@@ -44,8 +44,11 @@
           # admin tools
           mtr htop
           # user commandline softwares
+          bash zsh
           zsh-syntax-highlighting
           nix-zsh-completions
+          # use zsh as the default shell will overwrite several env variables such as configurePhase, which is not desired in some cases
+          # zsh-nix-shell
           tmux tmuxPlugins.resurrect
           gnupg pinentry-curses
           wget
