@@ -14,14 +14,6 @@ export HISTSIZE=1000000
 export GPG_TTY=$(tty)
 if [ -e /Users/cjr/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/cjr/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
-# stack auto completions
-autoload -U +X compinit && compinit -u
-autoload -U +X bashcompinit && bashcompinit -u
-eval "$(stack --bash-completion-script stack)"
-
-# prepend a [nix-shell] to zsh prompt
-prompt_nix_shell_setup "$@"
-
 # fix zsh completion for nix experimental features
 function _nix() {
   local ifs_bk="$IFS"
@@ -43,4 +35,15 @@ function _nix() {
   _describe 'nix' suggestions
 }
 
+# stack auto completions
+autoload -U +X compinit && compinit -u
+autoload -U +X bashcompinit && bashcompinit -u
+eval "$(stack --bash-completion-script stack)"
+
 compdef _nix nix
+
+# prepend a [nix-shell] to zsh prompt
+prompt_nix_shell_setup "$@"
+
+# to make grammar like nixpkgs#hello work as expected
+setopt noextendedglob
