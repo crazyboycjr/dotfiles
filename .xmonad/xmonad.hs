@@ -180,12 +180,15 @@ myHandleEventHook :: Event -> X All
 myHandleEventHook e = handle e >> return (All True)
 -- myHandleEventHook e = return (All True)
 
--- extend this later to handle XEvent
+-- extend this to handle low-level XEvent
 handle :: Event -> X ()
 handle = const $ return ()
 
+-- remember to make the order correct to avoid unexpected behaviors
+-- refocusLastLayoutHook must be executed later than mkToggle
+-- minimize and boringWindows must be executed later than avoidStruts
 myLayoutHook =
-    minimize . boringWindows . avoidStruts . mkToggle (single FULL) . refocusLastLayoutHook
+    refocusLastLayoutHook . minimize . boringWindows . avoidStruts . mkToggle (single FULL)
 
 main = do
     xmonad $ ewmh desktopConfig

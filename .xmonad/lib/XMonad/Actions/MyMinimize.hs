@@ -102,7 +102,6 @@ minimizeWindow w = withWindowSet $ \ws ->
     -- BW.focusDown
     RL.toggleFocus
 
-
 -- | Maximize window and apply a function to maximized window and 'WindowSet'
 maximizeWindowAndChangeWSet :: (Window -> WindowSet -> WindowSet) -> Window -> X ()
 maximizeWindowAndChangeWSet f w = do
@@ -118,7 +117,65 @@ maximizeWindow = maximizeWindowAndChangeWSet $ const id
 
 -- | Maximize a window and then focus it
 maximizeWindowAndFocus :: Window -> X ()
-maximizeWindowAndFocus = maximizeWindowAndChangeWSet W.focusWindow
+-- maximizeWindowAndFocus = maximizeWindowAndChangeWSet W.focusWindow
+maximizeWindowAndFocus = maximizeWindowAndChangeWSet swapDownUntilLastFocus
+
+-- |
+-- This function is grabbed from StackSet module.
+-- The 'with' function takes a default value, a function, and a
+-- StackSet. If the current stack is Nothing, 'with' returns the
+-- default value. Otherwise, it applies the function to the stack,
+-- returning the result. It is like 'maybe' for the focused workspace.
+--
+withStack :: b -> (W.Stack a -> b) -> W.StackSet i l a s sd -> b
+withStack dflt f = maybe dflt f . W.stack . W.workspace . W.current
+
+-- | The element before the focused element.
+beforeFocus :: W.Stack a -> Maybe a
+beforeFocus (W.Stack _ (l:ls) _) = return l
+beforeFocus (W.Stack _ [] rs) = listToMaybe rs
+
+-- |
+-- Extract the element before the focused element of the current stack.
+-- Return 'Just' that element, or 'Nothing' for an empty stack or an stack
+-- only with a single element.
+--
+peekPrev :: W.StackSet i l a s sd -> Maybe a
+peekPrev = withStack Nothing beforeFocus
+
+prevOf :: (Eq s, Eq a, Eq i) => Maybe a -> W.StackSet i l a s sd -> Maybe a
+prevOf Nothing = const Nothing
+prevOf (Just x) = peekPrev . W.focusWindow x
+
+-- |
+-- Do nothing if the target window is already the current focus.
+-- Otherwise, swap the target window down until it becomes the previous window of the current focus.
+-- Here's an example.
+-- input:
+--           lastFocus
+-- [1, 2, 3, 4] [5] [6, 7, 8, 9]
+--     w
+-- output:
+--               lastFocus
+-- [1, 3, 4] [2] [5, 6, 7, 8, 9]
+--            w
+-- The purpose of this function is to avoid the situation that when
+-- the workspace is in FULL layout, once an exclusiveScratchpad is called out, the background windows
+-- will be reorderd somehow. This causes too much visual burden which is usually undesired.
+--
+swapDownUntilLastFocus :: (Eq s, Eq a, Eq i) => a -> W.StackSet i l a s sd -> W.StackSet i l a s sd
+swapDownUntilLastFocus w s =
+    let lastFocus = W.peek s
+        s' = W.focusWindow w s
+     in swapDownUntil lastFocus w s'
+
+swapDownUntil :: (Eq s, Eq a, Eq i) => Maybe a -> a -> W.StackSet i l a s sd -> W.StackSet i l a s sd
+swapDownUntil lastFocus w s
+    | Just w == lastFocus = s
+    | Just w == prevOf lastFocus s = s
+    | otherwise = fromMaybe s $ do
+        n <- W.findTag w s
+        return $ until ((Just w ==) . prevOf lastFocus) W.swapDown (W.view n s)
 
 -- | Perform an action with first minimized window on current workspace
 --   or do nothing if there is no minimized windows on current workspace

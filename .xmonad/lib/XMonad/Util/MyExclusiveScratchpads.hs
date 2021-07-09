@@ -154,7 +154,7 @@ scratchpadAction xs n =
       True  -> whenX (onCurrentScreen w) (minimizeWindow w)
       False -> do windows (flip W.shiftWin w =<< W.currentTag)
                   maximizeWindowAndFocus w
-                  windows W.shiftMaster
+                  -- windows W.shiftMaster -- actually no need to shiftMaster
 
     onCurrentScreen w = withWindowSet (return . elem w . currentWindows)
 
