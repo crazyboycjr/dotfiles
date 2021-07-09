@@ -53,8 +53,9 @@ gnome-screensaver &
 nm-applet &
 dropbox &
 optimus-manager-qt &
-fcitx-autostart &
-sogou-qimpanel &
+# fcitx-autostart &
+# sogou-qimpanel &
+fcitx5 &
 
 # here xmonad is kept as default
 session=${1:-xmonad}
