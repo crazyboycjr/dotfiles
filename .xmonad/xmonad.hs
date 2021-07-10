@@ -50,7 +50,8 @@ myWorkspaces = ["web", "code", "III", "IV", "im", "VI", "VII",  "VIII", "misc"]
 myLauncher :: String
 myLauncher = "rofi -modi drun,run -show drun -font \"DejaVu Sans 16\" -show-icons"
 
-appFloat, appCenter, appIgnore, appIM :: [String]
+appDock, appFloat, appCenter, appIgnore, appIM :: [String]
+appDock     = ["Polybar"] -- use "Polybar" instead "polybar" because somehow only the former works
 appFloat    = ["Dia", "Gimp", "krita"]
 appCenter   = ["feh", "MPlayer", "Zenity", "Pavucontrol", "Org.gnome.Nautilus", "Eog"]
 appIgnore   = []
@@ -70,10 +71,14 @@ checkDialog = ask >>= \w -> liftX $ do
         Just [r] -> return $ fromIntegral r == dialog
         _        -> return False
 
+doLower :: ManageHook
+doLower = ask >>= \w -> liftX $ withDisplay $ \dpy -> io (lowerWindow dpy w) >> mempty
+
 myManageHook' :: ManageHook
 myManageHook' = (composeAll . concat)
     [ [isFullscreen --> doFullFloat]
     , [ checkDialog --> doCenterFloat ]
+    , [ className =? a --> doLower       | a <- appDock ]
     , [ className =? a --> doFloat       | a <- appFloat ]
     , [ className =? a --> doCenterFloat | a <- appCenter ]
     , [ className =? a --> doIgnore      | a <- appIgnore ]
@@ -174,7 +179,7 @@ myScratchpadManageHook :: ManageHook
 myScratchpadManageHook = xScratchpadsManageHook scratchpads
 
 myManageHook :: ManageHook
-myManageHook = myManageHook' <+> manageDocks <+> myScratchpadManageHook
+myManageHook = myManageHook' <+> myScratchpadManageHook <+> manageDocks
 
 myHandleEventHook :: Event -> X All
 myHandleEventHook e = handle e >> return (All True)
