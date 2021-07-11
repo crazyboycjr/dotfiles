@@ -47,8 +47,9 @@
           bash zsh
           zsh-syntax-highlighting
           nix-zsh-completions
+          vim-darwin
           # use zsh as the default shell will overwrite several env variables such as configurePhase, which is not desired in some cases
-          # zsh-nix-shell
+          # zsh-nix-shell # or any-nix-shell
           tmux tmuxPlugins.resurrect
           gnupg pinentry-curses
           wget

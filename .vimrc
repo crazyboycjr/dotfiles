@@ -160,7 +160,7 @@ autocmd filetype python map <F9> :w<cr>:!python2 %<cr>
 autocmd filetype python map <S-F9> :w<cr>:!python3 %<cr>
 autocmd filetype javascript map <F9> :w<cr>:!node %<cr>
 autocmd filetype c map <F9> :w<cr>:!gcc % -o %< -g -Wall -lpthread<cr>
-autocmd filetype cpp map <F9> :w<cr>:!g++ % -o %< -g -std=c++14 -Wall -I. -lpthread -mcmodel=large -ljsoncpp -lgmpxx -lgmp -lncurses -lglut -lGL -lGLU -lrdmacm -libverbs -lrt<cr>
+autocmd filetype cpp map <F9> :w<cr>:!g++ % -o %< -g -std=c++14 -Wall -I. -lpthread -mcmodel=large<cr>
 autocmd filetype cpp map <S-F9> :w<cr>:!g++ % -o %< -g -std=c++17 -Wall -lstdc++fs<cr>
 autocmd filetype tex map <F9> :w<cr>:!xelatex %<cr>
 autocmd filetype java map <F9> :w<cr>:!javac %<cr>
@@ -300,7 +300,9 @@ function! ToggleTransparent()
 	endif
 endfunction
 
-"call ToggleTransparent()
+" if exists('$TMUX')
+" 	call ToggleTransparent()
+" endif
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
