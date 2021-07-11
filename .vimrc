@@ -82,6 +82,7 @@ set ttimeout		" time out for key codes
 set ttimeoutlen=0	" wait up to 0ms after Esc for special key
 set splitright
 set splitbelow
+set wildmode=longest,list
 
 autocmd filetype c,h,lex,yacc setlocal st=8 ts=8 sw=8
 autocmd filetype cpp,hpp,cuda setlocal st=2 ts=2 sw=2 expandtab
