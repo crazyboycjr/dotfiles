@@ -20,6 +20,7 @@
 ## /etc/zsh/zshrc was installed as ~/.zshrc.global and
 ## ~/.zshrc.local does not exist yet.
 
+export GPG_TTY=$TTY
 export SSLKEYLOGFILE=/tmp/sslkeylogout.log
 
 export NODE_PATH=/usr/lib/node_modules
@@ -41,6 +42,7 @@ alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 alias open='xdg-open'
 alias ghci='LANG=C.UTF-8 ghci'
+alias ghcid='LANG=C.UTF-8 ghcid'
 
 if [ -r ~/.zshrc -a -r ~/.zshrc.global -a ! -r ~/.zshrc.local ] ; then
     printf '-!-\n'
