@@ -14,6 +14,7 @@
 	c = commit
 	s = status
 	st = status
+	sw = switch
 	graph = log --all --graph --pretty=format:'%C(auto)%h%C(auto)%d %s %C(dim white)(%aN, %ar)'
 [pull]
 	rebase = false
