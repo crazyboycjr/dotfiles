@@ -6,7 +6,6 @@
     "workbench.colorCustomizations": {
         "editor.selectionHighlightBackground": "#f5ce23"
     },
-    "window.titleBarStyle": "custom",
     "explorer.confirmDelete": false,
     "workbench.colorTheme": "Gruvbox Material Light",
     "vim.cursorStylePerMode.insert": "block",
@@ -54,11 +53,22 @@
     ],
     // Path to a Chromium or Chrome executable to run instead of the bundled Chromium.
     "markdown-pdf.executablePath": "/usr/bin/google-chrome-stable",
+    "[python]": {
+        "editor.tabSize": 4
+    },
     "C_Cpp.updateChannel": "Insiders",
     "[cpp]": {},
     "C_Cpp.enhancedColorization": "Disabled",
     "[rust]": {
         "editor.tabSize": 4
+    },
+    "rust-analyzer.diagnostics.disabled": [
+        "macro-error"
+    ],
+    "[latex]": {
+        "editor.fontFamily": "'Source Code Pro', 'Ubuntu Mono'",
+        "editor.fontSize": 14,
+		"editor.wordWrap": "on"
     },
     "latex-workshop.view.pdf.viewer": "tab",
     "editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
@@ -70,5 +80,19 @@
     "gruvboxMaterial.darkPalette": "original",
     "haskell.formattingProvider": "brittany",
     "editor.minimap.enabled": false,
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    },
+    "editor.inlineSuggest.enabled": true,
+    "github.copilot.enable": {
+        "*": true,
+        "yaml": false,
+        "plaintext": true,
+        "markdown": false
+    },
     "window.zoomLevel": 1
 }

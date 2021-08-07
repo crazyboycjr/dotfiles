@@ -185,10 +185,10 @@ endfor
 
 " move focus
 nnoremap <cr> <C-w>w
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-nnoremap <C-h> <C-w>h
+"nnoremap <C-j> <C-w>j
+"nnoremap <C-k> <C-w>k
+"nnoremap <C-l> <C-w>l
+"nnoremap <C-h> <C-w>h
 "nnoremap <M-j> <C-w>w
 "nnoremap <M-k> <C-w>W
 " change layout
@@ -218,10 +218,18 @@ noremap <Left> <nop>
 noremap <Right> <nop>
 
 " Faster resize
-noremap <silent> <C-S-Up> :resize +5<cr>
-noremap <silent> <C-S-Down> :resize -5<cr>
-noremap <silent> <C-S-Left> :vertical resize -5<cr>
-noremap <silent> <C-S-Right> :vertical resize +5<cr>
+"noremap <silent> <C-S-Up> :resize +5<cr>
+"noremap <silent> <C-S-Down> :resize -5<cr>
+"noremap <silent> <C-S-Left> :vertical resize -5<cr>
+"noremap <silent> <C-S-Right> :vertical resize +5<cr>
+
+"noremap <silent> <C-k> :resize +5<cr>
+"noremap <silent> <C-j> :resize -5<cr>
+" xmonad shortcut
+noremap <silent> <C-h> :vertical resize -7<cr>
+noremap <silent> <C-l> :vertical resize +7<cr>
+nnoremap <C-j> <C-w>w
+nnoremap <C-k> <C-w>W
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NERDTree
