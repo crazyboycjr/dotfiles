@@ -25,13 +25,15 @@ fi
 
 # set screenlayout to my dormitory setting
 # gpu=`optimus-manager --print-mode | awk 'NF {print $NF}'` # this is not working
-location='dorm' # {dorm, lab, laptop, external}
+location='external' # {dorm, lab, laptop, external}
 gpu='nvidia' # {nvidia, intel}
 source ~/.screenlayout/${location}-${gpu}.sh
 
 # set background
 feh --bg-fill ~/.xmonad/background.jpg
 
+# start authentication agent
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 # start gnome keyring
 gnome-keyring-daemon --daemonize --login &
 # /usr/lib/gnome-shell-calendar-server &
@@ -49,12 +51,10 @@ xfce4-power-manager &
 # start screen saver
 gnome-screensaver &
 
-# startup programs, todo: move to scripts
+# startup programs
 nm-applet &
 dropbox &
 optimus-manager-qt &
-# fcitx-autostart &
-# sogou-qimpanel &
 fcitx5 &
 
 # here xmonad is kept as default
