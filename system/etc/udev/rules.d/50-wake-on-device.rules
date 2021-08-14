@@ -1,0 +1,6 @@
+# allow Filco Majestouch keyboard to wakeup when lid is closed. Also need to change the BIOS setting to allow USB wakeup.
+ACTION=="add|change", SUBSYSTEM=="usb", DRIVERS=="usb", ATTRS{idVendor}=="04b4", ATTR{power/wakeup}="enabled"
+# disallow wakeup from the mouse.
+# However, the line below won't work on boot for some unknown reason.
+# Manually trigger the device by: udevadm trigger --attr-match='idVendor=046d'
+ACTION=="add|change", SUBSYSTEM=="usb", DRIVERS=="usb", ATTRS{idVendor}=="046d", ATTR{power/wakeup}="disabled"
