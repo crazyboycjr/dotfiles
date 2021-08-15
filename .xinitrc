@@ -56,6 +56,7 @@ gnome-screensaver &
 
 # startup programs
 nm-applet &
+blueman-applet &
 dropbox &
 optimus-manager-qt &
 fcitx5 &
