@@ -3,7 +3,8 @@
 [[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
 
 # start mousemap
-/usr/local/bin/mousemap --daemonize
+# /usr/local/bin/mousemap --daemonize
+# now use mousemap.service
 
 # set keyboard repeat <delay> <rate>
 xset r rate 200 36
@@ -25,9 +26,11 @@ fi
 
 # set screenlayout to my dormitory setting
 # gpu=`optimus-manager --print-mode | awk 'NF {print $NF}'` # this is not working
-location='external' # {dorm, lab, laptop, external}
-gpu='nvidia' # {nvidia, intel}
-source ~/.screenlayout/${location}-${gpu}.sh
+# location='external' # {dorm, lab, laptop, external}
+# gpu='nvidia' # {nvidia, intel}
+# source ~/.screenlayout/${location}-${gpu}.sh
+# changed to use autorandr
+autorandr --change
 
 # set background
 feh --bg-fill ~/.xmonad/background.jpg
