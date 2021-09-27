@@ -65,12 +65,6 @@
     "rust-analyzer.diagnostics.disabled": [
         "macro-error"
     ],
-    "[latex]": {
-        "editor.fontFamily": "'Source Code Pro', 'Ubuntu Mono'",
-        "editor.fontSize": 14,
-		"editor.wordWrap": "on"
-    },
-    "latex-workshop.view.pdf.viewer": "tab",
     "editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "gruvboxMaterial.italicKeywords": true,
     "gruvboxMaterial.lightContrast": "soft",
@@ -94,5 +88,120 @@
         "plaintext": true,
         "markdown": false
     },
-    "window.zoomLevel": 1
+    "jupyter.askForKernelRestart": false,
+    "[latex]": {
+        "editor.fontFamily": "'Source Code Pro', 'Ubuntu Mono'",
+        "editor.fontSize": 14,
+        "editor.wordWrap": "on",
+        "editor.formatOnPaste": false,
+        "editor.autoIndent": "keep"
+    },
+    "latex-workshop.view.pdf.viewer": "tab",
+    "latex-workshop.latex.recipe.default": "latexmk (pdflatex)",
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "make",
+            "tools": [
+                "make"
+            ]
+        },
+        {
+            "name": "latexmk (xelatex)",
+            "tools": [
+                "latexmk (xelatex)"
+            ]
+        },
+        {
+            "name": "latexmk (pdflatex)",
+            "tools": [
+                "latexmk (pdflatex)"
+            ]
+        }
+    ],
+    "latex-workshop.latex.tools": [
+        {
+            "name": "make",
+            "command": "make",
+            "args": []
+        },
+        {
+            "name": "latexmk (xelatex)",
+            "command": "latexmk",
+            "args": [
+                "--shell-escape",
+                "-xelatex",
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-outdir=%OUTDIR%",
+                "%DOC%"
+            ]
+        },
+        {
+            "name": "latexmk (pdflatex)",
+            "command": "latexmk",
+            "args": [
+                "--shell-escape",
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-pdf",
+                "-outdir=%OUTDIR%",
+                "%DOC%"
+            ]
+        },
+        {
+            "name": "pdflatex",
+            "command": "pdflatex",
+            "args": [
+                "--shell-escape",
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "%DOC%"
+            ]
+        },
+        {
+            "name": "latexmk",
+            "command": "latexmk",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-pdf",
+                "-outdir=%OUTDIR%",
+                "%DOC%"
+            ],
+            "env": {}
+        },
+        {
+            "name": "lualatexmk",
+            "command": "latexmk",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-lualatex",
+                "-outdir=%OUTDIR%",
+                "%DOC%"
+            ],
+            "env": {}
+        },
+        {
+            "name": "latexmk_rconly",
+            "command": "latexmk",
+            "args": [
+                "%DOC%"
+            ],
+            "env": {}
+        },
+        {
+            "name": "bibtex",
+            "command": "bibtex",
+            "args": [
+                "%DOCFILE%"
+            ],
+            "env": {}
+        }
+    ]
 }
