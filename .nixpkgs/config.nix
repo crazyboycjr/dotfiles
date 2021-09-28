@@ -6,9 +6,12 @@
         with haskellPkgs; [
           # libraries
           bytestring
+          data-ordlist
 
           # tools
-          xmonad
+          xmonad xmonad-contrib
+          pandoc
+          cabal-install
           cabal2nix
           stack
           brittany
