@@ -5,7 +5,7 @@ import XMonad.Util.SpawnOnce (spawnOnce)
 import XMonad.Hooks.EwmhDesktops (ewmh, fullscreenEventHook)
 
 import XMonad.Hooks.ManageDocks (avoidStruts, manageDocks)
-import XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, isFullscreen)
+import XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, doFloatDep, isFullscreen)
 
 import qualified Data.Map as M
 import Data.Monoid (All(..))
@@ -53,9 +53,10 @@ myLauncher = "rofi -modi drun,run -show drun -font \"DejaVu Sans 16\" -show-icon
 appDock, appFloat, appCenter, appIgnore, appIM :: [String]
 appDock     = ["Polybar"] -- use "Polybar" instead "polybar" because somehow only the former works
 appFloat    = ["Dia", "Gimp", "krita"]
-appCenter   = ["feh", "MPlayer", "Zenity", "Pavucontrol", "Org.gnome.Nautilus", "Eog"]
+appCenter   = ["feh", "MPlayer", "Zenity", "Pavucontrol", "Org.gnome.Nautilus", "Eog", "idaq64.exe"]
 appIgnore   = []
 appIM       = ["dingtalk", "wechat.exe"]
+appPreview  = "Org.gnome.NautilusPreviewer"
 
 -- | Helper to read a property
 -- getProp :: Atom -> Window -> X (Maybe [CLong])
@@ -74,10 +75,19 @@ checkDialog = ask >>= \w -> liftX $ do
 doLower :: ManageHook
 doLower = ask >>= \w -> liftX $ withDisplay $ \dpy -> io (lowerWindow dpy w) >> mempty
 
+adaptivePreview :: W.RationalRect -> W.RationalRect
+adaptivePreview (W.RationalRect a b w h)
+    | h < (1/7) = W.RationalRect (1/6) (1/6) (2/3) (1/3)
+    | otherwise = W.RationalRect a b w h
+
+doPreview :: ManageHook
+doPreview = doFloatDep adaptivePreview
+
 myManageHook' :: ManageHook
 myManageHook' = (composeAll . concat)
     [ [isFullscreen --> doFullFloat]
     , [ checkDialog --> doCenterFloat ]
+    , [ className =? appPreview --> doPreview ]
     , [ className =? a --> doLower       | a <- appDock ]
     , [ className =? a --> doFloat       | a <- appFloat ]
     , [ className =? a --> doCenterFloat | a <- appCenter ]
