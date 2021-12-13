@@ -43,6 +43,7 @@ alias pbpaste='xclip -selection clipboard -o'
 alias open='xdg-open'
 alias ghci='LANG=C.UTF-8 ghci'
 alias ghcid='LANG=C.UTF-8 ghcid'
+alias vim='nvim'
 
 if [ -r ~/.zshrc -a -r ~/.zshrc.global -a ! -r ~/.zshrc.local ] ; then
     printf '-!-\n'

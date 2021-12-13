@@ -6,10 +6,15 @@
     "list.maxPreviewHeight": 50,
     "highlight.document.enable": true,
     "highlight.color.enable": true,
-    "coc.preferences.maxFileSize": "10KB",
+    "coc.preferences.maxFileSize": "128KB",
+    "diagnostic.virtualText": true,
+    "diagnostic.virtualTextCurrentLineOnly": false,
     "rust-analyzer.serverPath": "/usr/bin/rust-analyzer",
-    "rust-analyzer.procMacro.enable": false,
+    "rust-analyzer.procMacro.enable": true,
     "rust-analyzer.cargo.runBuildScripts": true,
+	"rust-analyzer.checkOnSave.extraArgs": [
+        "--target-dir", "/tmp/rust-analyzer-check"
+    ],
     "languageserver": {
         "haskell": {
             "command": "haskell-language-server-wrapper",
