@@ -1,0 +1,1 @@
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", ATTRS{name}=="Majestouch Convertible 2", SYMLINK+="my_keyboard/filco_majestouch", MODE="640"

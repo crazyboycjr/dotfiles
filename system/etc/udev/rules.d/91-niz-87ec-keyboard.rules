@@ -1,0 +1,1 @@
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", ATTRS{name}=="Milsky 87EC-XRGB", SYMLINK+="my_keyboard/niz_87ec", MODE="640"

@@ -1,0 +1,1 @@
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", ATTRS{name}=="AT Translated Set 2 keyboard", SYMLINK+="my_keyboard/laptop_embedded", MODE="640"
