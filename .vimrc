@@ -9,13 +9,11 @@ endif
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 call plug#begin('~/.vim/plugged')
 
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+" Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'editorconfig/editorconfig-vim'
-Plug 'rakr/vim-one'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-python/python-syntax'
-Plug 'chriskempson/tomorrow-theme'
 Plug 'octol/vim-cpp-enhanced-highlight'
 "Plug 'vivien/vim-linux-coding-style'
 
@@ -23,30 +21,33 @@ Plug 'skywind3000/asyncrun.vim'
 "Plug 'w0rp/ale'
 Plug 'Yggdroot/LeaderF'
 Plug 'machakann/vim-highlightedyank'
+Plug 'ojroques/vim-oscyank'
 
-"Google vim-codefmt
+" Google vim-codefmt
 Plug 'google/vim-maktaba'
-" Plug 'crazyboycjr/vim-codefmt'
 Plug 'crazyboycjr/vim-codefmt'
 
-"vim-go
+" vim-go
 Plug 'fatih/vim-go'
 
 " haskell indent, just put this before haskell-vim
 Plug 'itchyny/vim-haskell-indent'
 " haskell-vim
 Plug 'neovimhaskell/haskell-vim'
-
+" I actually don't use hindent anymore
 Plug 'alx741/vim-hindent'
-
-"Plug 'rhysd/vim-clang-format'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'rust-lang/rust.vim'
 
+" Installed colorschemes
+Plug 'rakr/vim-one'
+Plug 'chriskempson/tomorrow-theme'
 Plug 'gruvbox-community/gruvbox'
+Plug 'rebelot/kanagawa.nvim'
 
+" Nix
 Plug 'LnL7/vim-nix'
 
 " All of your Plugins must be added before the following line
@@ -255,13 +256,15 @@ let NERDTreeMinimalUI=1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set background=light
 let g:one_allow_italics = 1
-"colorscheme one
 let g:gruvbox_contrast_dark='soft'
 let g:gruvbox_contrast_light='soft'
-colorscheme gruvbox
-"colorscheme desert
 "hi! Normal ctermbg=NONE guibg=NONE
 "map <S-F12> :set background=dark<cr>
+
+"colorscheme one
+colorscheme gruvbox
+"colorscheme kanagawa
+"colorscheme desert
 
 "Credit joshdick
 "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
@@ -409,6 +412,12 @@ call s:plugin.Flag('brittany_indent', '4')
 call s:plugin.Flag('brittany_columns', '100')
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" OSC 52 Yank
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:oscyank_max_length = 1000000000
+vnoremap <leader>y :OSCYank<cr> 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Highlightedyank
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:highlightedyank_highlight_duration = 250
@@ -522,8 +531,12 @@ augroup CocHighlights
 augroup END
 call CocHighlights()
 
-if has_key(plugs, "coc.nvim")
+if has_key(plugs, "coc.nvim") && !exists('g:vscode')
 	call SetupCoc()
+endif
+
+if exists('g:vscode')
+	nnoremap O ko
 endif
 
 
