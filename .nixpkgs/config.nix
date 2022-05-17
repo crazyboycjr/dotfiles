@@ -29,6 +29,8 @@
           seaborn
           scikitlearn
           pip
+          nose
+          yapf
         ]);
 
       alacritty_0_6_0 = import ./alacritty.nix;
@@ -54,9 +56,10 @@
           gnupg pinentry-curses
           wget
           bat
+          sshfs
           # darwin.iproute2mac # cannot be built unless allow insecure openssl_1_0_2, see https://github.com/NixOS/nixpkgs/pull/109003
           alacritty_0_6_0
-          ubuntu_font_family
+          ubuntu_font_family source-code-pro vistafonts
           tinc
           rust-analyzer
           gnuplot_qt
@@ -68,6 +71,7 @@
           # Better userland for macOS
           coreutils diffutils findutils gnugrep gnused tree
           hwloc # lstopo
+          llvmPackages_12.llvm llvmPackages_12.clang
           # latex
           texlive.combined.scheme-full
           # unfree softwares
