@@ -48,19 +48,22 @@
           # user commandline softwares
           bash zsh
           zsh-syntax-highlighting
-          nix-zsh-completions
+          nix-zsh-completions # needs to remove /nix/store/ym6bnwyjs930lwl9mlvmn21i2dym4hgg-nix-2.8pre20220512_d354fc3/share/zsh/site-functions/_nix
           vim-darwin
+          neovim
           # use zsh as the default shell will overwrite several env variables such as configurePhase, which is not desired in some cases
           # zsh-nix-shell # or any-nix-shell
           tmux tmuxPlugins.resurrect
           gnupg pinentry-curses
           wget
           bat
+          mosh
           sshfs
           # darwin.iproute2mac # cannot be built unless allow insecure openssl_1_0_2, see https://github.com/NixOS/nixpkgs/pull/109003
           alacritty_0_6_0
-          ubuntu_font_family source-code-pro vistafonts
-          tinc
+          eternal-terminal
+          ubuntu_font_family source-code-pro vistafonts dejavu_fonts powerline-fonts libertinus
+          tinc_pre
           rust-analyzer
           gnuplot_qt
           graphviz
@@ -71,7 +74,7 @@
           # Better userland for macOS
           coreutils diffutils findutils gnugrep gnused tree
           hwloc # lstopo
-          llvmPackages_12.llvm llvmPackages_12.clang
+          # llvmPackages_12.llvm llvmPackages_12.clang
           # latex
           texlive.combined.scheme-full
           # unfree softwares

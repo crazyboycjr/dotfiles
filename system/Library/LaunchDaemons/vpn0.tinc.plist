@@ -11,7 +11,7 @@
         <string>/Users/cjr/.nix-profile/bin/tincd</string>
         <string>-c</string>
         <string>/Users/cjr/Library/tinc/vpn0</string>
-        <string>--pidfile=/var/run/tincd.pid</string>
+        <string>--pidfile=/var/run/tinc.vpn0.pid</string>
         <string>-D</string>
     </array>
 </dict>
