@@ -8,6 +8,50 @@
     },
     "explorer.confirmDelete": false,
     "workbench.colorTheme": "Gruvbox Material Light",
+    "vim.cursorStylePerMode.insert": "block",
+    "vim.cursorStylePerMode.normal": "block",
+    "vim.leader": "\\",
+    "vim.hlsearch": true,
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "<leader>",
+                "<leader>"
+            ],
+            "commands": [
+                ":w"
+            ]
+        },
+        {
+            "before": [
+                "Z",
+                "Z"
+            ],
+            "commands": [
+                {
+                    "command": "workbench.action.files.save",
+                    "args": []
+                },
+                {
+                    "command": "workbench.action.closeActiveEditor",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "=",
+                "="
+            ],
+            "commands": [
+                {
+                    "command": "editor.action.formatDocument",
+                    "args": []
+                }
+            ]
+        }
+    ],
+    // Path to a Chromium or Chrome executable to run instead of the bundled Chromium.
     "markdown-pdf.executablePath": "/usr/bin/google-chrome-stable",
     "[python]": {
         "editor.tabSize": 4
@@ -39,11 +83,11 @@
     },
     "editor.inlineSuggest.enabled": true,
     "github.copilot.enable": {
-        "*": false,
+        "*": true,
         "yaml": false,
         "plaintext": true,
         "markdown": false,
-        "rust": false
+		"rust": false
     },
     "jupyter.askForKernelRestart": false,
     "[latex]": {
@@ -54,7 +98,7 @@
         "editor.autoIndent": "keep"
     },
     "latex-workshop.view.pdf.viewer": "tab",
-    "latex-workshop.latex.recipe.default": "latexmk (xelatex)",
+    "latex-workshop.latex.recipe.default": "latexmk (pdflatex)",
     "latex-workshop.latex.recipes": [
         {
             "name": "make",
@@ -160,8 +204,5 @@
             ],
             "env": {}
         }
-    ],
-    "terminal.external.linuxExec": "alacritty",
-    "editor.autoIndent": "brackets",
-    "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim"
+    ]
 }
