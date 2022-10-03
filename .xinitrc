@@ -60,6 +60,8 @@ blueman-applet &
 dropbox &
 optimus-manager-qt &
 fcitx5 &
+# hplip
+hp-systray --force-startup &
 
 # here xmonad is kept as default
 session=${1:-xmonad}
