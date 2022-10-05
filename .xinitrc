@@ -30,7 +30,7 @@ fi
 # gpu='nvidia' # {nvidia, intel}
 # source ~/.screenlayout/${location}-${gpu}.sh
 # changed to use autorandr
-autorandr --change
+# autorandr --change
 
 # set background
 feh --bg-fill ~/.xmonad/background.jpg
@@ -52,16 +52,14 @@ xfce4-clipman &
 xfce4-power-manager &
 
 # start screen saver
-gnome-screensaver &
+# gnome-screensaver &
 
 # startup programs
 nm-applet &
 blueman-applet &
-dropbox &
-optimus-manager-qt &
+# dropbox &
+# optimus-manager-qt &
 fcitx5 &
-# hplip
-hp-systray --force-startup &
 
 # here xmonad is kept as default
 session=${1:-xmonad}

@@ -86,8 +86,7 @@
         "*": true,
         "yaml": false,
         "plaintext": true,
-        "markdown": false,
-		"rust": false
+        "markdown": false
     },
     "jupyter.askForKernelRestart": false,
     "[latex]": {

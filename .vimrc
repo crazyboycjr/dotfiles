@@ -9,11 +9,13 @@ endif
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 call plug#begin('~/.vim/plugged')
 
-" Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'editorconfig/editorconfig-vim'
+Plug 'rakr/vim-one'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-python/python-syntax'
+Plug 'chriskempson/tomorrow-theme'
 Plug 'octol/vim-cpp-enhanced-highlight'
 "Plug 'vivien/vim-linux-coding-style'
 
@@ -21,33 +23,30 @@ Plug 'skywind3000/asyncrun.vim'
 "Plug 'w0rp/ale'
 Plug 'Yggdroot/LeaderF'
 Plug 'machakann/vim-highlightedyank'
-Plug 'ojroques/vim-oscyank'
 
-" Google vim-codefmt
+"Google vim-codefmt
 Plug 'google/vim-maktaba'
+" Plug 'crazyboycjr/vim-codefmt'
 Plug 'crazyboycjr/vim-codefmt'
 
-" vim-go
+"vim-go
 Plug 'fatih/vim-go'
 
 " haskell indent, just put this before haskell-vim
 Plug 'itchyny/vim-haskell-indent'
 " haskell-vim
 Plug 'neovimhaskell/haskell-vim'
-" I actually don't use hindent anymore
+
 Plug 'alx741/vim-hindent'
+
+"Plug 'rhysd/vim-clang-format'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'rust-lang/rust.vim'
 
-" Installed colorschemes
-Plug 'rakr/vim-one'
-Plug 'chriskempson/tomorrow-theme'
 Plug 'gruvbox-community/gruvbox'
-Plug 'rebelot/kanagawa.nvim'
 
-" Nix
 Plug 'LnL7/vim-nix'
 
 " All of your Plugins must be added before the following line
@@ -73,31 +72,29 @@ set nu rnu
 set nowrap
 set si
 set sw=4
-set sts=4
+set st=4
 set ts=4
 set incsearch
 set hlsearch
 set mouse=a
+set ttymouse=sgr
 set ttimeout		" time out for key codes
 set ttimeoutlen=0	" wait up to 0ms after Esc for special key
 set splitright
 set splitbelow
 set wildmode=longest,list
-if !has('nvim')
-	set ttymouse=sgr
-endif
 
-autocmd filetype c,h,lex,yacc setlocal sts=8 ts=8 sw=8
-autocmd filetype cpp,hpp,cuda setlocal sts=2 ts=2 sw=2 expandtab
-"autocmd filetype python setlocal ts=4 sw=4 sts=4 expandtab
+autocmd filetype c,h,lex,yacc setlocal st=8 ts=8 sw=8
+autocmd filetype cpp,hpp,cuda setlocal st=2 ts=2 sw=2 expandtab
+"autocmd filetype python setlocal ts=4 sw=4 st=4 expandtab
 autocmd filetype javascript setlocal ts=2 sw=2 sts=0 noexpandtab
-autocmd filetype css,html,htmldjango setlocal sts=2 ts=2 sw=2 expandtab
+autocmd filetype css,html,htmldjango setlocal st=2 ts=2 sw=2 expandtab
 autocmd filetype haskell setlocal expandtab
-autocmd filetype cmake setlocal sts=4 ts=4 sw=4 expandtab
+autocmd filetype cmake setlocal st=4 ts=4 sw=4 expandtab
 
 autocmd BufNewFile,BufRead *.toml,Gopkg.lock,Cargo.lock,*/.cargo/config,*/.cargo/credentials,Pipfile set filetype=toml
-autocmd filetype toml setlocal sts=2 ts=2 sw=2 expandtab
-autocmd filetype rust set colorcolumn=100 sts=4 sw=4 ts=4 expandtab
+autocmd filetype toml setlocal st=2 ts=2 sw=2 expandtab
+autocmd filetype rust set colorcolumn=100 st=4 sw=4 ts=4 expandtab
 autocmd filetype tex setlocal spell tw=80 colorcolumn=81
 autocmd filetype text setlocal spell tw=72 colorcolumn=73
 autocmd filetype markdown setlocal spell tw=72 colorcolumn=73
@@ -126,29 +123,6 @@ augroup CursorLine
 	autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
 	autocmd WinLeave * setlocal nocursorline
 augroup END
-
-if has("nvim")
-	" nmap <F24> <S-F12>
-	" nmap <F29> <C-F5>
-	for i in range(1, 12)
-		let j = i + 12
-		let k = i + 24
-		exec "nmap <F".j."> <S-F".i.">"
-		exec "nmap <F".k."> <C-F".i.">"
-	endfor
-	" :help last-position-jump
-	autocmd BufReadPost *
-	  \ if line("'\"") >= 1 && line("'\"") <= line("$") |
-	  \   exe "normal! g`\"" |
-	  \ endif
-	if exists(':tnoremap')
-		tnoremap <Esc> <C-\><C-n>
-	endif
-	" Enter insert mode automatically when terminal open
-	autocmd TermOpen * startinsert
-	" Probably the scrollback buffer to maximum
-	set scrollback=100000
-endif
 
 " Compile various languages
 func! DoMake()
@@ -203,13 +177,11 @@ autocmd filetype haskell map == :FormatLines <cr>
 autocmd filetype haskell vnoremap = :'<,'>FormatLines <cr>
 
 " Multi panel
-if !has("nvim")
-	for i in range(char2nr('a'), char2nr('z'))
-		let i = nr2char(i)
-		exec "set <M-".i.">=\<Esc>".i
-		exec "inoremap \<Esc>".i." <M-".i.">"
-	endfor
-endif
+for i in range(char2nr('a'), char2nr('z'))
+	let i = nr2char(i)
+	exec "set <M-".i.">=\<Esc>".i
+	exec "inoremap \<Esc>".i." <M-".i.">"
+endfor
 
 " move focus
 nnoremap <cr> <C-w>w
@@ -256,15 +228,13 @@ let NERDTreeMinimalUI=1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set background=light
 let g:one_allow_italics = 1
+"colorscheme one
 let g:gruvbox_contrast_dark='soft'
 let g:gruvbox_contrast_light='soft'
+colorscheme gruvbox
+"colorscheme desert
 "hi! Normal ctermbg=NONE guibg=NONE
 "map <S-F12> :set background=dark<cr>
-
-"colorscheme one
-colorscheme gruvbox
-"colorscheme kanagawa
-"colorscheme desert
 
 "Credit joshdick
 "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
@@ -412,12 +382,6 @@ call s:plugin.Flag('brittany_indent', '4')
 call s:plugin.Flag('brittany_columns', '100')
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" OSC 52 Yank
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:oscyank_max_length = 1000000000
-vnoremap <leader>y :OSCYank<cr> 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Highlightedyank
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:highlightedyank_highlight_duration = 250
@@ -531,12 +495,8 @@ augroup CocHighlights
 augroup END
 call CocHighlights()
 
-if has_key(plugs, "coc.nvim") && !exists('g:vscode')
+if has_key(plugs, "coc.nvim")
 	call SetupCoc()
-endif
-
-if exists('g:vscode')
-	nnoremap O ko
 endif
 
 

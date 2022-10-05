@@ -24,26 +24,17 @@ export GPG_TTY=$TTY
 export SSLKEYLOGFILE=/tmp/sslkeylogout.log
 
 export NODE_PATH=/usr/lib/node_modules
-export GOPATH=$HOME/Developing/go
-export PATH=$PATH:$GOPATH/bin
 
-export PATH=$PATH:$HOME/cross/bin
-export PATH=$PATH:$HOME/Developing/rdma-core/build/bin
-export PATH=$PATH:/opt/apache-spark/bin
 export SYSTEMD_EDITOR=vim
 
-alias sshhome='ssh `drill @tsinghua-server home.us A | sed -n "s/^home.us.*A\t\(.*\)/\1/p"`'
-#alias sshhome='ssh `python2 /home/cjr/Developing/autoconnect/ask_ip.py | head -n 1`'
 alias dig=drill
 #alias tmux="TERM=screen-256color-bce tmux"
-#alias ydcv="proxychains -q ydcv"
 
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 alias open='xdg-open'
 alias ghci='LANG=C.UTF-8 ghci'
 alias ghcid='LANG=C.UTF-8 ghcid'
-alias vim='nvim'
 
 if [ -r ~/.zshrc -a -r ~/.zshrc.global -a ! -r ~/.zshrc.local ] ; then
     printf '-!-\n'

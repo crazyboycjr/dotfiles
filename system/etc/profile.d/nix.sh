@@ -1,2 +1,7 @@
-#!/bin/sh
-if [ -e /home/cjr/.nix-profile/etc/profile.d/nix.sh ]; then . /home/cjr/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+# Nix
+if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+  . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+fi
+# End Nix
+
