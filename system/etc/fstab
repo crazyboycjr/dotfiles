@@ -5,8 +5,8 @@
 # /dev/nvme0n1p2
 UUID=22e09a2b-991d-4e9a-bec8-cb90dfde18a4	/         	btrfs     	rw,noatime,compress=lzo,ssd,discard,space_cache=v2,autodefrag,subvolid=256,subvol=/arch	       0 1
 
-# /dev/sda1
-UUID=D864-425C      	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
+# /dev/nvme0n1p1
+UUID=12EB-F8A6      	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
 
 # /dev/nvme0n1p2
 UUID=22e09a2b-991d-4e9a-bec8-cb90dfde18a4	/home     	btrfs     	rw,noatime,compress=lzo,ssd,discard,space_cache=v2,autodefrag,subvolid=257,subvol=/home	       0 2

@@ -32,9 +32,9 @@ font-3 = "Noto Sans Symbols2:size=10;1"
 
 modules-left = date ewmh xwindow
 modules-center =
-modules-right = wlan vpn0 cpu memory pulseaudio-control battery
+modules-right = eth0 vpn0 cpu memory pulseaudio-control
 
-tray-position = ${env:TRAY_POS:}
+tray-position = right
 tray-padding = 2
 tray-maxsize = 24
 
@@ -141,36 +141,36 @@ format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #4bffdc
 label = %percentage_used:2%%
 
-[module/wlan]
-type = internal/network
-interface = wlp2s0
-interval = 5.0
-
-format-connected = <ramp-signal> <label-connected>
-format-connected-underline = #9f78e1
-label-connected = %{A1:nm-connection-editor:}%essid%%{A}
-
-label-disconnected =
-
-ramp-signal-0 = 🌧
-ramp-signal-1 = 🌦
-ramp-signal-2 = 🌥
-ramp-signal-3 = 🌤
-ramp-signal-4 = 🌣
-ramp-signal-5 = 🌣
-
-
-# [module/eth2]
+# [module/wlan]
 # type = internal/network
-# interface = enp12s0u1
-# interval = 3.0
+# interface = wlp2s0
+# interval = 5.0
 # 
-# format-connected-underline = #115511
-# format-connected-prefix = "🖧 "
-# format-connected-prefix-foreground = ${colors.foreground-alt}
-# label-connected = %local_ip%
+# format-connected = <ramp-signal> <label-connected>
+# format-connected-underline = #9f78e1
+# label-connected = %{A1:nm-connection-editor:}%essid%%{A}
 # 
-# format-disconnected =
+# label-disconnected =
+# 
+# ramp-signal-0 = 🌧
+# ramp-signal-1 = 🌦
+# ramp-signal-2 = 🌥
+# ramp-signal-3 = 🌤
+# ramp-signal-4 = 🌣
+# ramp-signal-5 = 🌣
+
+
+[module/eth0]
+type = internal/network
+interface = enp0s31f6
+interval = 3.0
+
+format-connected-underline = #115511
+format-connected-prefix = "🖧 "
+format-connected-prefix-foreground = ${colors.foreground-alt}
+label-connected = %local_ip%
+
+format-disconnected =
 
 [module/vpn0]
 type = internal/network
