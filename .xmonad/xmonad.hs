@@ -146,6 +146,9 @@ myKeys conf@XConfig { modMask = modm } = M.fromList
     -- Brightness.
     , ((0, xF86XK_MonBrightnessUp), Bright.increase)
     , ((0, xF86XK_MonBrightnessDown), Bright.decrease)
+
+    -- Switch to greeter.
+    , ((altMask .|. controlMask, xK_Delete), spawn "dm-tool switch-to-greeter")
     ]
 
 gestures :: M.Map [Direction2D] (Window -> X ())
