@@ -38,6 +38,9 @@ tray-position = ${env:TRAY_POS:}
 tray-padding = 2
 tray-maxsize = 24
 
+wm-restack = generic
+override-redirect = false
+
 [global/wm]
 margin-top = 0
 
