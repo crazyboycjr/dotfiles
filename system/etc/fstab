@@ -2,17 +2,9 @@
 # See fstab(5) for details.
 
 # <file system> <dir> <type> <options> <dump> <pass>
-# /dev/nvme0n1p2
-UUID=22e09a2b-991d-4e9a-bec8-cb90dfde18a4	/         	btrfs     	rw,noatime,compress=lzo,ssd,discard,space_cache=v2,autodefrag,subvolid=256,subvol=/arch	       0 1
-
-# /dev/nvme0n1p1
-UUID=12EB-F8A6      	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
-
-# /dev/nvme0n1p2
-UUID=22e09a2b-991d-4e9a-bec8-cb90dfde18a4	/home     	btrfs     	rw,noatime,compress=lzo,ssd,discard,space_cache=v2,autodefrag,subvolid=257,subvol=/home	       0 2
-
-# /dev/nvme0n1p2
-UUID=22e09a2b-991d-4e9a-bec8-cb90dfde18a4	/nix      	btrfs     	rw,noatime,compress=lzo,ssd,discard,space_cache=v2,autodefrag,subvolid=258,subvol=/nix	0 2
-
-# /dev/nvme0n1p2
-UUID=22e09a2b-991d-4e9a-bec8-cb90dfde18a4	/var      	btrfs     	rw,noatime,compress=lzo,ssd,discard,space_cache=v2,autodefrag,subvolid=259,subvol=/var	0 2
+# SteamOS partitions
+#/dev/disk/by-partsets/self/rootfs /       ext4    defaults                0       1
+#/dev/disk/by-partsets/self/var    /var    ext4    defaults                0       2
+/dev/disk/by-partsets/self/efi    /efi    vfat    defaults,nofail,umask=0077,x-systemd.automount,x-systemd.idle-timeout=1min 0       2
+/dev/disk/by-partsets/shared/esp  /esp    vfat    defaults,nofail,umask=0077,x-systemd.automount,x-systemd.idle-timeout=1min 0       2
+/dev/disk/by-partsets/shared/home /home   ext4    defaults,nofail,x-systemd.growfs 0       2

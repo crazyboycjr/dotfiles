@@ -5,7 +5,7 @@
 [user]
 	email = crazyboycjr@gmail.com
 	name = Jingrong Chen
-	signingkey = FD5C09B4C593D94E
+	signingkey = 43BD83D47D9259DE
 [merge]
 	tool = meld
 [commit]

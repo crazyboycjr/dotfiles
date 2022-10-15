@@ -1,6 +1,10 @@
 [Desktop Entry]
-Encoding=UTF-8
-Name=XMonad
-Comment=This session starts xmonad
-Exec=xinitrcsession-helper xmonad
+Version=1.0
 Type=Application
+Name=Xmonad
+Comment=Lightweight X11 tiled window manager written in Haskell
+Exec=xinitrcsession-helper xmonad
+Icon=xmonad
+Terminal=false
+StartupNotify=false
+Categories=Application;

@@ -62,9 +62,9 @@ if [ -e ~/.nix-profile/bin/ghc ]; then
 fi
 
 # stack completion
-autoload -U +X compinit && compinit
-autoload -U +X bashcompinit && bashcompinit
-eval "$(stack --bash-completion-script stack)"
+# autoload -U +X compinit && compinit
+# autoload -U +X bashcompinit && bashcompinit
+# eval "$(stack --bash-completion-script stack)"
 
 ## Settings for umask
 #if (( EUID == 0 )); then

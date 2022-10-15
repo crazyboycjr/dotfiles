@@ -1,6 +1,7 @@
 #!/bin/sh
 
 [[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
+[[ -f ~/.xprofile ]] && . ~/.xprofile
 
 # start mousemap
 # /usr/local/bin/mousemap --daemonize
@@ -30,33 +31,34 @@ fi
 # gpu='nvidia' # {nvidia, intel}
 # source ~/.screenlayout/${location}-${gpu}.sh
 # changed to use autorandr
-# autorandr --change
+autorandr --change
 
 # set background
 feh --bg-fill ~/.xmonad/background.jpg
 
 # start authentication agent
-/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+/usr/lib/polkit-gnome/polkit-kde-authentication-agent-1 &
 # start gnome keyring
-gnome-keyring-daemon --daemonize --login &
+# gnome-keyring-daemon --daemonize --login &
 # /usr/lib/gnome-shell-calendar-server &
 # gnome-calendar --gapplication-service &
 
 # start compositor
 xcompmgr &
+# picom &
 
 # start clipboard manager
 xfce4-clipman &
 
 # start power manager
-xfce4-power-manager &
+# xfce4-power-manager &
 
 # start screen saver
 # gnome-screensaver &
 
 # startup programs
-nm-applet &
-blueman-applet &
+# nm-applet &
+# blueman-applet &
 # dropbox &
 # optimus-manager-qt &
 fcitx5 &

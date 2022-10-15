@@ -32,7 +32,7 @@ font-3 = "Noto Sans Symbols2:size=10;1"
 
 modules-left = date ewmh xwindow
 modules-center =
-modules-right = eth0 vpn0 cpu memory pulseaudio-control
+modules-right = wlan vpn0 cpu memory pulseaudio-control
 
 tray-position = right
 tray-padding = 2
@@ -144,23 +144,23 @@ format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #4bffdc
 label = %percentage_used:2%%
 
-# [module/wlan]
-# type = internal/network
-# interface = wlp2s0
-# interval = 5.0
-# 
-# format-connected = <ramp-signal> <label-connected>
-# format-connected-underline = #9f78e1
-# label-connected = %{A1:nm-connection-editor:}%essid%%{A}
-# 
-# label-disconnected =
-# 
-# ramp-signal-0 = 🌧
-# ramp-signal-1 = 🌦
-# ramp-signal-2 = 🌥
-# ramp-signal-3 = 🌤
-# ramp-signal-4 = 🌣
-# ramp-signal-5 = 🌣
+[module/wlan]
+type = internal/network
+interface = wlan0
+interval = 5.0
+
+format-connected = <ramp-signal> <label-connected>
+format-connected-underline = #9f78e1
+label-connected = %{A1:nm-connection-editor:}%essid%%{A}
+
+label-disconnected =
+
+ramp-signal-0 = 🌧
+ramp-signal-1 = 🌦
+ramp-signal-2 = 🌥
+ramp-signal-3 = 🌤
+ramp-signal-4 = 🌣
+ramp-signal-5 = 🌣
 
 
 [module/eth0]
@@ -212,6 +212,20 @@ label = %date% %time%
 # label = %{u#0099ff +u} 📫 %{u-}
 # interval = 10
 
+# [module/pipewire]
+# type = custom/script
+# label = "%output%"
+# tail = true
+# format-underline = #fba922
+# label-padding = 2
+# label-foreground = ${colors.foreground}
+# interval = 2.0
+# exec = ~/.config/polybar/pipewire.sh
+# click-right = exec pavucontrol &
+# click-left = ~/.config/polybar/pipewire.sh mute &
+# scroll-up = ~/.config/polybar/pipewire.sh up &
+# scroll-down = ~/.config/polybar/pipewire.sh down &
+
 [module/pulseaudio]
 type = internal/pulseaudio
 
@@ -242,6 +256,7 @@ click-right = pavucontrol &
 
 ; click-middle =
 
+# Please INSTALL
 # https://github.com/marioortizmanero/polybar-pulseaudio-control
 [module/pulseaudio-control]
 type = custom/script
@@ -254,10 +269,10 @@ label-foreground = ${colors.foreground}
 # You can copy-paste your options for each possible action, which is more
 # trouble-free but repetitive, or apply only the relevant ones (for example
 # --sink-blacklist is only needed for next-sink).
-exec = pulseaudio-control --icons-volume "🔈 ,🔉 ,🔊 " --icon-muted "🔇 " --sink-nicknames-from "device.description" --sink-nickname "alsa_output.pci-0000_00_1f.3.analog-stereo:🔈 Speakers" --sink-nickname "bluez_sink.7C_9A_1D_AB_37_F2.a2dp_sink:🎧 Headphones" listen
+exec = pulseaudio-control --icons-volume "🔈 ,🔉 ,🔊 " --icon-muted "🔇 " --node-nicknames-from "device.description" --node-nickname "alsa_output.pci-0000_00_1f.3.analog-stereo:🔈 Speakers" --node-nickname "bluez_sink.7C_9A_1D_AB_37_F2.a2dp_sink:🎧 Headphones" listen
 click-right = exec pavucontrol &
 click-left = pulseaudio-control togmute
-click-middle = pulseaudio-control next-sink
+click-middle = pulseaudio-control next-node
 scroll-up = pulseaudio-control --volume-max 130 up
 scroll-down = pulseaudio-control --volume-max 130 down
 
