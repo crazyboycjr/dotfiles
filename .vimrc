@@ -9,13 +9,11 @@ endif
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 call plug#begin('~/.vim/plugged')
 
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+" Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'editorconfig/editorconfig-vim'
-Plug 'rakr/vim-one'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-python/python-syntax'
-Plug 'chriskempson/tomorrow-theme'
 Plug 'octol/vim-cpp-enhanced-highlight'
 "Plug 'vivien/vim-linux-coding-style'
 
@@ -23,31 +21,37 @@ Plug 'skywind3000/asyncrun.vim'
 "Plug 'w0rp/ale'
 Plug 'Yggdroot/LeaderF'
 Plug 'machakann/vim-highlightedyank'
+Plug 'ojroques/vim-oscyank'
 
-"Google vim-codefmt
+" Google vim-codefmt
 Plug 'google/vim-maktaba'
-" Plug 'crazyboycjr/vim-codefmt'
 Plug 'crazyboycjr/vim-codefmt'
 
-"vim-go
+" vim-go
 Plug 'fatih/vim-go'
 
 " haskell indent, just put this before haskell-vim
 Plug 'itchyny/vim-haskell-indent'
 " haskell-vim
 Plug 'neovimhaskell/haskell-vim'
-
+" I actually don't use hindent anymore
 Plug 'alx741/vim-hindent'
-
-"Plug 'rhysd/vim-clang-format'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'rust-lang/rust.vim'
 
+" Installed colorschemes
+Plug 'rakr/vim-one'
+Plug 'chriskempson/tomorrow-theme'
 Plug 'gruvbox-community/gruvbox'
+Plug 'rebelot/kanagawa.nvim'
 
+" Nix
 Plug 'LnL7/vim-nix'
+
+"Plug 'romgrk/barbar.nvim'
+"Plug 'kyazdani42/nvim-web-devicons'
 
 " All of your Plugins must be added before the following line
 call plug#end()
@@ -72,29 +76,31 @@ set nu rnu
 set nowrap
 set si
 set sw=4
-set st=4
+set sts=4
 set ts=4
 set incsearch
 set hlsearch
 set mouse=a
-set ttymouse=sgr
 set ttimeout		" time out for key codes
 set ttimeoutlen=0	" wait up to 0ms after Esc for special key
 set splitright
 set splitbelow
 set wildmode=longest,list
+if !has('nvim')
+	set ttymouse=sgr
+endif
 
-autocmd filetype c,h,lex,yacc setlocal st=8 ts=8 sw=8
-autocmd filetype cpp,hpp,cuda setlocal st=2 ts=2 sw=2 expandtab
-"autocmd filetype python setlocal ts=4 sw=4 st=4 expandtab
+autocmd filetype c,h,lex,yacc setlocal sts=8 ts=8 sw=8
+autocmd filetype cpp,hpp,cuda setlocal sts=2 ts=2 sw=2 expandtab
+"autocmd filetype python setlocal ts=4 sw=4 sts=4 expandtab
 autocmd filetype javascript setlocal ts=2 sw=2 sts=0 noexpandtab
-autocmd filetype css,html,htmldjango setlocal st=2 ts=2 sw=2 expandtab
+autocmd filetype css,html,htmldjango setlocal sts=2 ts=2 sw=2 expandtab
 autocmd filetype haskell setlocal expandtab
-autocmd filetype cmake setlocal st=4 ts=4 sw=4 expandtab
+autocmd filetype cmake setlocal sts=4 ts=4 sw=4 expandtab
 
 autocmd BufNewFile,BufRead *.toml,Gopkg.lock,Cargo.lock,*/.cargo/config,*/.cargo/credentials,Pipfile set filetype=toml
-autocmd filetype toml setlocal st=2 ts=2 sw=2 expandtab
-autocmd filetype rust set colorcolumn=100 st=4 sw=4 ts=4 expandtab
+autocmd filetype toml setlocal sts=2 ts=2 sw=2 expandtab
+autocmd filetype rust set colorcolumn=100 sts=4 sw=4 ts=4 expandtab
 autocmd filetype tex setlocal spell tw=80 colorcolumn=81
 autocmd filetype text setlocal spell tw=72 colorcolumn=73
 autocmd filetype markdown setlocal spell tw=72 colorcolumn=73
@@ -123,6 +129,29 @@ augroup CursorLine
 	autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
 	autocmd WinLeave * setlocal nocursorline
 augroup END
+
+if has("nvim")
+	" nmap <F24> <S-F12>
+	" nmap <F29> <C-F5>
+	for i in range(1, 12)
+		let j = i + 12
+		let k = i + 24
+		exec "nmap <F".j."> <S-F".i.">"
+		exec "nmap <F".k."> <C-F".i.">"
+	endfor
+	" :help last-position-jump
+	autocmd BufReadPost *
+	  \ if line("'\"") >= 1 && line("'\"") <= line("$") |
+	  \   exe "normal! g`\"" |
+	  \ endif
+	if exists(':tnoremap')
+		tnoremap <Esc> <C-\><C-n>
+	endif
+	" Enter insert mode automatically when terminal open
+	autocmd TermOpen * startinsert
+	" Probably the scrollback buffer to maximum
+	set scrollback=100000
+endif
 
 " Compile various languages
 func! DoMake()
@@ -177,11 +206,13 @@ autocmd filetype haskell map == :FormatLines <cr>
 autocmd filetype haskell vnoremap = :'<,'>FormatLines <cr>
 
 " Multi panel
-for i in range(char2nr('a'), char2nr('z'))
-	let i = nr2char(i)
-	exec "set <M-".i.">=\<Esc>".i
-	exec "inoremap \<Esc>".i." <M-".i.">"
-endfor
+if !has("nvim")
+	for i in range(char2nr('a'), char2nr('z'))
+		let i = nr2char(i)
+		exec "set <M-".i.">=\<Esc>".i
+		exec "inoremap \<Esc>".i." <M-".i.">"
+	endfor
+endif
 
 " move focus
 nnoremap <cr> <C-w>w
@@ -228,13 +259,15 @@ let NERDTreeMinimalUI=1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set background=light
 let g:one_allow_italics = 1
-"colorscheme one
 let g:gruvbox_contrast_dark='soft'
 let g:gruvbox_contrast_light='soft'
-colorscheme gruvbox
-"colorscheme desert
 "hi! Normal ctermbg=NONE guibg=NONE
 "map <S-F12> :set background=dark<cr>
+
+"colorscheme one
+colorscheme gruvbox
+"colorscheme kanagawa
+"colorscheme desert
 
 "Credit joshdick
 "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
@@ -382,6 +415,12 @@ call s:plugin.Flag('brittany_indent', '4')
 call s:plugin.Flag('brittany_columns', '100')
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" OSC 52 Yank
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:oscyank_max_length = 1000000000
+vnoremap <leader>y :OSCYank<cr> 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Highlightedyank
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:highlightedyank_highlight_duration = 250
@@ -400,34 +439,27 @@ function! SetupCoc() abort
 	" delays and poor user experience.
 	set updatetime=300
 
-	" Use tab for trigger completion with characters ahead and navigate.
-	" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-	" other plugin before putting this into your config.
 	inoremap <silent><expr> <TAB>
-		\ pumvisible() ? "\<C-n>" :
-		\ <SID>check_back_space() ? "\<TAB>" :
-		\ coc#refresh()
-	inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+		  \ coc#pum#visible() ? coc#pum#next(1) :
+		  \ CheckBackSpace() ? "\<Tab>" :
+		  \ coc#refresh()
+	inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-	function! s:check_back_space() abort
+	" Make <CR> to accept selected completion item or notify coc.nvim to format
+	" <C-g>u breaks current undo, please make your own choice.
+	inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+								  \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+	function! CheckBackSpace() abort
 		let col = col('.') - 1
 		return !col || getline('.')[col - 1] =~# '\s'
 	endfunction
 
 	" Use <c-space> to trigger completion.
-	inoremap <silent><expr> <c-space> coc#refresh()
-
-	" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-	" position. Coc only does snippet and additional edit on confirm.
-	if exists('*complete_info')
-		" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-		" Use Enter to choose the first item in the popup menu
-		inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" :
-		    \ pumvisible() ? "\<C-y>" :
-		    \ <SID>check_back_space() ? "\<CR>" :
-		    \ "\<C-g>u\<CR>"
-	els
-		imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+	if has('nvim')
+		inoremap <silent><expr> <c-space> coc#refresh()
+	else
+		inoremap <silent><expr> <c-@> coc#refresh()
 	endif
 
 	" Use <leader>j and <leader>k to navigate diagnostics
@@ -495,8 +527,12 @@ augroup CocHighlights
 augroup END
 call CocHighlights()
 
-if has_key(plugs, "coc.nvim")
+if has_key(plugs, "coc.nvim") && !exists('g:vscode')
 	call SetupCoc()
+endif
+
+if exists('g:vscode')
+	nnoremap O ko
 endif
 
 
@@ -536,3 +572,26 @@ endfunction
 ""
 command! ToggleOnly call ToggleOnly()
 nnoremap <leader>z :ToggleOnly<cr>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" romgrk / barbar.nvim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" NOTE: If barbar's option dict isn't created yet, create it
+let bufferline = get(g:, 'bufferline', {})
+" Enable/disable close button
+let bufferline.closable = v:false
+" Move to previous/next
+nnoremap <silent>    <A-q> <Cmd>BufferPrevious<CR>
+nnoremap <silent>    <A-e> <Cmd>BufferNext<CR>
+" Close buffer
+nnoremap <silent>    <A-w> <Cmd>BufferClose<CR>
+" Close commands
+"                          :BufferCloseAllButCurrent
+"                          :BufferCloseAllButPinned
+"                          :BufferCloseAllButCurrentOrPinned
+"                          :BufferCloseBuffersLeft
+"                          :BufferCloseBuffersRight
+" Magic buffer-picking mode
+nnoremap <silent> <A-l>    <Cmd>BufferPick<CR>
+" Pin/unpin buffer
+nnoremap <silent>    <A-p> <Cmd>BufferPin<CR>

@@ -20,6 +20,17 @@
 ## /etc/zsh/zshrc was installed as ~/.zshrc.global and
 ## ~/.zshrc.local does not exist yet.
 
+function use_my_cargo() {
+	export OLD_PATH=$PATH
+	export PATH=/home/cjr/Developing/cargo/target/release:$PATH
+	export RUSTC=/home/cjr/.rustup/toolchains/nightly-2022-10-01-x86_64-unknown-linux-gnu/bin/rustc
+}
+
+function unuse_my_cargo() {
+	export PATH=$OLD_PATH
+	unset RUSTC
+}
+
 export GPG_TTY=$TTY
 export SSLKEYLOGFILE=/tmp/sslkeylogout.log
 
@@ -35,6 +46,7 @@ alias pbpaste='xclip -selection clipboard -o'
 alias open='xdg-open'
 alias ghci='LANG=C.UTF-8 ghci'
 alias ghcid='LANG=C.UTF-8 ghcid'
+alias vim='nvim'
 
 if [ -r ~/.zshrc -a -r ~/.zshrc.global -a ! -r ~/.zshrc.local ] ; then
     printf '-!-\n'

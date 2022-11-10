@@ -203,5 +203,6 @@
             ],
             "env": {}
         }
-    ]
+    ],
+    "rust-analyzer.inlayHints.typeHints.enable": false
 }
