@@ -2,13 +2,14 @@ import XMonad
 import XMonad.Config.Desktop (desktopConfig)
 import XMonad.Util.SpawnOnce (spawnOnce)
 
-import XMonad.Hooks.EwmhDesktops (ewmh, fullscreenEventHook)
+import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
 
 import XMonad.Hooks.ManageDocks (avoidStruts, manageDocks)
 import XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, doFloatDep, isFullscreen)
 
 import qualified Data.Map as M
 import Data.Monoid (All(..))
+import Text.Printf (printf)
 
 import qualified XMonad.StackSet as W
 
@@ -53,7 +54,7 @@ myLauncher = "rofi -modi drun,run -show drun -font \"DejaVu Sans 16\" -show-icon
 appDock, appFloat, appCenter, appIgnore, appIM :: [String]
 appDock     = ["Polybar"] -- use "Polybar" instead "polybar" because somehow only the former works
 appFloat    = ["Dia", "Gimp", "krita"]
-appCenter   = ["feh", "MPlayer", "Zenity", "Pavucontrol", "Org.gnome.Nautilus", "Eog", "idaq64.exe"]
+appCenter   = ["pinentry-qt", "feh", "MPlayer", "Zenity", "Pavucontrol", "org.gnome.Nautilus", "Eog", "idaq64.exe"]
 appIgnore   = []
 appIM       = ["dingtalk", "wechat.exe"]
 appPreview  = "Org.gnome.NautilusPreviewer"
@@ -71,6 +72,16 @@ checkDialog = ask >>= \w -> liftX $ do
     case mbr of
         Just [r] -> return $ fromIntegral r == dialog
         _        -> return False
+
+-- checkGnomeNautilus :: Query Bool
+-- checkGnomeNautilus = do
+--     name <- stringProperty "_NET_WM_NAME"
+--     aname <- appName
+--     cname <- className
+--     let msg = printf "_NET_WM_NAME: %s; WM_CLASS: %s, %s\n" name aname cname
+--     io $ appendFile "/tmp/xmonad.log" msg
+--     return $ cname == "TelegramDesktop"
+
 
 doLower :: ManageHook
 doLower = ask >>= \w -> liftX $ withDisplay $ \dpy -> io (lowerWindow dpy w) >> mempty
@@ -189,7 +200,7 @@ myScratchpadManageHook :: ManageHook
 myScratchpadManageHook = xScratchpadsManageHook scratchpads
 
 myManageHook :: ManageHook
-myManageHook = myManageHook' <+> myScratchpadManageHook <+> manageDocks
+myManageHook = myScratchpadManageHook <+> manageDocks <+> myManageHook'
 
 myHandleEventHook :: Event -> X All
 myHandleEventHook e = handle e >> return (All True)
@@ -198,6 +209,7 @@ myHandleEventHook e = handle e >> return (All True)
 -- extend this to handle low-level XEvent
 handle :: Event -> X ()
 handle = const $ return ()
+-- handle e = io $ appendFile "/tmp/xmonad.log" (show e ++ "\n")
 
 -- remember to make the order correct to avoid unexpected behaviors
 -- refocusLastLayoutHook must be executed later than mkToggle
@@ -206,7 +218,7 @@ myLayoutHook =
     refocusLastLayoutHook . minimize . boringWindows . avoidStruts . mkToggle (single FULL)
 
 main = do
-    xmonad $ ewmh desktopConfig
+    xmonad $ ewmhFullscreen . ewmh $ desktopConfig
         { modMask           = myModMask
         , terminal          = myTerminal
         , borderWidth       = 2
@@ -217,6 +229,6 @@ main = do
         , mouseBindings     = \c -> myMouseBindings c `M.union` mouseBindings def c
         , startupHook       = myStartupHook <+> startupHook desktopConfig
         , manageHook        = myManageHook <+> manageHook desktopConfig
-        , handleEventHook   = myHandleEventHook <+> fullscreenEventHook <+> handleEventHook desktopConfig
+        , handleEventHook   = myHandleEventHook <+> handleEventHook desktopConfig
         , layoutHook        = myLayoutHook . layoutHook $ desktopConfig
         }

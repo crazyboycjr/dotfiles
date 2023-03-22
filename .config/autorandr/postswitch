@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
+notify-send -i display -t 3000 "Display Profile      " "$AUTORANDR_CURRENT_PROFILE"
+
 feh --bg-fill ~/.xmonad/background.jpg
-~/.config/polybar/launch.sh
+setsid ~/.config/polybar/launch.sh
