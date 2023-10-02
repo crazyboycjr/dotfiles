@@ -1,6 +1,8 @@
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS="@im=fcitx"
+export SDL_IM_MODULE=fcitx
+export GLFW_IM_MODULE=ibus
 export PICTURES=~/Pictures
 syndaemon -i 0.5 -t -K -R -d
 synclient TapButton1=0 TapButton2=0 TapButton3=0

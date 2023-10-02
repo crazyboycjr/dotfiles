@@ -67,10 +67,10 @@ hp-systray --force-startup &
 # here xmonad is kept as default
 session=${1:-xmonad}
 case $session in
-    xmonad            ) dbus-launch --exit-with-session xmonad;;
-    i3|i3wm           ) dbus-launch --exit-with-session i3;;
-    kde               ) dbus-launch --exit-with-session startplasma-x11;;
-    xfce|xfce4        ) dbus-launch --exit-with-session startxfce4;;
+    xmonad            ) exec xmonad;;
+    i3|i3wm           ) exec i3;;
+    kde               ) exec startplasma-x11;;
+    xfce|xfce4        ) exec startxfce4;;
     # No known session, try to run it as command
-    *                 ) $*;;
+    *                 ) exec $*;;
 esac
