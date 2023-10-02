@@ -30,7 +30,8 @@ fi
 # gpu='nvidia' # {nvidia, intel}
 # source ~/.screenlayout/${location}-${gpu}.sh
 # changed to use autorandr
-autorandr --change
+# source .screenlayout/external-seattle-studio.sh
+autorandr --change # somehow autorandr --change does not work here
 
 # set background
 feh --bg-fill ~/.xmonad/background.jpg
@@ -66,10 +67,10 @@ hp-systray --force-startup &
 # here xmonad is kept as default
 session=${1:-xmonad}
 case $session in
-    xmonad            ) exec xmonad;;
-    i3|i3wm           ) exec i3;;
-    kde               ) exec startplasma-x11;;
-    xfce|xfce4        ) exec startxfce4;;
+    xmonad            ) dbus-launch --exit-with-session xmonad;;
+    i3|i3wm           ) dbus-launch --exit-with-session i3;;
+    kde               ) dbus-launch --exit-with-session startplasma-x11;;
+    xfce|xfce4        ) dbus-launch --exit-with-session startxfce4;;
     # No known session, try to run it as command
-    *                 ) exec $1;;
+    *                 ) $*;;
 esac
