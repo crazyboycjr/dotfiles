@@ -14,7 +14,7 @@
           # tools
           cabal2nix
           stack
-          brittany
+          # brittany
           haskell-language-server
           pandoc
         ]);
@@ -31,9 +31,12 @@
           pip
           nose
           yapf
+          dataclasses-json
+          xgboost
         ]);
 
       alacritty_0_6_0 = import ./alacritty.nix;
+      tinc_latest = pkgs.callPackage ./tinc_latest { };
 
       myPackages = pkgs.buildEnv {
         name = "my-packages";
@@ -63,7 +66,8 @@
           alacritty_0_6_0
           eternal-terminal
           ubuntu_font_family source-code-pro vistafonts dejavu_fonts powerline-fonts libertinus
-          tinc_pre
+          # tinc_pre
+          tinc_latest
           rust-analyzer
           gnuplot_qt
           graphviz
@@ -71,12 +75,16 @@
           fuse
           ntfs3g
           shadowsocks-rust
+          iperf2
           # Better userland for macOS
-          coreutils diffutils findutils gnugrep gnused tree
+          coreutils diffutils findutils gnugrep gnused tree gzip
           hwloc # lstopo
           # llvmPackages_12.llvm llvmPackages_12.clang
           # latex
           texlive.combined.scheme-full
+          discord
+          mpv-unwrapped
+          rclone
           # unfree softwares
           vscode
         ];
