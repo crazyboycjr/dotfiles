@@ -4,7 +4,7 @@
     "editor.autoClosingBrackets": "never",
     "editor.autoClosingQuotes": "never",
     "workbench.colorCustomizations": {
-        "editor.selectionHighlightBackground": "#f5ce23"
+        "editor.selectionHighlightBackground": "#f5cf23f0"
     },
     "explorer.confirmDelete": false,
     "workbench.colorTheme": "Gruvbox Material Light",
@@ -12,6 +12,8 @@
     "vim.cursorStylePerMode.normal": "block",
     "vim.leader": "\\",
     "vim.hlsearch": true,
+    "vim.ignorecase": false,
+    "vim.smartcase": false,
     "vim.normalModeKeyBindingsNonRecursive": [
         {
             "before": [
@@ -49,21 +51,40 @@
                     "args": []
                 }
             ]
+        },
+        {
+            "before": [
+                "O"
+            ],
+            "commands": [
+                {
+                    "command": "editor.action.insertLineBefore",
+                    "args": []
+                },
+                {
+                    "command": "vim.remap",
+                    "args": {
+                        "after": [
+                            "i"
+                        ]
+                    }
+                }
+            ],
+            "when": "editorTextFocus"
         }
     ],
-    // Path to a Chromium or Chrome executable to run instead of the bundled Chromium.
     "markdown-pdf.executablePath": "/usr/bin/google-chrome-stable",
     "[python]": {
         "editor.tabSize": 4
     },
-    "C_Cpp.updateChannel": "Insiders",
     "[cpp]": {},
-    "C_Cpp.enhancedColorization": "Disabled",
+    "C_Cpp.enhancedColorization": "disabled",
     "[rust]": {
         "editor.tabSize": 4
     },
-    "rust-analyzer.diagnostics.disabled": [
-        "macro-error"
+    "rust-analyzer.checkOnSave.extraArgs": [
+        "--target-dir",
+        "/tmp/rust-analyzer-check-vscode"
     ],
     "editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "gruvboxMaterial.italicKeywords": true,
@@ -83,11 +104,11 @@
     },
     "editor.inlineSuggest.enabled": true,
     "github.copilot.enable": {
-        "*": true,
+        "*": false,
         "yaml": false,
         "plaintext": true,
         "markdown": false,
-		"rust": false
+        "rust": false
     },
     "jupyter.askForKernelRestart": false,
     "[latex]": {
@@ -98,7 +119,7 @@
         "editor.autoIndent": "keep"
     },
     "latex-workshop.view.pdf.viewer": "tab",
-    "latex-workshop.latex.recipe.default": "latexmk (pdflatex)",
+    "latex-workshop.latex.recipe.default": "latexmk (xelatex)",
     "latex-workshop.latex.recipes": [
         {
             "name": "make",
@@ -204,5 +225,16 @@
             ],
             "env": {}
         }
-    ]
+    ],
+    "terminal.external.linuxExec": "alacritty",
+    "editor.autoIndent": "brackets",
+    "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim",
+    "rust-analyzer.lens.references.adt.enable": true,
+    "rust-analyzer.lens.references.enumVariant.enable": true,
+    "rust-analyzer.lens.references.method.enable": true,
+    "rust-analyzer.lens.references.trait.enable": true,
+    "tabnine.experimentalAutoImports": true,
+    "jupyter.interactiveWindow.creationMode": "perFile",
+    "clangd.onConfigChanged": "restart",
+    "C_Cpp.intelliSenseEngine": "disabled"
 }
