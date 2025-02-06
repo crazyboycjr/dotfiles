@@ -3,6 +3,8 @@
     "editor.tabSize": 2,
     "editor.autoClosingBrackets": "never",
     "editor.autoClosingQuotes": "never",
+    "editor.autoIndent": "brackets",
+    "editor.inlayHints.enabled": "offUnlessPressed",
     "workbench.colorCustomizations": {
         "editor.selectionHighlightBackground": "#f5cf23f0"
     },
@@ -227,7 +229,6 @@
         }
     ],
     "terminal.external.linuxExec": "alacritty",
-    "editor.autoIndent": "brackets",
     "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim",
     "rust-analyzer.lens.references.adt.enable": true,
     "rust-analyzer.lens.references.enumVariant.enable": true,

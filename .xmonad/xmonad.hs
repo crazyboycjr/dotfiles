@@ -53,7 +53,7 @@ myLauncher = "rofi -modi drun,run -show drun -font \"DejaVu Sans 16\" -show-icon
 
 appDock, appFloat, appCenter, appIgnore, appIM :: [String]
 appDock     = ["Polybar"] -- use "Polybar" instead "polybar" because somehow only the former works
-appFloat    = ["Dia", "Gimp", "krita"]
+appFloat    = ["Dia", "Gimp", "krita", "pomatez", "smart-lock", "Smart Lock", "Smart-lock"]
 appCenter   = ["pinentry-qt", "feh", "MPlayer", "Zenity", "Pavucontrol", "org.gnome.Nautilus", "Eog", "idaq64.exe"]
 appIgnore   = []
 appIM       = ["dingtalk", "wechat.exe"]
@@ -105,6 +105,11 @@ myManageHook' = (composeAll . concat)
     , [ className =? a --> doIgnore      | a <- appIgnore ]
     , [ className =? a --> doShift "im"  | a <- appIM ]
     ]
+
+audioVolumeMute, audioVolumeUp, audioVolumeDown :: X ()
+audioVolumeMute = spawn "amixer -q set Master toggle"
+audioVolumeUp = spawn "amixer -q set Master 5%+"
+audioVolumeDown = spawn "amixer -q set Master 5%-"
 
 myKeys :: XConfig Layout -> M.Map (ButtonMask, KeySym) (X ())
 myKeys conf@XConfig { modMask = modm } = M.fromList
@@ -159,24 +164,34 @@ myKeys conf@XConfig { modMask = modm } = M.fromList
     , ((0, xF86XK_MonBrightnessDown), Bright.decrease)
     ]
 
-gestures :: M.Map [Direction2D] (Window -> X ())
+gestures, gesturesExtraLayer :: M.Map [Direction2D] (Window -> X ())
 gestures = M.fromList
     [ ([]    , focus)
-    , ([U], const $ spawn "xfce4-screenshooter --region --clipboard")
+    , ([U]   , const $ spawn "xfce4-screenshooter --region --clipboard")
     , ([D]   , \w -> focus w >> kill)
     , ([L]   , const nextWS)
     , ([R]   , const prevWS)
     , ([R, D], const $ sendMessage NextLayout)
     , ([R, U], const $ sendMessage FirstLayout)
     ]
+gesturesExtraLayer = M.fromList
+    [ ([]    , focus)
+    , ([U]   , const $ sendMessage FirstLayout)
+    , ([D]   , const $ sendMessage NextLayout)
+    , ([L]   , focus)
+    , ([R]   , focus)
+    ]
 
 myMouseBindings :: XConfig Layout -> M.Map (ButtonMask, Button) (Window -> X ())
 myMouseBindings XConfig { modMask = modm } = M.fromList
     [ ((modm, button2)                , mouseGesture gestures)
-    , ((modm, button4)                , const focusUp)
-    , ((modm, button5)                , const focusDown)
-    , ((modm .|. shiftMask, button4)  , const swapUp)
-    , ((modm .|. shiftMask, button5)  , const swapDown)
+    , ((modm .|. shiftMask, button2)  , mouseGesture gesturesExtraLayer)
+    -- , ((modm, button4)                , const focusUp)
+    -- , ((modm, button5)                , const focusDown)
+    , ((modm, button4)                , const swapUp)
+    , ((modm, button5)                , const swapDown)
+    , ((modm .|. shiftMask, button4)  , const audioVolumeUp)
+    , ((modm .|. shiftMask, button5)  , const audioVolumeDown)
     , ((modm .|. controlMask, button4), const $ sendMessage Shrink)
     , ((modm .|. controlMask, button5), const $ sendMessage Expand)
     ]
