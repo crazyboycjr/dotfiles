@@ -1,0 +1,10 @@
+[Unit]
+Description=Run %i every hour
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=%i.service
+
+[Install]
+WantedBy=timers.target
