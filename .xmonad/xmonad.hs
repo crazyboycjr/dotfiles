@@ -53,11 +53,12 @@ myLauncher = "rofi -modi drun,run -show drun -font \"DejaVu Sans 16\" -show-icon
 
 appDock, appFloat, appCenter, appIgnore, appIM :: [String]
 appDock     = ["Polybar"] -- use "Polybar" instead "polybar" because somehow only the former works
-appFloat    = ["Dia", "Gimp", "krita", "pomatez", "smart-lock", "Smart Lock", "Smart-lock"]
+appFloat    = ["Dia", "Gimp", "krita", "pomatez"]
 appCenter   = ["pinentry-qt", "feh", "MPlayer", "Zenity", "Pavucontrol", "org.gnome.Nautilus", "Eog", "idaq64.exe"]
 appIgnore   = []
 appIM       = ["dingtalk", "wechat.exe"]
 appPreview  = "Org.gnome.NautilusPreviewer"
+appFloatTitle = ["Advanced Search"] -- Zotero search window, matches _NET_WM_NAME
 
 -- | Helper to read a property
 -- getProp :: Atom -> Window -> X (Maybe [CLong])
@@ -101,6 +102,7 @@ myManageHook' = (composeAll . concat)
     , [ className =? appPreview --> doPreview ]
     , [ className =? a --> doLower       | a <- appDock ]
     , [ className =? a --> doFloat       | a <- appFloat ]
+    , [ title =? a --> doFloat | a <- appFloatTitle]
     , [ className =? a --> doCenterFloat | a <- appCenter ]
     , [ className =? a --> doIgnore      | a <- appIgnore ]
     , [ className =? a --> doShift "im"  | a <- appIM ]
@@ -131,6 +133,10 @@ myKeys conf@XConfig { modMask = modm } = M.fromList
     , ((modm, xK_m), focusMaster)
     , ((modm .|. shiftMask, xK_j), swapDown)
     , ((modm .|. shiftMask, xK_k), swapUp)
+
+    -- DDC/CI
+    , ((modm .|. shiftMask, xK_i), spawn "~/.xmonad/switch-kvm-win11.sh")
+    , ((modm .|. shiftMask, xK_o), spawn "~/.xmonad/switch-kvm-macos.sh")
 
     -- Screenshot
     , ((0, xK_Print), spawn "xfce4-screenshooter")
@@ -186,8 +192,6 @@ myMouseBindings :: XConfig Layout -> M.Map (ButtonMask, Button) (Window -> X ())
 myMouseBindings XConfig { modMask = modm } = M.fromList
     [ ((modm, button2)                , mouseGesture gestures)
     , ((modm .|. shiftMask, button2)  , mouseGesture gesturesExtraLayer)
-    -- , ((modm, button4)                , const focusUp)
-    -- , ((modm, button5)                , const focusDown)
     , ((modm, button4)                , const swapUp)
     , ((modm, button5)                , const swapDown)
     , ((modm .|. shiftMask, button4)  , const audioVolumeUp)
@@ -226,7 +230,7 @@ handle :: Event -> X ()
 handle = const $ return ()
 -- handle e = io $ appendFile "/tmp/xmonad.log" (show e ++ "\n")
 
--- remember to make the order correct to avoid unexpected behaviors
+-- remember to make it the correct order to avoid unexpected behaviors
 -- refocusLastLayoutHook must be executed later than mkToggle
 -- minimize and boringWindows must be executed later than avoidStruts
 myLayoutHook =
