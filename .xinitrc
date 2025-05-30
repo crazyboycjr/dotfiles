@@ -1,6 +1,8 @@
 #!/bin/sh
 
 [[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
+[[ -f /etc/xprofile ]] && . /etc/xprofile
+[[ -f ~/.xprofile ]] && . ~/.xprofile
 
 # start mousemap
 # /usr/local/bin/mousemap --daemonize
@@ -8,6 +10,8 @@
 
 # set keyboard repeat <delay> <rate>
 xset r rate 200 36
+# disable screen saver blank screen
+xset s noblank
 
 # map control keys to caps lock
 # setxkbmap -option "ctrl:nocaps"
@@ -31,7 +35,15 @@ fi
 # source ~/.screenlayout/${location}-${gpu}.sh
 # changed to use autorandr
 # source .screenlayout/external-seattle-studio.sh
-autorandr --change # somehow autorandr --change does not work here
+# autorandr --change philips # somehow autorandr --change does not work here
+autorandr --change
+# autorandr --change philips2
+# autorandr --change mobile-nvidia
+
+# mitigate the issue of screen not updating itself when using feh with xcompmgr
+hsetroot -solid "#000066"
+# start compositor
+xcompmgr &
 
 # set background
 feh --bg-fill ~/.xmonad/background.jpg
@@ -42,9 +54,6 @@ feh --bg-fill ~/.xmonad/background.jpg
 gnome-keyring-daemon --daemonize --login &
 # /usr/lib/gnome-shell-calendar-server &
 # gnome-calendar --gapplication-service &
-
-# start compositor
-xcompmgr &
 
 # start clipboard manager
 xfce4-clipman &
@@ -61,7 +70,6 @@ blueman-applet &
 dropbox &
 optimus-manager-qt &
 fcitx5 &
-# hplip
 hp-systray --force-startup &
 
 # here xmonad is kept as default

@@ -1,0 +1,1 @@
+ACTION=="change", SUBSYSTEM=="drm", RUN+="/bin/bash -c 'export DISPLAY=:1; export XAUTHORITY=/home/cjr/.Xauthority; sudo -u cjr /usr/bin/xrandr --auto'"

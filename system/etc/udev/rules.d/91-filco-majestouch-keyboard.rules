@@ -1,1 +1,2 @@
 KERNEL=="event[0-9]*", SUBSYSTEM=="input", ATTRS{name}=="Majestouch Convertible 2", SYMLINK+="my_keyboard/filco_majestouch", MODE="640"
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", ATTRS{name}=="SONiX USB Keyboard", SYMLINK+="my_keyboard/filco_majestouch_hakua", MODE="640"
