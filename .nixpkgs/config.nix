@@ -1,4 +1,5 @@
 {
+  allowUnfree = true;
   packageOverrides = super:
     let pkgs = super.pkgs;
     in rec {
@@ -14,8 +15,10 @@
           cabal-install
           cabal2nix
           stack
-          brittany
+          # brittany
           haskell-language-server
+          # compile ghc
+          happy alex
         ]);
 
       myPackages = pkgs.buildEnv {
@@ -23,6 +26,11 @@
         paths = with pkgs; [
           myHaskellEnv
           ghcid
+
+          # for rdma development, it depends on pandoc
+          # rdma-core
+          elan
+          code-cursor
         ];
       };
     };

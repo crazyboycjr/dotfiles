@@ -9,4 +9,6 @@ synclient TapButton1=0 TapButton2=0 TapButton3=0
 synclient ClickButton1=1 ClickButton2=3 ClickButton3=2
 synclient VertScrollDelta=-111 HorizScrollDelta=-111
 
+export XDG_DATA_DIRS="$HOME/.nix-profile/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+
 # if [ -e /home/cjr/.nix-profile/etc/profile.d/nix.sh ]; then . /home/cjr/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
