@@ -1,0 +1,245 @@
+{
+    "terminal.integrated.scrollback": 10000000,
+    "editor.tabSize": 2,
+    "editor.autoClosingBrackets": "never",
+    "editor.autoClosingQuotes": "never",
+    "editor.autoIndent": "advanced",
+    "editor.inlayHints.enabled": "offUnlessPressed",
+    "workbench.colorCustomizations": {
+        "editor.selectionHighlightBackground": "#f5cf23f0"
+    },
+    "explorer.confirmDelete": false,
+    "workbench.colorTheme": "Gruvbox Material Light",
+    "vim.cursorStylePerMode.insert": "block",
+    "vim.cursorStylePerMode.normal": "block",
+    "vim.leader": "\\",
+    "vim.hlsearch": true,
+    "vim.ignorecase": false,
+    "vim.smartcase": false,
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "<leader>",
+                "<leader>"
+            ],
+            "commands": [
+                ":w"
+            ]
+        },
+        {
+            "before": [
+                "Z",
+                "Z"
+            ],
+            "commands": [
+                {
+                    "command": "workbench.action.files.save",
+                    "args": []
+                },
+                {
+                    "command": "workbench.action.closeActiveEditor",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "=",
+                "="
+            ],
+            "commands": [
+                {
+                    "command": "editor.action.formatDocument",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "O"
+            ],
+            "commands": [
+                {
+                    "command": "editor.action.insertLineBefore",
+                    "args": []
+                },
+                {
+                    "command": "vim.remap",
+                    "args": {
+                        "after": [
+                            "i"
+                        ]
+                    }
+                }
+            ],
+            "when": "editorTextFocus"
+        }
+    ],
+    "markdown-pdf.executablePath": "/usr/bin/google-chrome-stable",
+    "[python]": {
+        "editor.tabSize": 4
+    },
+    "[cpp]": {},
+    "C_Cpp.enhancedColorization": "disabled",
+    "[rust]": {
+        "editor.tabSize": 4
+    },
+    "rust-analyzer.cargo.targetDir": true,
+    "editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "gruvboxMaterial.italicKeywords": true,
+    "gruvboxMaterial.lightContrast": "soft",
+    "gruvboxMaterial.lightPalette": "original",
+    "gruvboxMaterial.lightWorkbench": "high-contrast",
+    "gruvboxMaterial.darkContrast": "soft",
+    "gruvboxMaterial.darkPalette": "original",
+    "haskell.formattingProvider": "brittany",
+    "editor.minimap.enabled": false,
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    },
+    "editor.inlineSuggest.enabled": true,
+    "github.copilot.enable": {
+        "*": false,
+        "yaml": false,
+        "plaintext": true,
+        "markdown": false,
+        "rust": false
+    },
+    "jupyter.askForKernelRestart": false,
+    "[latex]": {
+        "editor.fontFamily": "'Source Code Pro', 'Ubuntu Mono'",
+        "editor.fontSize": 14,
+        "editor.wordWrap": "on",
+        "editor.formatOnPaste": false,
+        "editor.autoIndent": "keep"
+    },
+    "latex-workshop.view.pdf.viewer": "tab",
+    "latex-workshop.latex.recipe.default": "latexmk (xelatex)",
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "make",
+            "tools": [
+                "make"
+            ]
+        },
+        {
+            "name": "latexmk (xelatex)",
+            "tools": [
+                "latexmk (xelatex)"
+            ]
+        },
+        {
+            "name": "latexmk (pdflatex)",
+            "tools": [
+                "latexmk (pdflatex)"
+            ]
+        }
+    ],
+    "latex-workshop.latex.tools": [
+        {
+            "name": "make",
+            "command": "make",
+            "args": []
+        },
+        {
+            "name": "latexmk (xelatex)",
+            "command": "latexmk",
+            "args": [
+                "--shell-escape",
+                "-xelatex",
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-outdir=%OUTDIR%",
+                "%DOC%"
+            ]
+        },
+        {
+            "name": "latexmk (pdflatex)",
+            "command": "latexmk",
+            "args": [
+                "--shell-escape",
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-pdf",
+                "-outdir=%OUTDIR%",
+                "%DOC%"
+            ]
+        },
+        {
+            "name": "pdflatex",
+            "command": "pdflatex",
+            "args": [
+                "--shell-escape",
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "%DOC%"
+            ]
+        },
+        {
+            "name": "latexmk",
+            "command": "latexmk",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-pdf",
+                "-outdir=%OUTDIR%",
+                "%DOC%"
+            ],
+            "env": {}
+        },
+        {
+            "name": "lualatexmk",
+            "command": "latexmk",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-lualatex",
+                "-outdir=%OUTDIR%",
+                "%DOC%"
+            ],
+            "env": {}
+        },
+        {
+            "name": "latexmk_rconly",
+            "command": "latexmk",
+            "args": [
+                "%DOC%"
+            ],
+            "env": {}
+        },
+        {
+            "name": "bibtex",
+            "command": "bibtex",
+            "args": [
+                "%DOCFILE%"
+            ],
+            "env": {}
+        }
+    ],
+    "terminal.external.linuxExec": "alacritty",
+    "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim",
+    "rust-analyzer.lens.references.adt.enable": true,
+    "rust-analyzer.lens.references.enumVariant.enable": true,
+    "rust-analyzer.lens.references.method.enable": true,
+    "rust-analyzer.lens.references.trait.enable": true,
+    "tabnine.experimentalAutoImports": true,
+    "jupyter.interactiveWindow.creationMode": "perFile",
+    "clangd.onConfigChanged": "restart",
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "cursor.cpp.disabledLanguages": [
+        "yaml",
+        "markdown"
+    ],
+    "terminal.integrated.env.linux": {
+        "ARGV0": null,
+    }
+}

@@ -24,12 +24,18 @@ function attach_usb {
 
 # transfer the keyboard
 detach_usb $VM_LINUX usb1
-attach_usb $VM_WIN11 usb1 Filco-Hakua-Keyboard
+# attach_usb $VM_WIN11 usb1 Filco-Hakua-Keyboard
+attach_usb $VM_WIN11 usb1 NiZ-plum-X87-45g
 # transfer the sound card
 detach_usb $VM_LINUX usb2
 attach_usb $VM_WIN11 usb2 SoundBlasterX4
 
-# switch to win11 on DisplayPort-1
-ddcutil --model='AW2725Q' setvcp 60 0x0f
-# ddcutil --model='DELL U2720Q' setvcp 60 0x0f
+DP1=0x0f
+HDMI1=0x11
+HDMI2=0x12
 
+# switch to win11 on HDMI2
+ddcutil --model='AW2725Q' setvcp 60 $HDMI2
+# ddcutil --model='PHL 279P1' setvcp 60 $HDMI2
+# switch to win11 on DisplayPort-1
+# ddcutil --model='DELL U2720Q' setvcp 60 $DP1
