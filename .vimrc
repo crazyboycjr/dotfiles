@@ -1,6 +1,6 @@
 if empty(glob('~/.vim/autoload/plug.vim'))
-	silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 " Specify a directory for plugins
@@ -55,20 +55,46 @@ Plug 'LnL7/vim-nix'
 
 " All of your Plugins must be added before the following line
 call plug#end()
-filetype plugin indent on	" required
+filetype plugin indent on   " required
 
 
 set tags=./tags,tags;$HOME
 if filereadable("cscope.out")
-	cs add cscope.out
+    cs add cscope.out
 elseif $CSOPE_DB != ""
-	cs add $CSOPE_DB
+    cs add $CSOPE_DB
+endif
+
+if has('autocmd')
+    au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+      \| exe "normal! g'\"" | endif
 endif
 
 "set backupdir-=.
 "set backupdir^=/tmp
 "set undodir-=.
 "set undodir^=/tmp
+
+" Put plugins and dictionaries in this dir
+let vimDir = '$HOME/.vim'
+
+if stridx(&runtimepath, expand(vimDir)) == -1
+    " vimDir is not on runtimepath, add it
+    let &runtimepath.=','.vimDir
+endif
+
+" Keep undo history across sessions by storing it in a file
+if has('persistent_undo')
+    let myUndoDir = expand(vimDir . '/undodir')
+    if has("nvim")
+        let myUndoDir = expand(vimDir . '/undodir_nvim')
+    endif
+    " Create dirs
+    call system('mkdir ' . vimDir)
+    call system('mkdir ' . myUndoDir)
+    let &undodir = myUndoDir
+    set undofile
+endif
 
 syntax on
 set nu rnu
@@ -81,13 +107,13 @@ set ts=4
 set incsearch
 set hlsearch
 set mouse=a
-set ttimeout		" time out for key codes
-set ttimeoutlen=0	" wait up to 0ms after Esc for special key
+set ttimeout        " time out for key codes
+set ttimeoutlen=0   " wait up to 0ms after Esc for special key
 set splitright
 set splitbelow
 set wildmode=longest,list
 if !has('nvim')
-	set ttymouse=sgr
+    set ttymouse=sgr
 endif
 
 autocmd filetype c,h,lex,yacc setlocal sts=8 ts=8 sw=8
@@ -108,73 +134,73 @@ autocmd filetype gitcommit setlocal spell tw=72 colorcolumn=73
 
 
 augroup autoformat_settings
-	autocmd FileType bzl AutoFormatBuffer buildifier
-	"autocmd FileType cpp,proto,javascript AutoFormatBuffer clang-format
-	autocmd FileType go AutoFormatBuffer gofmt
-	"autocmd FileType json AutoFormatBuffer js-beautify
-	"autocmd FileTYpe python AutoFormatBuffer yapf
+    autocmd FileType bzl AutoFormatBuffer buildifier
+    "autocmd FileType cpp,proto,javascript AutoFormatBuffer clang-format
+    autocmd FileType go AutoFormatBuffer gofmt
+    "autocmd FileType json AutoFormatBuffer js-beautify
+    "autocmd FileTYpe python AutoFormatBuffer yapf
 augroup END
 
 " reliative number
 augroup numbertoggle
-	autocmd!
-	autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-	autocmd BufLeave,FocusLost,InsertEnter	* set norelativenumber
+    autocmd!
+    autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+    autocmd BufLeave,FocusLost,InsertEnter  * set norelativenumber
 augroup END
 
 " set cursorline
 nnoremap <Leader>c :set cursorline!<CR>
 augroup CursorLine
-	autocmd!
-	autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-	autocmd WinLeave * setlocal nocursorline
+    autocmd!
+    autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+    autocmd WinLeave * setlocal nocursorline
 augroup END
 
 if has("nvim")
-	" nmap <F24> <S-F12>
-	" nmap <F29> <C-F5>
-	for i in range(1, 12)
-		let j = i + 12
-		let k = i + 24
-		exec "nmap <F".j."> <S-F".i.">"
-		exec "nmap <F".k."> <C-F".i.">"
-	endfor
-	" :help last-position-jump
-	autocmd BufReadPost *
-	  \ if line("'\"") >= 1 && line("'\"") <= line("$") |
-	  \   exe "normal! g`\"" |
-	  \ endif
-	if exists(':tnoremap')
-		tnoremap <Esc> <C-\><C-n>
-	endif
-	" Enter insert mode automatically when terminal open
-	autocmd TermOpen * startinsert
-	" Probably the scrollback buffer to maximum
-	set scrollback=100000
+    " nmap <F24> <S-F12>
+    " nmap <F29> <C-F5>
+    for i in range(1, 12)
+        let j = i + 12
+        let k = i + 24
+        exec "nmap <F".j."> <S-F".i.">"
+        exec "nmap <F".k."> <C-F".i.">"
+    endfor
+    " :help last-position-jump
+    autocmd BufReadPost *
+      \ if line("'\"") >= 1 && line("'\"") <= line("$") |
+      \   exe "normal! g`\"" |
+      \ endif
+    if exists(':tnoremap')
+        tnoremap <Esc> <C-\><C-n>
+    endif
+    " Enter insert mode automatically when terminal open
+    autocmd TermOpen * startinsert
+    " Probably the scrollback buffer to maximum
+    set scrollback=100000
 endif
 
 " Compile various languages
 func! DoMake()
 " This function search its super directory to find a Makefile until
 " this directory contains .git
-	exec "wa"
-	let s:name = "Makefile"
-	let vdir = "./"
-	let s:flag = 1
-	while filereadable(vdir . s:name) == 0
-		if filereadable(vdir . ".git") != 0
-			s:flag = 0
-			break
-		endif
-		let vdir = "../" . vdir
-	endwhile
-	unlet s:name
-	if s:flag == 1
-		exec "make -C " . vdir
-		exec "cw"
-	endif
-	unlet s:flag
-	unlet vdir
+    exec "wa"
+    let s:name = "Makefile"
+    let vdir = "./"
+    let s:flag = 1
+    while filereadable(vdir . s:name) == 0
+        if filereadable(vdir . ".git") != 0
+            s:flag = 0
+            break
+        endif
+        let vdir = "../" . vdir
+    endwhile
+    unlet s:name
+    if s:flag == 1
+        exec "make -C " . vdir
+        exec "cw"
+    endif
+    unlet s:flag
+    unlet vdir
 endfunc
 map <S-F5> :call DoMake()<cr>
 autocmd filetype go map <F9> :w<cr>:!go run %<cr>
@@ -207,11 +233,11 @@ autocmd filetype haskell vnoremap = :'<,'>FormatLines <cr>
 
 " Multi panel
 if !has("nvim")
-	for i in range(char2nr('a'), char2nr('z'))
-		let i = nr2char(i)
-		exec "set <M-".i.">=\<Esc>".i
-		exec "inoremap \<Esc>".i." <M-".i.">"
-	endfor
+    for i in range(char2nr('a'), char2nr('z'))
+        let i = nr2char(i)
+        exec "set <M-".i.">=\<Esc>".i
+        exec "inoremap \<Esc>".i." <M-".i.">"
+    endfor
 endif
 
 " move focus
@@ -274,20 +300,20 @@ colorscheme gruvbox
 "If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
 "(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
 function! EnableTrueColor()
-	if ($TERM != 'linux')
-		if (has("nvim"))
-			"For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
-			let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-		endif
-		"For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
-		"Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
-		" < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
-		if (has("termguicolors"))
-			set t_8f=[38;2;%lu;%lu;%lum
-			set t_8b=[48;2;%lu;%lu;%lum
-			set termguicolors
-		endif
-	endif
+    if ($TERM != 'linux')
+        if (has("nvim"))
+            "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+            let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+        endif
+        "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+        "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+        " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+        if (has("termguicolors"))
+            set t_8f=[38;2;%lu;%lu;%lum
+            set t_8b=[48;2;%lu;%lu;%lum
+            set termguicolors
+        endif
+    endif
 endfunction
 
 call EnableTrueColor()
@@ -295,34 +321,34 @@ call EnableTrueColor()
 map <S-F12> :call ToggleTransparent()<cr>
 
 function! SetTermGuiColors()
-	if (has("termguicolors"))
-		set termguicolors
-	endif
+    if (has("termguicolors"))
+        set termguicolors
+    endif
 endfunction
 
 function! SetNoTermGuiColors()
-	if (has("termguicolors"))
-		set notermguicolors
-	endif
+    if (has("termguicolors"))
+        set notermguicolors
+    endif
 endfunction
 
 let g:is_transparent = 0
 
 function! ToggleTransparent()
-	if g:is_transparent
-		set background=light
-		call SetTermGuiColors()
-		let g:is_transparent = 0
-	else
-		set background=dark
-		hi! Normal ctermbg=NONE guibg=NONE
-		"call SetNoTermGuiColors()
-		let g:is_transparent = 1
-	endif
+    if g:is_transparent
+        set background=light
+        call SetTermGuiColors()
+        let g:is_transparent = 0
+    else
+        set background=dark
+        hi! Normal ctermbg=NONE guibg=NONE
+        "call SetNoTermGuiColors()
+        let g:is_transparent = 1
+    endif
 endfunction
 
 if exists('$TMUX')
-	call ToggleTransparent()
+    call ToggleTransparent()
 endif
 
 
@@ -384,13 +410,13 @@ let g:Lf_StlColorscheme = 'powerline'
 let g:Lf_PreviewResult = {'Function':0}
 
 let g:Lf_NormalMap = {
-	\ "File":   [["<ESC>", ':exec g:Lf_py "fileExplManager.quit()"<CR>']],
-	\ "Buffer": [["<ESC>", ':exec g:Lf_py "bufExplManager.quit()"<CR>']],
-	\ "Mru":    [["<ESC>", ':exec g:Lf_py "mruExplManager.quit()"<CR>']],
-	\ "Tag":    [["<ESC>", ':exec g:Lf_py "tagExplManager.quit()"<CR>']],
-	\ "Function":    [["<ESC>", ':exec g:Lf_py "functionExplManager.quit()"<CR>']],
-	\ "Colorscheme":    [["<ESC>", ':exec g:Lf_py "colorschemeExplManager.quit()"<CR>']],
-	\ }
+    \ "File":   [["<ESC>", ':exec g:Lf_py "fileExplManager.quit()"<CR>']],
+    \ "Buffer": [["<ESC>", ':exec g:Lf_py "bufExplManager.quit()"<CR>']],
+    \ "Mru":    [["<ESC>", ':exec g:Lf_py "mruExplManager.quit()"<CR>']],
+    \ "Tag":    [["<ESC>", ':exec g:Lf_py "tagExplManager.quit()"<CR>']],
+    \ "Function":    [["<ESC>", ':exec g:Lf_py "functionExplManager.quit()"<CR>']],
+    \ "Colorscheme":    [["<ESC>", ':exec g:Lf_py "colorschemeExplManager.quit()"<CR>']],
+    \ }
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -425,7 +451,7 @@ vnoremap <leader>y :OSCYank<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:highlightedyank_highlight_duration = 250
 if !exists('##TextYankPost')
-	map y <Plug>(highlightedyank)
+    map y <Plug>(highlightedyank)
 endif
 " hi! HighlightedyankRegion cterm=reverse gui=reverse
 
@@ -433,106 +459,106 @@ endif
 " CoC
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! SetupCoc() abort
-	let g:coc_global_extensions = [ 'coc-rust-analyzer', 'coc-clangd', 'coc-highlight' ]
+    let g:coc_global_extensions = [ 'coc-rust-analyzer', 'coc-clangd', 'coc-highlight' ]
 
-	" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
-	" delays and poor user experience.
-	set updatetime=300
+    " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+    " delays and poor user experience.
+    set updatetime=300
 
-	inoremap <silent><expr> <TAB>
-		  \ coc#pum#visible() ? coc#pum#next(1) :
-		  \ CheckBackSpace() ? "\<Tab>" :
-		  \ coc#refresh()
-	inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+    inoremap <silent><expr> <TAB>
+          \ coc#pum#visible() ? coc#pum#next(1) :
+          \ CheckBackSpace() ? "\<Tab>" :
+          \ coc#refresh()
+    inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-	" Make <CR> to accept selected completion item or notify coc.nvim to format
-	" <C-g>u breaks current undo, please make your own choice.
-	inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-								  \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+    " Make <CR> to accept selected completion item or notify coc.nvim to format
+    " <C-g>u breaks current undo, please make your own choice.
+    inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                                  \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-	function! CheckBackSpace() abort
-		let col = col('.') - 1
-		return !col || getline('.')[col - 1] =~# '\s'
-	endfunction
+    function! CheckBackSpace() abort
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1] =~# '\s'
+    endfunction
 
-	" Use <c-space> to trigger completion.
-	if has('nvim')
-		inoremap <silent><expr> <c-space> coc#refresh()
-	else
-		inoremap <silent><expr> <c-@> coc#refresh()
-	endif
+    " Use <c-space> to trigger completion.
+    if has('nvim')
+        inoremap <silent><expr> <c-space> coc#refresh()
+    else
+        inoremap <silent><expr> <c-@> coc#refresh()
+    endif
 
-	" Use <leader>j and <leader>k to navigate diagnostics
-	nmap <silent> <leader>j <Plug>(coc-diagnostic-next)
-	nmap <silent> <leader>k <Plug>(coc-diagnostic-prev)
+    " Use <leader>j and <leader>k to navigate diagnostics
+    nmap <silent> <leader>j <Plug>(coc-diagnostic-next)
+    nmap <silent> <leader>k <Plug>(coc-diagnostic-prev)
 
-	" GoTo code navigation.
-	nmap <silent> gd <Plug>(coc-definition)
-	nmap <silent> gs :sp<CR><Plug>(coc-definition)
-	nmap <silent> gv :vsp<CR><Plug>(coc-definition)
-	nmap <silent> gy <Plug>(coc-type-definition)
-	nmap <silent> gi <Plug>(coc-implementation)
-	nmap <silent> gr <Plug>(coc-references)
+    " GoTo code navigation.
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gs :sp<CR><Plug>(coc-definition)
+    nmap <silent> gv :vsp<CR><Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)
 
-	" Use K to show documentation in preview window.
-	noremap <silent> K :call <SID>show_documentation()<CR>
-	"vnoremap <silent> K :call <SID>show_documentation()<CR>
+    " Use K to show documentation in preview window.
+    noremap <silent> K :call <SID>show_documentation()<CR>
+    "vnoremap <silent> K :call <SID>show_documentation()<CR>
 
-	function! s:show_documentation()
-		if (index(['vim','help'], &filetype) >= 0)
-			execute 'h '.expand('<cword>')
-		else
-			call CocAction('doHover')
-		endif
-	endfunction
+    function! s:show_documentation()
+        if (index(['vim','help'], &filetype) >= 0)
+            execute 'h '.expand('<cword>')
+        else
+            call CocAction('doHover')
+        endif
+    endfunction
 
-	function! Highlight() abort
-		call CocActionAsync('highlight')
-	endfunction
+    function! Highlight() abort
+        call CocActionAsync('highlight')
+    endfunction
 
-	" Highlight the symbol and its references when holding the cursor.
-	augroup CursorHoldHighlight
-		autocmd!
-		autocmd CursorHold * call Highlight()
-	augroup END
+    " Highlight the symbol and its references when holding the cursor.
+    augroup CursorHoldHighlight
+        autocmd!
+        autocmd CursorHold * call Highlight()
+    augroup END
 
-	" Remap for rename current word
-	nmap <leader>rn <Plug>(coc-rename)
+    " Remap for rename current word
+    nmap <leader>rn <Plug>(coc-rename)
 
-	" Formatting selected code.
-	xmap <leader>f <Plug>(coc-format-selected)
-	nmap <leader>f <Plug>(coc-format-selected)
+    " Formatting selected code.
+    xmap <leader>f <Plug>(coc-format-selected)
+    nmap <leader>f <Plug>(coc-format-selected)
 endfunction
 
 " This below prevents diagnostic style disappearing after switching
 " colorscheme
 function! CocHighlights() abort
-	highlight link CocErrorSign GruvboxRed
-	highlight link CocWarningSign GruvboxYello
-	highlight link CocInfoSign GruvboxBlue
-	highlight link CocHintSign GruvboxGreen
-	highlight CocUnderline cterm=underline gui=underline
-	highlight CocHighlightText term=bold,reverse cterm=bold ctermfg=0 ctermbg=121 gui=bold guifg=bg guibg=LightGreen
-	" use highlight! to overwrite any default
-	highlight! link CocErrorHighlight CocUnderline
-	highlight! link CocWarningHighlight CocUnderline
-	highlight! link CocInfoHighlight CocUnderline
-	highlight! link CocHintHighlight CocUnderline
-	highlight! link CocFloating Pmenu
+    highlight link CocErrorSign GruvboxRed
+    highlight link CocWarningSign GruvboxYello
+    highlight link CocInfoSign GruvboxBlue
+    highlight link CocHintSign GruvboxGreen
+    highlight CocUnderline cterm=underline gui=underline
+    highlight CocHighlightText term=bold,reverse cterm=bold ctermfg=0 ctermbg=121 gui=bold guifg=bg guibg=LightGreen
+    " use highlight! to overwrite any default
+    highlight! link CocErrorHighlight CocUnderline
+    highlight! link CocWarningHighlight CocUnderline
+    highlight! link CocInfoHighlight CocUnderline
+    highlight! link CocHintHighlight CocUnderline
+    highlight! link CocFloating Pmenu
 endfunction
 
 augroup CocHighlights
-	autocmd!
-	autocmd ColorScheme * call CocHighlights()
+    autocmd!
+    autocmd ColorScheme * call CocHighlights()
 augroup END
 call CocHighlights()
 
 if has_key(plugs, "coc.nvim") && !exists('g:vscode')
-	call SetupCoc()
+    call SetupCoc()
 endif
 
 if exists('g:vscode')
-	nnoremap O ko
+    nnoremap O ko
 endif
 
 
@@ -546,25 +572,25 @@ endif
 " opened in a new tab page.
 ""
 function! ToggleOnly()
-	if winnr("$") > 1
-	" There are more than one window in this tab
-		if exists("b:maximized_window_id")
-			call win_gotoid(b:maximized_window_id)
-		else
-			let b:origin_window_id = win_getid()
-			tab sp
-			let b:maximized_window_id = win_getid()
-		endif
-	else
-	" This is the only window in this tab
-		if exists("b:origin_window_id")
-			let l:origin_window_id = b:origin_window_id
-			tabclose
-			call win_gotoid(l:origin_window_id)
-			unlet b:maximized_window_id
-			unlet b:origin_window_id
-		endif
-	endif
+    if winnr("$") > 1
+    " There are more than one window in this tab
+        if exists("b:maximized_window_id")
+            call win_gotoid(b:maximized_window_id)
+        else
+            let b:origin_window_id = win_getid()
+            tab sp
+            let b:maximized_window_id = win_getid()
+        endif
+    else
+    " This is the only window in this tab
+        if exists("b:origin_window_id")
+            let l:origin_window_id = b:origin_window_id
+            tabclose
+            call win_gotoid(l:origin_window_id)
+            unlet b:maximized_window_id
+            unlet b:origin_window_id
+        endif
+    endif
 endfunction
 
 ""
@@ -592,6 +618,6 @@ nnoremap <silent>    <A-w> <Cmd>BufferClose<CR>
 "                          :BufferCloseBuffersLeft
 "                          :BufferCloseBuffersRight
 " Magic buffer-picking mode
-nnoremap <silent> <A-l>    <Cmd>BufferPick<CR>
+nnoremap <silent> <A-l> <Cmd>BufferPick<CR>
 " Pin/unpin buffer
-nnoremap <silent>    <A-p> <Cmd>BufferPin<CR>
+nnoremap <silent> <A-p> <Cmd>BufferPin<CR>
