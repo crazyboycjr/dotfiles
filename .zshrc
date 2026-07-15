@@ -30,7 +30,13 @@ export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$HOME/cross/bin
 export PATH=$PATH:$HOME/Developing/rdma-core/build/bin
 export PATH=$PATH:/opt/apache-spark/bin
+export PATH=$HOME/.cargo/bin:$PATH
 export SYSTEMD_EDITOR=vim
+export JAVA_HOME=/opt/android-studio/jbr
+export ANDROID_HOME="$HOME/Android/Sdk"
+export NDK_HOME="$ANDROID_HOME/ndk/26.2.11394342"
+
+. $HOME/export-esp.sh
 
 alias sshhome='ssh `drill @tsinghua-server home.us A | sed -n "s/^home.us.*A\t\(.*\)/\1/p"`'
 #alias sshhome='ssh `python2 /home/cjr/Developing/autoconnect/ask_ip.py | head -n 1`'
@@ -44,6 +50,8 @@ alias open='xdg-open'
 alias ghci='LANG=C.UTF-8 ghci'
 alias ghcid='LANG=C.UTF-8 ghcid'
 alias vim='nvim'
+unfunction zed
+alias zed=zeditor
 
 if [ -r ~/.zshrc -a -r ~/.zshrc.global -a ! -r ~/.zshrc.local ] ; then
     printf '-!-\n'
@@ -74,6 +82,11 @@ fi
 autoload -U +X compinit && compinit
 autoload -U +X bashcompinit && bashcompinit
 eval "$(stack --bash-completion-script stack)"
+
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+  PROMPT='%n@%m:%~%# '
+  RPROMPT=''
+fi
 
 ## Settings for umask
 #if (( EUID == 0 )); then
@@ -379,3 +392,12 @@ eval "$(stack --bash-completion-script stack)"
 #vimhelp ()    { vim -c "help $1" -c on -c "au! VimEnter *" }
 
 ## END OF FILE #################################################################
+
+
+# BEGIN opam configuration
+# This is useful if you're using opam as it adds:
+#   - the correct directories to the PATH
+#   - auto-completion for the opam binary
+# This section can be safely removed at any time if needed.
+[[ ! -r '/home/cjr/.opam/opam-init/init.zsh' ]] || source '/home/cjr/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
+# END opam configuration
