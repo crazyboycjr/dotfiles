@@ -241,5 +241,6 @@
     ],
     "terminal.integrated.env.linux": {
         "ARGV0": null,
-    }
+    },
+    "window.autoDetectColorScheme": false
 }

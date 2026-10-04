@@ -3,7 +3,7 @@
     "editor.tabSize": 2,
     "editor.autoClosingBrackets": "never",
     "editor.autoClosingQuotes": "never",
-    "editor.autoIndent": "brackets",
+    "editor.autoIndent": "advanced",
     "editor.inlayHints.enabled": "offUnlessPressed",
     "workbench.colorCustomizations": {
         "editor.selectionHighlightBackground": "#f5cf23f0"
@@ -67,7 +67,7 @@
                     "command": "vim.remap",
                     "args": {
                         "after": [
-                            "i"
+                            "i",
                         ]
                     }
                 }

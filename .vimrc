@@ -21,7 +21,7 @@ Plug 'skywind3000/asyncrun.vim'
 "Plug 'w0rp/ale'
 Plug 'Yggdroot/LeaderF'
 Plug 'machakann/vim-highlightedyank'
-Plug 'ojroques/vim-oscyank'
+Plug 'ojroques/vim-oscyank', { 'branch': 'main' }
 
 " Google vim-codefmt
 Plug 'google/vim-maktaba'
@@ -49,6 +49,9 @@ Plug 'rebelot/kanagawa.nvim'
 
 " Nix
 Plug 'LnL7/vim-nix'
+
+"Plug 'romgrk/barbar.nvim'
+"Plug 'kyazdani42/nvim-web-devicons'
 
 " All of your Plugins must be added before the following line
 call plug#end()
@@ -439,32 +442,46 @@ function! SetupCoc() abort
 	" Use tab for trigger completion with characters ahead and navigate.
 	" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 	" other plugin before putting this into your config.
+	" inoremap <silent><expr> <TAB>
+	" 	\ pumvisible() ? "\<C-n>" :
+	" 	\ <SID>check_back_space() ? "\<TAB>" :
+	" 	\ coc#refresh()
+	" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 	inoremap <silent><expr> <TAB>
-		\ pumvisible() ? "\<C-n>" :
-		\ <SID>check_back_space() ? "\<TAB>" :
+		\ coc#pum#visible() ? coc#pum#next(1) :
+		\ CheckBackSpace() ? "\<Tab>" :
 		\ coc#refresh()
-	inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+	inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-	function! s:check_back_space() abort
+	" Make <CR> accept selected completion item or notify coc.nvim to format
+	" <C-g>u breaks current undo, please make your own choice
+	inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+									\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+	function! CheckBackSpace() abort
 		let col = col('.') - 1
 		return !col || getline('.')[col - 1] =~# '\s'
 	endfunction
 
 	" Use <c-space> to trigger completion.
-	inoremap <silent><expr> <c-space> coc#refresh()
+	if has('nvim')
+		inoremap <silent><expr> <c-space> coc#refresh()
+	else
+		inoremap <silent><expr> <c-@> coc#refresh()
+	endif
 
 	" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
 	" position. Coc only does snippet and additional edit on confirm.
-	if exists('*complete_info')
-		" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-		" Use Enter to choose the first item in the popup menu
-		inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" :
-		    \ pumvisible() ? "\<C-y>" :
-		    \ <SID>check_back_space() ? "\<CR>" :
-		    \ "\<C-g>u\<CR>"
-	els
-		imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-	endif
+	" if exists('*complete_info')
+	" 	" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+	" 	" Use Enter to choose the first item in the popup menu
+	" 	inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" :
+	" 	    \ pumvisible() ? "\<C-y>" :
+	" 	    \ <SID>check_back_space() ? "\<CR>" :
+	" 	    \ "\<C-g>u\<CR>"
+	" else
+	" 	imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+	" endif
 
 	" Use <leader>j and <leader>k to navigate diagnostics
 	nmap <silent> <leader>j <Plug>(coc-diagnostic-next)
@@ -576,3 +593,26 @@ endfunction
 ""
 command! ToggleOnly call ToggleOnly()
 nnoremap <leader>z :ToggleOnly<cr>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" romgrk / barbar.nvim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" NOTE: If barbar's option dict isn't created yet, create it
+let bufferline = get(g:, 'bufferline', {})
+" Enable/disable close button
+let bufferline.closable = v:false
+" Move to previous/next
+nnoremap <silent>    <A-q> <Cmd>BufferPrevious<CR>
+nnoremap <silent>    <A-e> <Cmd>BufferNext<CR>
+" Close buffer
+nnoremap <silent>    <A-w> <Cmd>BufferClose<CR>
+" Close commands
+"                          :BufferCloseAllButCurrent
+"                          :BufferCloseAllButPinned
+"                          :BufferCloseAllButCurrentOrPinned
+"                          :BufferCloseBuffersLeft
+"                          :BufferCloseBuffersRight
+" Magic buffer-picking mode
+nnoremap <silent> <A-l>    <Cmd>BufferPick<CR>
+" Pin/unpin buffer
+nnoremap <silent>    <A-p> <Cmd>BufferPin<CR>
