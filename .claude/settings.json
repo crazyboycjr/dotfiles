@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch",
+      "Agent"
+    ],
+    "defaultMode": "bypassPermissions"
+  },
+  "model": "claude-opus-5-5",
+  "effortLevel": "max",
+  "agentPushNotifEnabled": true,
+  "skipDangerousModePermissionPrompt": true
+}
