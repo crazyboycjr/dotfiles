@@ -19,7 +19,7 @@ import XMonad.Layout.MultiToggle.Instances (StdTransformers(FULL))
 import Graphics.X11.ExtraTypes.XF86
 import XMonad.Util.Brightness as Bright
 
-import XMonad.Layout.MyBoringWindows
+import XMonad.Layout.BoringWindows
     (boringWindows, focusDown, focusMaster, focusUp, swapDown, swapUp)  -- required for Scratchpads
 import XMonad.Layout.MyMinimize (minimize)   -- required for Scratchpads
 import XMonad.Util.MyExclusiveScratchpads

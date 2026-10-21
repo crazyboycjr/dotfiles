@@ -39,7 +39,7 @@ module XMonad.Actions.MyMinimize
 import XMonad
 import qualified XMonad.StackSet as W
 
-import qualified XMonad.Layout.MyBoringWindows as BW
+import qualified XMonad.Layout.BoringWindows as BW
 import qualified XMonad.Util.ExtensibleState as XS
 import XMonad.Util.Minimize
 import XMonad.Util.WindowProperties (getProp32)

@@ -24,7 +24,7 @@ import XMonad
 import qualified XMonad.StackSet as W
 import XMonad.Util.Minimize (Minimized(..))
 import XMonad.Layout.LayoutModifier
-import XMonad.Layout.MyBoringWindows as BW
+import XMonad.Layout.BoringWindows as BW
 import qualified XMonad.Util.ExtensibleState as XS
 
 -- $usage
