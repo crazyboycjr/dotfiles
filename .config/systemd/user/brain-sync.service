@@ -1,0 +1,7 @@
+[Unit]
+Description=Commit and push the brain repo
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/Developing/brain/bin/sync
