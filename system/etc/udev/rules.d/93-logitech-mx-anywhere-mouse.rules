@@ -1,0 +1,1 @@
+KERNEL=="event[0-9]*", SUBSYSTEM=="input", ATTRS{name}=="Logitech USB Receiver Mouse", SYMLINK+="my_mouse/mx-anywhere", MODE="640"

@@ -36,9 +36,10 @@ fi
 # changed to use autorandr
 # source .screenlayout/external-seattle-studio.sh
 # autorandr --change philips # somehow autorandr --change does not work here
-autorandr --change
 # autorandr --change philips2
 # autorandr --change mobile-nvidia
+autorandr --change
+xrandr --auto
 
 # mitigate the issue of screen not updating itself when using feh with xcompmgr
 hsetroot -solid "#000066"
