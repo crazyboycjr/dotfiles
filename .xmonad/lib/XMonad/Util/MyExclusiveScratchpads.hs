@@ -147,21 +147,21 @@ scratchpadAction xs n =
                                               hideOthers xs n
                                               windows W.shiftMaster
 
-                                  (w:_) -> do whenX (runQuery isExclusive w) (hideOthers xs n)
-                                              toggleWindow w
+                                  (w:_) -> do hs <- runQuery isExclusive w >>= \case
+                                                      True  -> shownOthers xs n
+                                                      False -> return []
+                                              toggleWindow hs w
   where
-    toggleWindow w = liftM2 (&&) (runQuery isMaximized w) (onCurrentScreen w) >>= \case
-      True  -> whenX (onCurrentScreen w) (minimizeWindow w)
-      False -> do windows (flip W.shiftWin w =<< W.currentTag)
-                  maximizeWindowAndFocus w
-                  -- windows W.shiftMaster -- actually no need to shiftMaster
+    toggleWindow hs w = liftM2 (&&) (runQuery isMaximized w) (onCurrentScreen w) >>= \case
+      True  -> minimizeWindows (w:hs)
+      False -> maximizeWindowAndFocusHere hs w
 
     onCurrentScreen w = withWindowSet (return . elem w . currentWindows)
 
 -- | Hide all 'ExclusiveScratchpads' on the current screen
 hideAll :: ExclusiveScratchpads  -- ^ List of exclusive scratchpads
         -> X ()
-hideAll xs = mapWithCurrentScreen q minimizeWindow
+hideAll xs = minimizeWindows =<< windowsOnCurrentScreen q
   where q = joinQueries (map query xs) <&&> isExclusive <&&> isMaximized
 
 -- | If the focused window is a scratchpad, the scratchpad gets reset to the original
@@ -183,20 +183,22 @@ resetExclusiveSp xs = withFocused $ \w -> whenX (isScratchpad xs w) $ do
 
 -- -----------------------------------------------------------------------------------
 
--- | Hide the scratchpad of the same family by name if it's on the focused workspace
+-- | Hide the scratchpads of the same family by name if they are on the focused workspace
 hideOthers :: ExclusiveScratchpads -> String -> X ()
-hideOthers xs n =
+hideOthers xs n = minimizeWindows =<< shownOthers xs n
+
+-- | The scratchpads of the same family by name that are shown on the focused workspace
+shownOthers :: ExclusiveScratchpads -> String -> X [Window]
+shownOthers xs n =
   let ys = concatMap exclusive $ filter ((n==).name) xs
       qs = map query $ filter ((`elem` ys).name) xs
       q  = joinQueries qs <&&> isExclusive <&&> isMaximized in
 
-  mapWithCurrentScreen q minimizeWindow
+  windowsOnCurrentScreen q
 
--- | Conditionally map a function on all windows of the current screen
-mapWithCurrentScreen :: Query Bool -> (Window -> X ()) -> X ()
-mapWithCurrentScreen q f = withWindowSet $ \s -> do
-  ws <- filterM (runQuery q) $ currentWindows s
-  mapM_ f ws
+-- | All windows of the current screen that satisfy a query
+windowsOnCurrentScreen :: Query Bool -> X [Window]
+windowsOnCurrentScreen q = withWindowSet $ filterM (runQuery q) . currentWindows
 
 -- | Extract all windows on the current screen from a StackSet
 currentWindows :: W.StackSet i l a sid sd -> [a]

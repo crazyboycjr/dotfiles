@@ -2,10 +2,10 @@ import XMonad
 import XMonad.Config.Desktop (desktopConfig)
 import XMonad.Util.SpawnOnce (spawnOnce)
 
-import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen, setEwmhActivateHook)
+import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
 
 import XMonad.Hooks.ManageDocks (avoidStruts, manageDocks)
-import XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, doFloatDep, isFullscreen, doFocus, isInProperty)
+import XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, doFloatDep, isFullscreen, isInProperty)
 
 import qualified Data.Map as M
 import Data.Monoid (All(..))
@@ -23,7 +23,7 @@ import XMonad.Layout.MyBoringWindows
     (boringWindows, focusDown, focusMaster, focusUp, swapDown, swapUp)  -- required for Scratchpads
 import XMonad.Layout.MyMinimize (minimize)   -- required for Scratchpads
 import XMonad.Util.MyExclusiveScratchpads
-    ( ExclusiveScratchpad(..)
+    ( ExclusiveScratchpad(XSP)
     , ExclusiveScratchpads
     , defaultFloating
     , mkXScratchpads
@@ -95,9 +95,6 @@ adaptivePreview (W.RationalRect a b w h)
 doPreview :: ManageHook
 doPreview = doFloatDep adaptivePreview
 
--- | Notification popups (xfce4-notifyd) are normal managed windows with
--- input hint False; xmonad would otherwise tile them and move the focus to
--- them while they are shown, and leave the focus somewhere odd afterwards.
 isNotification :: Query Bool
 isNotification = isInProperty "_NET_WM_WINDOW_TYPE" "_NET_WM_WINDOW_TYPE_NOTIFICATION"
 
@@ -228,28 +225,6 @@ myScratchpadManageHook = xScratchpadsManageHook scratchpads
 myManageHook :: ManageHook
 myManageHook = myScratchpadManageHook <+> manageDocks <+> myManageHook'
 
--- | A scratchpad window that is currently shown (not minimized).
-isVisibleScratchpad :: Query Bool
-isVisibleScratchpad =
-    foldr (<||>) (return False) (map query scratchpads)
-    <&&> (not <$> isInProperty "_NET_WM_STATE" "_NET_WM_STATE_HIDDEN")
-
--- | How to answer a client's _NET_ACTIVE_WINDOW request (ewmh's default is
--- 'doFocus').  Electron/Chromium apps (the Claude desktop app for one) answer
--- every FocusIn they receive with a request to activate themselves.  When a
--- scratchpad switch briefly passes the focus through such a window (the old
--- scratchpad is hidden before the new one is focused), that request reaches
--- xmonad after the new scratchpad has been focused and would pull the focus
--- back.  So: while a visible scratchpad holds the focus, ignore activation
--- requests from other windows.
-myActivateHook :: ManageHook
-myActivateHook = do
-    w <- ask
-    stealing <- liftX $ withWindowSet $ \ws -> case W.peek ws of
-        Just f | f /= w -> runQuery isVisibleScratchpad f
-        _               -> return False
-    if stealing then idHook else doFocus
-
 myHandleEventHook :: Event -> X All
 myHandleEventHook e = handle e >> return (All True)
 -- myHandleEventHook e = return (All True)
@@ -266,7 +241,7 @@ myLayoutHook =
     refocusLastLayoutHook . minimize . boringWindows . avoidStruts . mkToggle (single FULL)
 
 main = do
-    xmonad $ ewmhFullscreen . setEwmhActivateHook myActivateHook . ewmh $ desktopConfig
+    xmonad $ ewmhFullscreen . ewmh $ desktopConfig
         { modMask           = myModMask
         , terminal          = myTerminal
         , borderWidth       = 2

@@ -25,8 +25,10 @@ module XMonad.Actions.MyMinimize
   ( -- * Usage
     -- $usage
     minimizeWindow
+  , minimizeWindows
   , maximizeWindow
   , maximizeWindowAndFocus
+  , maximizeWindowAndFocusHere
   , withLastMinimized
   , withLastMinimized'
   , withFirstMinimized
@@ -44,7 +46,7 @@ import XMonad.Util.WindowProperties (getProp32)
 
 import Foreign.C.Types (CLong)
 import Control.Applicative((<$>))
-import Control.Monad (join)
+import Control.Monad (join, when)
 import Data.Maybe (fromMaybe, listToMaybe)
 import qualified Data.List as L
 import qualified Data.Map as M
@@ -95,30 +97,64 @@ modified f = XS.modified $
 
 -- | Minimize a window
 minimizeWindow :: Window -> X ()
-minimizeWindow w = withWindowSet $ \ws ->
-  whenX (modified $ M.insert w (M.lookup w $ W.floating ws)) $ do
-    setMinimized w
-    windows $ W.sink w
-    -- BW.focusDown
-    RL.toggleFocus
+minimizeWindow w = minimizeWindows [w]
 
--- | Maximize window and apply a function to maximized window and 'WindowSet'
-maximizeWindowAndChangeWSet :: (Window -> WindowSet -> WindowSet) -> Window -> X ()
-maximizeWindowAndChangeWSet f w = do
+-- | Minimize windows in one refresh. If the focused window is among them, the
+-- focus moves to the window to return to (see 'refocusTarget') before they
+-- are unmapped, so no other window ever sees the focus in between.
+minimizeWindows :: [Window] -> X ()
+minimizeWindows hs = withWindowSet $ \ws -> do
+  let hs' = filter (`elem` W.allWindows ws) hs
+  changed <- modified $ \m -> foldr (\h -> M.insert h (M.lookup h $ W.floating ws)) m hs'
+  when changed $ do
+    mapM_ setMinimized hs'
+    target <- refocusTarget ws
+    windows $ maybe id W.focusWindow target . flip (foldr W.sink) hs'
+
+-- | The window to focus once the focused window is minimized: the previously
+-- focused window of the workspace if it is still shown there, otherwise the
+-- next window below the focus that is not minimized (what 'BW.focusDown'
+-- would pick). Reads the minimized state, so call it after updating that.
+refocusTarget :: WindowSet -> X (Maybe Window)
+refocusTarget ws = case W.peek ws of
+  Nothing -> return Nothing
+  Just f -> do
+    minimized <- XS.gets minimizedStack
+    let tag = W.currentTag ws
+        usable x = x `notElem` minimized && W.findTag x ws == Just tag
+    prev <- RL.withRecentsIn tag [] (\lw _ -> return [lw])
+    return . listToMaybe . filter usable $ prev ++ below f
+  where
+    below w = case break (== w) (W.index ws) of
+      (before, _:after) -> after ++ before
+      _                 -> []
+
+-- | Maximize window and apply a function to maximized window and 'WindowSet',
+-- minimizing the windows @hs@ in the same refresh
+maximizeWindowAndChangeWSet :: [Window] -> (Window -> WindowSet -> WindowSet) -> Window -> X ()
+maximizeWindowAndChangeWSet hs f w = withWindowSet $ \ws -> do
   mrect <- XS.gets (join . M.lookup w . rectMap)
-  whenX (modified $ M.delete w) $ do
-    setNotMinimized w
-    broadcastMessage BW.UpdateBoring
-    windows $ f w . maybe id (W.float w) mrect
+  let hs' = filter (\h -> h /= w && h `elem` W.allWindows ws) hs
+  _ <- modified $ \m -> M.delete w $ foldr (\h -> M.insert h (M.lookup h $ W.floating ws)) m hs'
+  mapM_ setMinimized hs'
+  setNotMinimized w
+  broadcastMessage BW.UpdateBoring
+  windows $ f w . maybe id (W.float w) mrect . flip (foldr W.sink) hs'
 
 -- | Just maximize a window without focusing
 maximizeWindow :: Window -> X ()
-maximizeWindow = maximizeWindowAndChangeWSet $ const id
+maximizeWindow = maximizeWindowAndChangeWSet [] $ const id
 
 -- | Maximize a window and then focus it
 maximizeWindowAndFocus :: Window -> X ()
--- maximizeWindowAndFocus = maximizeWindowAndChangeWSet W.focusWindow
-maximizeWindowAndFocus = maximizeWindowAndChangeWSet swapDownUntilLastFocus
+maximizeWindowAndFocus = maximizeWindowAndChangeWSet [] swapDownUntilLastFocus
+
+-- | Bring a window to the current workspace, maximize and focus it, and
+-- minimize the windows @hs@, all in one refresh
+maximizeWindowAndFocusHere :: [Window] -> Window -> X ()
+maximizeWindowAndFocusHere hs w = do
+  cur <- gets (W.currentTag . windowset)
+  maximizeWindowAndChangeWSet hs (\x -> swapDownUntilLastFocus x . W.shiftWin cur x) w
 
 -- |
 -- This function is grabbed from StackSet module.
@@ -137,7 +173,7 @@ beforeFocus (W.Stack _ [] rs) = listToMaybe rs
 
 -- |
 -- Extract the element before the focused element of the current stack.
--- Return 'Just' that element, or 'Nothing' for an empty stack or an stack
+-- Return 'Just' that element, or 'Nothing' for an empty stack or an stack 
 -- only with a single element.
 --
 peekPrev :: W.StackSet i l a s sd -> Maybe a
