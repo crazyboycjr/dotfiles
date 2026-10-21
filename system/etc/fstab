@@ -1,20 +1,24 @@
-# /dev/nvme0n1p9
-UUID=836f8280-0e68-48d4-9bbe-1cbc8bf0f487	/         	btrfs     	rw,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,subvol=/arch	0 0
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+# /dev/zd32p2
+UUID=045ee103-d3b0-47c3-bcf9-9c6e63b01cc7       /               btrfs           rw,noatime,compress=lzo,ssd,discard=async,space_cache=v2,autodefrag,subvolid=256,subvol=/arch  0 0
 
-# /dev/nvme0n1p9
-UUID=836f8280-0e68-48d4-9bbe-1cbc8bf0f487	/home     	btrfs     	rw,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,subvol=/home	0 0
+# /dev/zd32p2
+UUID=045ee103-d3b0-47c3-bcf9-9c6e63b01cc7       /home           btrfs           rw,noatime,compress=lzo,ssd,discard=async,space_cache=v2,autodefrag,subvolid=257,subvol=/home  0 0
 
-# /dev/nvme0n1p2
-UUID=CB10-9A22      	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro	0 2
+# /dev/zd32p2
+UUID=045ee103-d3b0-47c3-bcf9-9c6e63b01cc7       /nix            btrfs           rw,noatime,compress=lzo,ssd,discard=async,space_cache=v2,autodefrag,subvolid=258,subvol=/nix   0 0
 
-# /dev/nvme0n1p9
-UUID=836f8280-0e68-48d4-9bbe-1cbc8bf0f487	/nix     	btrfs     	rw,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,subvol=/nix	0 0
+# /dev/zd32p2
+UUID=045ee103-d3b0-47c3-bcf9-9c6e63b01cc7       /var            btrfs           rw,noatime,compress=lzo,ssd,discard=async,space_cache=v2,autodefrag,subvolid=259,subvol=/var   0 0
 
-# /dev/nvme0n1p9
-UUID=836f8280-0e68-48d4-9bbe-1cbc8bf0f487	/var/cache/pacman/pkg     	btrfs     	rw,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,subvol=/pkgcache	0 0
-
-# /dev/nvme0n1p9
-#UUID=0cbe5743-194f-4413-bee3-0ea78987c947	none      	swap      	defaults  	0 0
+# /dev/zd32p1
+UUID=DAC9-F7F7          /boot           vfat            rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro   0 2
 
 # /var/lib/mysqltmp
 tmpfs   /var/lib/mysqltmp   tmpfs   rw,gid=89,uid=89,size=500M,mode=0750,noatime   0 0

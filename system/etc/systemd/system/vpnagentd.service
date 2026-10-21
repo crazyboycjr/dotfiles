@@ -1,0 +1,14 @@
+[Unit] 
+Description=Cisco AnyConnect Secure Mobility Client Agent 
+
+[Service] 
+Type=simple
+Restart=on-failure
+ExecStartPre=/opt/cisco/anyconnect/bin/load_tun.sh
+ExecStart=/opt/cisco/anyconnect/bin/vpnagentd -execv_instance
+ExecReload=/bin/kill -HUP $MAINPID 
+PIDFile=/var/run/vpnagentd.pid
+KillMode=process
+
+[Install] 
+WantedBy=multi-user.target
