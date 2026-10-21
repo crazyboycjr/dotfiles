@@ -69,6 +69,7 @@ application/wps-office.dotx=wps-office-wps.desktop;
 application/wps-office.wpss=wps-office-wps.desktop;
 application/wps-office.wpso=wps-office-wps.desktop;
 x-scheme-handler/tg=userapp-Telegram Desktop-ZBTD30.desktop;org.telegram.desktop.desktop;
+x-scheme-handler/tonsite=org.telegram.desktop.desktop;
 
 [Removed Associations]
 
@@ -112,3 +113,8 @@ x-scheme-handler/discord-719647875465871400=discord-719647875465871400.desktop
 inode/directory=org.gnome.Nautilus.desktop;
 text/plain=org.gnome.gedit.desktop;atom.desktop;gvim.desktop;Haroopad.desktop;
 inode/x-empty=org.gnome.gedit.desktop;
+x-scheme-handler/clash=clash-verge.desktop
+x-scheme-handler/tonsite=org.telegram.desktop.desktop
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+x-scheme-handler/claude=com.anthropic.Claude.desktop
+x-scheme-handler/codex=chatgpt.desktop

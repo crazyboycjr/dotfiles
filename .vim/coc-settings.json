@@ -9,12 +9,13 @@
     "coc.preferences.maxFileSize": "128KB",
     "diagnostic.virtualText": true,
     "diagnostic.virtualTextCurrentLineOnly": false,
+    "rust-analyzer.rustc.source": "discover",
     "rust-analyzer.serverPath": "/usr/bin/rust-analyzer",
     "rust-analyzer.procMacro.enable": true,
     "rust-analyzer.cargo.runBuildScripts": true,
-	"rust-analyzer.checkOnSave.extraArgs": [
-        "--target-dir", "/tmp/rust-analyzer-check"
-    ],
+    // "rust-analyzer.checkOnSave.extraArgs": [
+    //     "--target-dir", "/tmp/rust-analyzer-check"
+    // ],
     "languageserver": {
         "haskell": {
             "command": "haskell-language-server-wrapper",

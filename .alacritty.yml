@@ -619,6 +619,7 @@ key_bindings:
   #- { key: Minus,    mods: Control,                 action: DecreaseFontSize }
   - { key: N,         mods: Control|Shift,           action: SpawnNewInstance }
   - { key: F11,                                      action: ToggleFullscreen }
+  - { key: Return,    mods: Shift,                   chars:  "\n" }
 
   # (Windows only)
   #- { key: Return,   mods: Alt,           action: ToggleFullscreen }

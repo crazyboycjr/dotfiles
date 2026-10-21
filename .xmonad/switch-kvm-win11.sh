@@ -25,10 +25,11 @@ function attach_usb {
 # transfer the keyboard
 detach_usb $VM_LINUX usb1
 # attach_usb $VM_WIN11 usb1 Filco-Hakua-Keyboard
-attach_usb $VM_WIN11 usb1 NiZ-plum-X87-45g
+# attach_usb $VM_WIN11 usb1 NiZ-plum-X87-45g
+attach_usb $VM_WIN11 usb1 NiZ-plum-X87-35g
 # transfer the sound card
 detach_usb $VM_LINUX usb2
-attach_usb $VM_WIN11 usb2 SoundBlasterX4
+# attach_usb $VM_WIN11 usb2 SoundBlasterX4
 
 DP1=0x0f
 HDMI1=0x11

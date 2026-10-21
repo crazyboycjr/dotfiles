@@ -1,6 +1,6 @@
 set history save on
 set history size unlimited
-set history filename
+#set history filename
 
 set print pretty
 set print union

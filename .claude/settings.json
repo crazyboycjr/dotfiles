@@ -7,8 +7,45 @@
     ],
     "defaultMode": "bypassPermissions"
   },
-  "model": "claude-opus-5-5",
-  "effortLevel": "max",
-  "agentPushNotifEnabled": true,
-  "skipDangerousModePermissionPrompt": true
+  "model": "opus",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/cjr/Developing/brain/bin/claude-notify 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/cjr/Developing/brain/bin/claude-notify --failure 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/cjr/Developing/brain/bin/claude-notify 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  },
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  },
+  "autoMemoryDirectory": "/home/cjr/Developing/brain/.claude/memory",
+  "skipDangerousModePermissionPrompt": true,
+  "agentPushNotifEnabled": true
 }
