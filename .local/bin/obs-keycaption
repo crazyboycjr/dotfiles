@@ -1,0 +1,209 @@
+#!/usr/bin/env python3
+"""Caption modifier+wheel presses in OBS, such as "Alt + Scroll ↑ ×3".
+
+The caption is an OBS text source drawn over the screen capture, so picom's
+desktop zoom leaves it alone; an on-screen window such as screenkey's would be
+magnified with the rest of the desktop. Key and button events come from the X
+RECORD extension, which sees them even while xmonad holds the pointer.
+
+Needs OBS's WebSocket server (Tools > WebSocket Server Settings > Enable); the
+password is read from OBS's own config. The first run adds a hidden text source
+"Key caption" to the current scene, at the bottom centre; move or restyle it in
+OBS as you like.
+
+  obs-keycaption          caption until Ctrl+C
+  obs-keycaption --test   show a sample caption for three seconds
+  obs-keycaption --print  print the captions instead of sending them to OBS
+"""
+
+import argparse
+import base64
+import hashlib
+import itertools
+import json
+import os
+import queue
+import threading
+import time
+
+from websockets.exceptions import ConnectionClosed
+from websockets.sync.client import connect
+from Xlib import X, XK, display
+from Xlib.ext import record
+from Xlib.protocol import rq
+
+SOURCE = "Key caption"
+HOLD = 1.2  # seconds a caption stays after the last notch
+MODIFIERS = {
+    **dict.fromkeys((XK.XK_Control_L, XK.XK_Control_R), "Ctrl"),
+    **dict.fromkeys((XK.XK_Alt_L, XK.XK_Alt_R, XK.XK_Meta_L, XK.XK_Meta_R), "Alt"),
+    **dict.fromkeys((XK.XK_Shift_L, XK.XK_Shift_R), "Shift"),
+    **dict.fromkeys((XK.XK_Super_L, XK.XK_Super_R), "Super"),
+}
+ORDER = ("Ctrl", "Alt", "Shift", "Super")
+CONFIG = os.path.expanduser("~/.config/obs-studio/plugin_config/obs-websocket/config.json")
+
+
+def record_input(events):
+    """Put (event type, keycode or button) of every key event and button press on events."""
+    rec = display.Display()
+    ctx = rec.record_create_context(0, [record.AllClients], [{
+        "core_requests": (0, 0), "core_replies": (0, 0),
+        "ext_requests": (0, 0, 0, 0), "ext_replies": (0, 0, 0, 0),
+        "delivered_events": (0, 0),
+        "device_events": (X.KeyPress, X.ButtonPress),  # KeyPress, KeyRelease, ButtonPress
+        "errors": (0, 0), "client_started": False, "client_died": False,
+    }])
+
+    def on_reply(reply):
+        if reply.category != record.FromServer or reply.client_swapped:
+            return
+        data = reply.data
+        while data:
+            event, data = rq.EventField(None).parse_binary_value(data, rec.display, None, None)
+            events.put((event.type, event.detail))
+
+    rec.record_enable_context(ctx, on_reply)
+
+
+def sha256_b64(text):
+    return base64.b64encode(hashlib.sha256(text.encode()).digest()).decode()
+
+
+class Obs:
+    """A minimal obs-websocket 5 client: log in, then one request at a time."""
+
+    def __init__(self, url="ws://127.0.0.1:4455"):
+        try:
+            self.ws = connect(url, subprotocols=["obswebsocket.json"])
+        except OSError:
+            raise SystemExit("OBS's WebSocket server is off: enable it in OBS under "
+                             "Tools > WebSocket Server Settings.")
+        self.ids = itertools.count()
+        hello = json.loads(self.ws.recv())["d"]
+        identify = {"rpcVersion": 1, "eventSubscriptions": 0}
+        if "authentication" in hello:
+            auth = hello["authentication"]
+            with open(CONFIG) as f:
+                password = json.load(f)["server_password"]
+            secret = sha256_b64(password + auth["salt"])
+            identify["authentication"] = sha256_b64(secret + auth["challenge"])
+        self.ws.send(json.dumps({"op": 1, "d": identify}))
+        try:
+            self.ws.recv()  # Identified
+        except ConnectionClosed:
+            raise SystemExit("OBS refused the WebSocket password from its own config.")
+
+    def request(self, kind, **data):
+        rid = str(next(self.ids))
+        self.ws.send(json.dumps({"op": 6, "d": {
+            "requestType": kind, "requestId": rid, "requestData": data}}))
+        reply = {}
+        while reply.get("requestId") != rid:
+            reply = json.loads(self.ws.recv())["d"]
+        status = reply["requestStatus"]
+        if not status["result"]:
+            raise RuntimeError(f"{kind}: {status.get('comment', status['code'])}")
+        return reply.get("responseData", {})
+
+
+class Caption:
+    """The caption source in the current scene, created on first use."""
+
+    def __init__(self, obs):
+        self.obs = obs
+        program = obs.request("GetCurrentProgramScene")
+        self.scene = program.get("sceneName") or program["currentProgramSceneName"]
+        inputs = {i["inputName"] for i in obs.request("GetInputList")["inputs"]}
+        if SOURCE not in inputs:
+            video = obs.request("GetVideoSettings")
+            width, height = video["baseWidth"], video["baseHeight"]
+            self.item = obs.request(
+                "CreateInput", sceneName=self.scene, inputName=SOURCE,
+                inputKind="text_ft2_source_v2", sceneItemEnabled=False, inputSettings={
+                    "text": "Alt + Scroll ↑",
+                    "font": {"face": "JetBrains Mono", "style": "Bold",
+                             "size": round(height / 20), "flags": 1},
+                    "outline": True, "drop_shadow": True,
+                })["sceneItemId"]
+            # Anchor the bottom centre a little above the bottom edge
+            obs.request("SetSceneItemTransform", sceneName=self.scene, sceneItemId=self.item,
+                        sceneItemTransform={"alignment": 8, "positionX": width / 2,
+                                            "positionY": round(height * 0.93)})
+        else:
+            try:
+                self.item = obs.request("GetSceneItemId", sceneName=self.scene,
+                                        sourceName=SOURCE)["sceneItemId"]
+            except RuntimeError:
+                self.item = obs.request("CreateSceneItem", sceneName=self.scene,
+                                        sourceName=SOURCE, sceneItemEnabled=False)["sceneItemId"]
+        self.shown = True
+        self.hide()
+
+    def show(self, text):
+        self.obs.request("SetInputSettings", inputName=SOURCE, inputSettings={"text": text})
+        self.enable(True)
+
+    def hide(self):
+        self.enable(False)
+
+    def enable(self, on):
+        if self.shown != on:
+            self.obs.request("SetSceneItemEnabled", sceneName=self.scene,
+                             sceneItemId=self.item, sceneItemEnabled=on)
+            self.shown = on
+
+
+class Printer:
+    def show(self, text):
+        print(text, flush=True)
+
+    def hide(self):
+        pass
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    parser.add_argument("--test", action="store_true", help="show a sample caption for three seconds")
+    parser.add_argument("--print", action="store_true", help="print captions instead of using OBS")
+    args = parser.parse_args()
+    out = Printer() if args.print else Caption(Obs())
+    if args.test:
+        out.show("Alt + Scroll ↑ ×3")
+        time.sleep(3)
+        out.hide()
+        return
+
+    events = queue.SimpleQueue()
+    threading.Thread(target=record_input, args=(events,), daemon=True).start()
+    keys = display.Display()  # keycode to keysym lookups
+    held = set()  # keycodes of the modifiers that are down
+    last, count, until = None, 0, None
+    try:
+        while True:
+            timeout = None if until is None else max(0, until - time.monotonic())
+            try:
+                kind, detail = events.get(timeout=timeout)
+            except queue.Empty:
+                out.hide()
+                last, until = None, None
+                continue
+            if kind in (X.KeyPress, X.KeyRelease):
+                if keys.keycode_to_keysym(detail, 0) in MODIFIERS:
+                    (held.add if kind == X.KeyPress else held.discard)(detail)
+            elif detail in (4, 5) and held:
+                names = {MODIFIERS[keys.keycode_to_keysym(code, 0)] for code in held}
+                combo = " + ".join(m for m in ORDER if m in names)
+                combo += " + Scroll " + ("↑" if detail == 4 else "↓")
+                count = count + 1 if combo == last else 1
+                last = combo
+                out.show(combo + (f" ×{count}" if count > 1 else ""))
+                until = time.monotonic() + HOLD
+    except KeyboardInterrupt:
+        pass
+    finally:
+        out.hide()
+
+
+if __name__ == "__main__":
+    main()
