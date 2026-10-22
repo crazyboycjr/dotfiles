@@ -127,6 +127,12 @@ myKeys conf@XConfig { modMask = modm } = M.fromList
 
     , ((modm, xK_f), sendMessage $ Toggle FULL)
 
+    -- Hold the pointer while Super is down, see holdPointer
+    , ((0, xK_Super_L), holdPointer)
+    , ((altMask, xK_Super_L), holdPointer)
+    , ((0, xK_Super_R), holdPointer)
+    , ((altMask, xK_Super_R), holdPointer)
+
     -- Scratchpad
     , ((0, xK_F1), scratchpadAction scratchpads "terminal-0")
     , ((0, xK_F3), scratchpadAction scratchpads "terminal-1")
@@ -207,7 +213,32 @@ myMouseBindings XConfig { modMask = modm } = M.fromList
     , ((modm .|. controlMask, button5), const $ sendMessage Expand)
     , ((altMask, button4)             , const $ zoomScroll 1.2)
     , ((altMask, button5)             , const $ zoomScroll (1 / 1.2))
+    , ((modm .|. altMask, button4)    , const $ zoomBy 1.2)
+    , ((modm .|. altMask, button5)    , const $ zoomBy (1 / 1.2))
     ]
+
+-- | True while Super is down and xmonad holds the pointer.
+newtype PointerHeld = PointerHeld Bool
+
+instance ExtensionClass PointerHeld where
+    initialValue = PointerHeld False
+
+-- | Hold the pointer while Super is down, so a Super+Alt+scroll zoom swallows
+-- every wheel notch. A passive grab on the wheel buttons fires only on the
+-- emulated button press, after X has already handed the notch's smooth-scroll
+-- motion to the window under the pointer. Apps never get Super+mouse here
+-- anyway; they only miss hover updates while Super is down.
+holdPointer :: X ()
+holdPointer = withDisplay $ \dpy -> do
+    root <- asks theRoot
+    st <- io $ grabPointer dpy root False (buttonPressMask .|. buttonReleaseMask)
+                           grabModeAsync grabModeAsync none none currentTime
+    when (st == grabSuccess) $ XS.put (PointerHeld True)
+
+releasePointer :: X ()
+releasePointer = withDisplay $ \dpy -> do
+    io $ ungrabPointer dpy currentTime
+    XS.put (PointerHeld False)
 
 -- | True while an Alt+scroll zoom holds the pointer and keyboard.
 newtype ZoomGesture = ZoomGesture Bool
@@ -279,11 +310,13 @@ myHandleEventHook e = handle e >> return (All True)
 -- extend this to handle low-level XEvent
 handle :: Event -> X ()
 handle KeyEvent { ev_event_type = t, ev_keycode = code } = do
-    ZoomGesture held <- XS.get
-    when held $ do
-        sym <- withDisplay $ \dpy -> io $ keycodeToKeysym dpy code 0
+    sym <- withDisplay $ \dpy -> io $ keycodeToKeysym dpy code 0
+    ZoomGesture zooming <- XS.get
+    when zooming $ do
         let isAlt = sym `elem` [xK_Alt_L, xK_Alt_R]
         when ((t == keyRelease && isAlt) || (t == keyPress && not isAlt)) endZoomGesture
+    PointerHeld held <- XS.get
+    when (held && t == keyRelease && sym `elem` [xK_Super_L, xK_Super_R]) releasePointer
 handle _ = return ()
 -- handle e = io $ appendFile "/tmp/xmonad.log" (show e ++ "\n")
 
