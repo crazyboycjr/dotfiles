@@ -118,9 +118,12 @@ class Caption:
         if SOURCE not in inputs:
             video = obs.request("GetVideoSettings")
             width, height = video["baseWidth"], video["baseHeight"]
+            # Text (FreeType 2), in the newest version this OBS has (text_ft2_source_v2 in OBS 32)
+            kind = max(k for k in obs.request("GetInputKindList")["inputKinds"]
+                       if k.startswith("text_ft2_source"))
             self.item = obs.request(
                 "CreateInput", sceneName=self.scene, inputName=SOURCE,
-                inputKind="text_ft2_source_v2", sceneItemEnabled=False, inputSettings={
+                inputKind=kind, sceneItemEnabled=False, inputSettings={
                     "text": "Alt + Scroll ↑",
                     "font": {"face": "JetBrains Mono", "style": "Bold",
                              "size": round(height / 20), "flags": 1},
