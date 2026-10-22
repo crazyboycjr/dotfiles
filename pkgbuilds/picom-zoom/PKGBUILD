@@ -1,0 +1,50 @@
+# picom from the zoom branch of crazyboycjr/picom: full-desktop zoom driven
+# by the _PICOM_ZOOM root window property. Based on Arch's picom PKGBUILD.
+
+pkgname=picom-zoom
+_pkgname=picom
+pkgver=13.r0
+pkgrel=1
+pkgdesc='Lightweight compositor for X11, with full-desktop zoom'
+url='https://github.com/crazyboycjr/picom'
+arch=(x86_64)
+license=('MPL-2.0 AND MIT')
+depends=(hicolor-icon-theme libconfig libdbus libepoxy libev libgl pcre2 pixman xcb-util-image xcb-util-renderutil)
+makedepends=(git mesa meson ninja uthash)
+provides=(picom)
+conflicts=(picom)
+backup=(etc/xdg/picom.conf)
+source=("$_pkgname::git+https://github.com/crazyboycjr/picom.git#branch=zoom"
+        "fix_black_screen_with_glx_backend.patch::https://github.com/yshui/picom/commit/676196359c15bb654696b05700330685db914710.patch")
+b2sums=('SKIP'
+        '660a5b48b7b44c5b3462378fd839f6fd42aff661ec729b11ff3cdba7dd397f6fd2185bc809d0d451243d1b0d86e9ad30c568f8f6292dea0aaf096b25424c5648')
+
+pkgver() {
+  cd $_pkgname
+  printf '13.r%s.g%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+}
+
+prepare() {
+  cd $_pkgname
+  # The same GLX black-screen fix Arch applies to picom 13; it is not on next.
+  patch -Np1 -i "$srcdir/fix_black_screen_with_glx_backend.patch"
+}
+
+build() {
+  cd $_pkgname
+  arch-meson --buildtype=release -D with_docs=false build
+  ninja -C build
+}
+
+check() {
+  cd $_pkgname
+  ninja -C build test
+}
+
+package() {
+  cd $_pkgname
+  DESTDIR="$pkgdir" ninja -C build install
+  install -Dm 644 $_pkgname.sample.conf "$pkgdir/etc/xdg/picom.conf"
+  install -Dm 644 $_pkgname.sample.conf "$pkgdir/usr/share/doc/picom/picom.conf.example"
+  install -Dm 644 LICENSES/MIT "$pkgdir/usr/share/licenses/$pkgname/MIT"
+}
