@@ -66,6 +66,7 @@ xfce4-power-manager &
 gnome-screensaver &
 
 # startup programs
+systemd-cat -t relight-monitors ~/.xmonad/relight-monitors.py &
 nm-applet &
 blueman-applet &
 dropbox &
