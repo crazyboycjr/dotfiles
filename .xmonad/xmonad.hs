@@ -8,6 +8,9 @@ import XMonad.Hooks.ManageDocks (avoidStruts, manageDocks)
 import XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, doFloatDep, isFullscreen, isInProperty)
 
 import qualified Data.Map as M
+import Control.Monad (unless, when)
+import Data.Bits ((.&.))
+import qualified XMonad.Util.ExtensibleState as XS
 import Data.Monoid (All(..))
 import Text.Printf (printf)
 
@@ -202,9 +205,38 @@ myMouseBindings XConfig { modMask = modm } = M.fromList
     , ((modm .|. shiftMask, button5)  , const audioVolumeDown)
     , ((modm .|. controlMask, button4), const $ sendMessage Shrink)
     , ((modm .|. controlMask, button5), const $ sendMessage Expand)
-    , ((altMask, button4)             , const $ zoomBy 1.2)
-    , ((altMask, button5)             , const $ zoomBy (1 / 1.2))
+    , ((altMask, button4)             , const $ zoomScroll 1.2)
+    , ((altMask, button5)             , const $ zoomScroll (1 / 1.2))
     ]
+
+-- | True while an Alt+scroll zoom holds the pointer and keyboard.
+newtype ZoomGesture = ZoomGesture Bool
+
+instance ExtensionClass ZoomGesture where
+    initialValue = ZoomGesture False
+
+-- | Zoom on Alt+scroll, and hold the pointer and keyboard until Alt is
+-- released or another key is pressed. A passive grab on the wheel buttons is not enough: X delivers a
+-- wheel notch to XI2 clients as smooth-scroll motion before the emulated
+-- button press that triggers the grab, so the window under the pointer would
+-- scroll along with the zoom. Only the first notch of a gesture gets through.
+zoomScroll :: Double -> X ()
+zoomScroll f = do
+    zoomBy f
+    ZoomGesture held <- XS.get
+    unless held $ withDisplay $ \dpy -> do
+        root <- asks theRoot
+        p <- io $ grabPointer dpy root False (buttonPressMask .|. buttonReleaseMask)
+                              grabModeAsync grabModeAsync none none currentTime
+        k <- io $ grabKeyboard dpy root False grabModeAsync grabModeAsync currentTime
+        XS.put (ZoomGesture True)
+        (_, _, _, _, _, _, _, mask) <- io $ queryPointer dpy root
+        when (p /= grabSuccess || k /= grabSuccess || mask .&. mod1Mask == 0) endZoomGesture
+
+endZoomGesture :: X ()
+endZoomGesture = withDisplay $ \dpy -> do
+    io $ ungrabPointer dpy currentTime >> ungrabKeyboard dpy currentTime
+    XS.put (ZoomGesture False)
 
 -- | Scale picom's desktop zoom. The target level lives in the root window's
 -- _PICOM_ZOOM property, 16.16 fixed point, clamped to 1x..16x.
@@ -246,7 +278,13 @@ myHandleEventHook e = handle e >> return (All True)
 
 -- extend this to handle low-level XEvent
 handle :: Event -> X ()
-handle = const $ return ()
+handle KeyEvent { ev_event_type = t, ev_keycode = code } = do
+    ZoomGesture held <- XS.get
+    when held $ do
+        sym <- withDisplay $ \dpy -> io $ keycodeToKeysym dpy code 0
+        let isAlt = sym `elem` [xK_Alt_L, xK_Alt_R]
+        when ((t == keyRelease && isAlt) || (t == keyPress && not isAlt)) endZoomGesture
+handle _ = return ()
 -- handle e = io $ appendFile "/tmp/xmonad.log" (show e ++ "\n")
 
 -- remember to make it the correct order to avoid unexpected behaviors
