@@ -202,7 +202,22 @@ myMouseBindings XConfig { modMask = modm } = M.fromList
     , ((modm .|. shiftMask, button5)  , const audioVolumeDown)
     , ((modm .|. controlMask, button4), const $ sendMessage Shrink)
     , ((modm .|. controlMask, button5), const $ sendMessage Expand)
+    , ((altMask, button4)             , const $ zoomBy 1.2)
+    , ((altMask, button5)             , const $ zoomBy (1 / 1.2))
     ]
+
+-- | Scale picom's desktop zoom. The target level lives in the root window's
+-- _PICOM_ZOOM property, 16.16 fixed point, clamped to 1x..16x.
+zoomBy :: Double -> X ()
+zoomBy f = withDisplay $ \dpy -> do
+    root <- asks theRoot
+    atom <- getAtom "_PICOM_ZOOM"
+    prop <- io $ getWindowProperty32 dpy atom root
+    let current = case prop of
+            Just [v] -> fromIntegral v / 65536
+            _        -> 1
+        target = max 1 (min 16 (current * f)) :: Double
+    io $ changeProperty32 dpy root atom cARDINAL propModeReplace [round (target * 65536)]
 
 exclusiveScratchpads :: ExclusiveScratchpads
 exclusiveScratchpads = mkXScratchpads
