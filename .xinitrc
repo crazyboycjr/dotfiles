@@ -44,7 +44,7 @@ xrandr --auto
 # mitigate the issue of screen not updating itself when using feh with xcompmgr
 hsetroot -solid "#000066"
 # start compositor
-xcompmgr &
+picom &
 
 # set background
 feh --bg-fill ~/.xmonad/background.jpg
