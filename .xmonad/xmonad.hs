@@ -8,8 +8,6 @@ import XMonad.Hooks.ManageDocks (avoidStruts, manageDocks)
 import XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, doFloatDep, isFullscreen, isInProperty)
 
 import qualified Data.Map as M
-import Control.Monad (when)
-import qualified XMonad.Util.ExtensibleState as XS
 import Data.Monoid (All(..))
 import Text.Printf (printf)
 
@@ -36,6 +34,7 @@ import XMonad.Actions.CycleWS (nextWS, prevWS)
 import XMonad.Actions.MouseGestures (Direction2D(D, L, R, U), mouseGesture)
 
 import XMonad.Hooks.RefocusLast (refocusLastLayoutHook)
+import XMonad.Actions.PicomZoom.AltReplay (altReplayZoom)
 
 myModMask = mod4Mask
 altMask   = mod1Mask
@@ -126,12 +125,6 @@ myKeys conf@XConfig { modMask = modm } = M.fromList
 
     , ((modm, xK_f), sendMessage $ Toggle FULL)
 
-    -- Hold the pointer while Super is down, see holdPointer
-    , ((0, xK_Super_L), holdPointer)
-    , ((altMask, xK_Super_L), holdPointer)
-    , ((0, xK_Super_R), holdPointer)
-    , ((altMask, xK_Super_R), holdPointer)
-
     -- Scratchpad
     , ((0, xK_F1), scratchpadAction scratchpads "terminal-0")
     , ((0, xK_F3), scratchpadAction scratchpads "terminal-1")
@@ -210,45 +203,7 @@ myMouseBindings XConfig { modMask = modm } = M.fromList
     , ((modm .|. shiftMask, button5)  , const audioVolumeDown)
     , ((modm .|. controlMask, button4), const $ sendMessage Shrink)
     , ((modm .|. controlMask, button5), const $ sendMessage Expand)
-    , ((modm .|. altMask, button4)    , const $ zoomBy 1.2)
-    , ((modm .|. altMask, button5)    , const $ zoomBy (1 / 1.2))
     ]
-
--- | True while Super is down and xmonad holds the pointer.
-newtype PointerHeld = PointerHeld Bool
-
-instance ExtensionClass PointerHeld where
-    initialValue = PointerHeld False
-
--- | Hold the pointer while Super is down, so a Super+Alt+scroll zoom swallows
--- every wheel notch. A passive grab on the wheel buttons fires only on the
--- emulated button press, after X has already handed the notch's smooth-scroll
--- motion to the window under the pointer. Apps never get Super+mouse here
--- anyway; they only miss hover updates while Super is down.
-holdPointer :: X ()
-holdPointer = withDisplay $ \dpy -> do
-    root <- asks theRoot
-    st <- io $ grabPointer dpy root False (buttonPressMask .|. buttonReleaseMask)
-                           grabModeAsync grabModeAsync none none currentTime
-    when (st == grabSuccess) $ XS.put (PointerHeld True)
-
-releasePointer :: X ()
-releasePointer = withDisplay $ \dpy -> do
-    io $ ungrabPointer dpy currentTime
-    XS.put (PointerHeld False)
-
--- | Scale picom's desktop zoom. The target level lives in the root window's
--- _PICOM_ZOOM property, 16.16 fixed point, clamped to 1x..16x.
-zoomBy :: Double -> X ()
-zoomBy f = withDisplay $ \dpy -> do
-    root <- asks theRoot
-    atom <- getAtom "_PICOM_ZOOM"
-    prop <- io $ getWindowProperty32 dpy atom root
-    let current = case prop of
-            Just [v] -> fromIntegral v / 65536
-            _        -> 1
-        target = max 1 (min 16 (current * f)) :: Double
-    io $ changeProperty32 dpy root atom cARDINAL propModeReplace [round (target * 65536)]
 
 exclusiveScratchpads :: ExclusiveScratchpads
 exclusiveScratchpads = mkXScratchpads
@@ -277,11 +232,8 @@ myHandleEventHook e = handle e >> return (All True)
 
 -- extend this to handle low-level XEvent
 handle :: Event -> X ()
-handle KeyEvent { ev_event_type = t, ev_keycode = code } | t == keyRelease = do
-    sym <- withDisplay $ \dpy -> io $ keycodeToKeysym dpy code 0
-    PointerHeld held <- XS.get
-    when (held && sym `elem` [xK_Super_L, xK_Super_R]) releasePointer
-handle _ = return ()
+handle = const $ return ()
+-- handle e = io $ appendFile "/tmp/xmonad.log" (show e ++ "\n")
 -- handle e = io $ appendFile "/tmp/xmonad.log" (show e ++ "\n")
 
 -- remember to make it the correct order to avoid unexpected behaviors
@@ -291,7 +243,8 @@ myLayoutHook =
     refocusLastLayoutHook . minimize . boringWindows . avoidStruts . mkToggle (single FULL)
 
 main = do
-    xmonad $ ewmhFullscreen . ewmh $ desktopConfig
+    -- desktop zoom: altReplayZoom (Alt+scroll) or superHoldZoom (Super+Alt+scroll)
+    xmonad $ ewmhFullscreen . ewmh . altReplayZoom $ desktopConfig
         { modMask           = myModMask
         , terminal          = myTerminal
         , borderWidth       = 2
