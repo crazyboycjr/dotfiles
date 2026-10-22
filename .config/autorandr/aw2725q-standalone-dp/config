@@ -16,3 +16,4 @@ mode 3840x2160
 pos 0x0
 rate 239.99
 x-prop-non_desktop 0
+primary
