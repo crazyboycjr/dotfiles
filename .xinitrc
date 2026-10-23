@@ -10,8 +10,8 @@
 
 # set keyboard repeat <delay> <rate>
 xset r rate 200 36
-# disable screen saver blank screen
-xset s noblank
+# blank the screen after 10 minutes idle: black means the OLED's pixels are off
+xset s blank
 
 # map control keys to caps lock
 # setxkbmap -option "ctrl:nocaps"
@@ -61,9 +61,6 @@ xfce4-clipman &
 
 # start power manager
 xfce4-power-manager &
-
-# start screen saver
-gnome-screensaver &
 
 # startup programs
 systemd-cat -t relight-monitors ~/.xmonad/relight-monitors.py &

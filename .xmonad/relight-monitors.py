@@ -18,7 +18,7 @@ import time
 from Xlib import display
 from Xlib.ext import randr
 
-SETTLE = 3.0
+SETTLE = [1.0, 2.0, 3.0]
 ROTATIONS = {1: "normal", 2: "left", 4: "inverted", 8: "right"}
 
 
@@ -48,7 +48,7 @@ def relight(name, layout):
         on.append("--primary")
     log(f"relight {name}: {' '.join(on[3:])}")
     subprocess.run(["xrandr", "--output", name, "--off"], check=False)
-    subprocess.run(on, check=False)
+    return subprocess.run(on, check=False).returncode == 0
 
 
 def main():
@@ -65,7 +65,7 @@ def main():
     due = {}
     log("watching " + ", ".join(f"{n}{'' if c else ' (off)'}" for n, (c, _) in state.items() if c or n in remembered))
     while True:
-        timeout = max(0.0, min(due.values()) - time.monotonic()) if due else None
+        timeout = max(0.0, min(t for t, _ in due.values()) - time.monotonic()) if due else None
         if not d.pending_events():
             select.select([d.fileno()], [], [], timeout)
         while d.pending_events():
@@ -75,19 +75,24 @@ def main():
             was_connected = state.get(name, (False, None))[0]
             if connected and not was_connected:
                 log(f"{name} reconnected")
-                due[name] = time.monotonic() + SETTLE
+                due[name] = (time.monotonic() + SETTLE[0], 0)
             elif not connected and was_connected:
                 log(f"{name} disconnected")
                 due.pop(name, None)
             if connected and layout and name not in due:
                 remembered[name] = layout
         state = now
-        for name in [n for n, t in due.items() if t <= time.monotonic()]:
-            del due[name]
+        for name in [n for n, (t, _) in due.items() if t <= time.monotonic()]:
+            _, attempt = due.pop(name)
             layout = state[name][1] or remembered.get(name)
-            if state[name][0] and layout:
-                relight(name, layout)
-                state = snapshot(d, root)
+            if not (state[name][0] and layout):
+                continue
+            ok = relight(name, layout)
+            state = snapshot(d, root)
+            lit = state[name][0] and state[name][1] is not None
+            if not (ok and lit) and attempt + 1 < len(SETTLE):
+                log(f"{name} not lit yet, retrying in {SETTLE[attempt + 1]:.0f} s")
+                due[name] = (time.monotonic() + SETTLE[attempt + 1], attempt + 1)
 
 
 if __name__ == "__main__":
