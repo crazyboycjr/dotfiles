@@ -51,6 +51,15 @@ def relight(name, layout):
     return subprocess.run(on, check=False).returncode == 0
 
 
+def configure(name):
+    detected = subprocess.run(["autorandr", "--detected"], capture_output=True, text=True).stdout.split()
+    if detected:
+        log(f"{name} connected without a mode, applying autorandr profile {detected[0]}")
+        return subprocess.run(["autorandr", "--change"], check=False).returncode == 0
+    log(f"{name} connected without a mode, cloning the primary at 0x0")
+    return subprocess.run(["xrandr", "--output", name, "--auto", "--pos", "0x0"], check=False).returncode == 0
+
+
 def main():
     d = display.Display()
     root = d.screen().root
@@ -84,10 +93,10 @@ def main():
         state = now
         for name in [n for n, (t, _) in due.items() if t <= time.monotonic()]:
             _, attempt = due.pop(name)
-            layout = state[name][1] or remembered.get(name)
-            if not (state[name][0] and layout):
+            if not state[name][0]:
                 continue
-            ok = relight(name, layout)
+            layout = state[name][1] or remembered.get(name)
+            ok = relight(name, layout) if layout else configure(name)
             state = snapshot(d, root)
             lit = state[name][0] and state[name][1] is not None
             if not (ok and lit) and attempt + 1 < len(SETTLE):
