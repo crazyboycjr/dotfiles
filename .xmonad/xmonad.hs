@@ -143,13 +143,14 @@ myKeys conf@XConfig { modMask = modm } = M.fromList
     , ((modm .|. shiftMask, xK_i), spawn "~/.xmonad/switch-kvm-win11.sh")
     , ((modm .|. shiftMask, xK_o), spawn "~/.xmonad/switch-kvm-macos.sh")
 
-    -- Screenshot
+    -- Screenshot; region and window shots go through screenshot.sh, which works
+    -- while the desktop is zoomed (a full-screen shot keeps the zoomed view)
     , ((0, xK_Print), spawn "xfce4-screenshooter")
-    , ((shiftMask, xK_Print), spawn "xfce4-screenshooter --region --save $PICTURES")
-    , ((altMask, xK_Print), spawn "xfce4-screenshooter --window --save $PICTURES")
+    , ((shiftMask, xK_Print), spawn "~/.xmonad/screenshot.sh --region --save $PICTURES")
+    , ((altMask, xK_Print), spawn "~/.xmonad/screenshot.sh --window --save $PICTURES")
     , ((controlMask, xK_Print), spawn "xfce4-screenshooter --fullscreen --clipboard ")
-    , ((shiftMask .|. controlMask, xK_Print), spawn "xfce4-screenshooter --region --clipboard")
-    , ((altMask .|. controlMask, xK_Print), spawn "xfce4-screenshooter --window --clipboard")
+    , ((shiftMask .|. controlMask, xK_Print), spawn "~/.xmonad/screenshot.sh --region --clipboard")
+    , ((altMask .|. controlMask, xK_Print), spawn "~/.xmonad/screenshot.sh --window --clipboard")
 
     -- Switch workspace
     -- , ((0, xK_F1), windows $ W.greedyView (XMonad.workspaces conf !! 0))
@@ -178,7 +179,7 @@ myKeys conf@XConfig { modMask = modm } = M.fromList
 gestures, gesturesExtraLayer :: M.Map [Direction2D] (Window -> X ())
 gestures = M.fromList
     [ ([]    , focus)
-    , ([U]   , const $ spawn "xfce4-screenshooter --region --clipboard")
+    , ([U]   , const $ spawn "~/.xmonad/screenshot.sh --region --clipboard")
     , ([D]   , \w -> focus w >> kill)
     , ([L]   , const nextWS)
     , ([R]   , const prevWS)
