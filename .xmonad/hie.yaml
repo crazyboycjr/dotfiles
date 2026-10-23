@@ -1,0 +1,5 @@
+# For haskell-language-server: compile like `xmonad --recompile`, which builds
+# xmonad.hs with the modules under lib/ on the import path.
+cradle:
+  direct:
+    arguments: ["-ilib"]
