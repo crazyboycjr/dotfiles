@@ -59,7 +59,7 @@ appFloat    = ["Dia", "Gimp", "krita", "pomatez"]
 appCenter   = ["pinentry-qt", "feh", "MPlayer", "Zenity", "Pavucontrol", "org.gnome.Nautilus", "Eog", "idaq64.exe"]
 appIgnore   = []
 appIM       = ["dingtalk", "wechat.exe"]
-appPreview  = "Org.gnome.NautilusPreviewer"
+appPreview  = "org.gnome.NautilusPreviewer" -- sushi 46+ is GTK4 and no longer capitalises the class
 appFloatTitle = ["Advanced Search"] -- Zotero search window, matches _NET_WM_NAME
 
 -- | Helper to read a property
