@@ -5,7 +5,7 @@ import XMonad.Util.SpawnOnce (spawnOnce)
 import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
 
 import XMonad.Hooks.ManageDocks (avoidStruts, manageDocks)
-import XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, doFloatDep, isFullscreen, isInProperty)
+import XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, doRectFloat, isFullscreen, isInProperty)
 
 import qualified Data.Map as M
 import Data.Monoid (All(..))
@@ -89,13 +89,9 @@ checkDialog = ask >>= \w -> liftX $ do
 doLower :: ManageHook
 doLower = ask >>= \w -> liftX $ withDisplay $ \dpy -> io (lowerWindow dpy w) >> mempty
 
-adaptivePreview :: W.RationalRect -> W.RationalRect
-adaptivePreview (W.RationalRect a b w h)
-    | h < (1/7) = W.RationalRect (1/6) (1/6) (2/3) (1/3)
-    | otherwise = W.RationalRect a b w h
-
+-- sushi (GTK4) maps before its content loads and never places itself, so give it a fixed centred box
 doPreview :: ManageHook
-doPreview = doFloatDep adaptivePreview
+doPreview = doRectFloat (W.RationalRect (1/6) (1/6) (2/3) (2/3))
 
 isNotification :: Query Bool
 isNotification = isInProperty "_NET_WM_WINDOW_TYPE" "_NET_WM_WINDOW_TYPE_NOTIFICATION"
