@@ -6,6 +6,7 @@ import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
 
 import XMonad.Hooks.ManageDocks (avoidStruts, manageDocks)
 import XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, doRectFloat, isFullscreen, isInProperty)
+import XMonad.Hooks.BorderPerWindow (actionQueue, defineBorderWidth)
 
 import qualified Data.Map as M
 import Data.Monoid (All(..))
@@ -93,6 +94,11 @@ doLower = ask >>= \w -> liftX $ withDisplay $ \dpy -> io (lowerWindow dpy w) >> 
 doPreview :: ManageHook
 doPreview = doRectFloat (W.RationalRect (1/6) (1/6) (2/3) (2/3))
 
+-- silent sizes itself to its content and draws its own rounded edge. A border set here would be
+-- reset when the window is first laid out, so BorderPerWindow drops it right after that
+doSilent :: ManageHook
+doSilent = defineBorderWidth 0 <+> doCenterFloat
+
 isNotification :: Query Bool
 isNotification = isInProperty "_NET_WM_WINDOW_TYPE" "_NET_WM_WINDOW_TYPE_NOTIFICATION"
 
@@ -102,6 +108,7 @@ myManageHook' = (composeAll . concat)
     , [isFullscreen --> doFullFloat]
     , [ checkDialog --> doCenterFloat ]
     , [ className =? appPreview --> doPreview ]
+    , [ className =? "silent" --> doSilent ]
     , [ className =? a --> doLower       | a <- appDock ]
     , [ className =? a --> doFloat       | a <- appFloat ]
     , [ title =? a --> doFloat | a <- appFloatTitle]
@@ -242,7 +249,7 @@ myLayoutHook =
 
 main = do
     -- desktop zoom: altReplayZoom (Alt+scroll) or superHoldZoom (Super+Alt+scroll)
-    xmonad $ ewmhFullscreen . ewmh . altReplayZoom $ desktopConfig
+    xmonad $ actionQueue . ewmhFullscreen . ewmh . altReplayZoom $ desktopConfig
         { modMask           = myModMask
         , terminal          = myTerminal
         , borderWidth       = 2
