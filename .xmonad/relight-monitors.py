@@ -4,11 +4,11 @@
 When a DisplayPort monitor reconnects (powered back on, or the KVM script
 switches it back), the NVIDIA X driver notices but does not set its mode again,
 so the screen stays black until a VT switch forces a modeset. This watches the
-outputs and, a few seconds after one reconnects, turns it off and on again with
-the mode and position it had.
+outputs and, a second after one reconnects, cycles DPMS off and on so the driver
+drives it again without taking the output out of the screen.
 
     relight-monitors.py          watch (started from .xinitrc)
-    relight-monitors.py --now    relight every connected output once
+    relight-monitors.py --now    xrandr off and on for every connected output
 """
 import select
 import subprocess
@@ -16,7 +16,7 @@ import sys
 import time
 
 from Xlib import display
-from Xlib.ext import randr
+from Xlib.ext import dpms, randr
 
 SETTLE = [1.0, 2.0, 3.0]
 ROTATIONS = {1: "normal", 2: "left", 4: "inverted", 8: "right"}
@@ -41,12 +41,30 @@ def snapshot(d, root):
     return outputs
 
 
-def relight(name, layout):
+def relight(d, name):
+    """DPMS off and on makes the driver train the link again. Unlike xrandr --off
+    the output never leaves the screen, so GTK and Chromium never see the monitor
+    vanish (Chrome and the Claude app dropped to 1x scale until a resize)."""
+    log(f"relight {name}: dpms off, on")
+    enabled = d.dpms_info().state
+    if not enabled:
+        d.dpms_enable()
+    d.dpms_force_level(dpms.DPMSModeOff)
+    d.sync()
+    time.sleep(1.0)
+    d.dpms_force_level(dpms.DPMSModeOn)
+    if not enabled:
+        d.dpms_disable()
+    d.sync()
+    return True
+
+
+def relight_hard(name, layout):
     mode, x, y, rotation, primary = layout
     on = ["xrandr", "--output", name, "--mode", hex(mode), "--pos", f"{x}x{y}", "--rotate", rotation]
     if primary:
         on.append("--primary")
-    log(f"relight {name}: {' '.join(on[3:])}")
+    log(f"relight {name} hard: {' '.join(on[3:])}")
     subprocess.run(["xrandr", "--output", name, "--off"], check=False)
     return subprocess.run(on, check=False).returncode == 0
 
@@ -66,7 +84,7 @@ def main():
     if "--now" in sys.argv:
         for name, (connected, layout) in snapshot(d, root).items():
             if connected and layout:
-                relight(name, layout)
+                relight_hard(name, layout)
         return
     root.xrandr_select_input(randr.RROutputChangeNotifyMask | randr.RRCrtcChangeNotifyMask | randr.RRScreenChangeNotifyMask)
     state = snapshot(d, root)
@@ -96,7 +114,7 @@ def main():
             if not state[name][0]:
                 continue
             layout = state[name][1] or remembered.get(name)
-            ok = relight(name, layout) if layout else configure(name)
+            ok = relight(d, name) if layout else configure(name)
             state = snapshot(d, root)
             lit = state[name][0] and state[name][1] is not None
             if not (ok and lit) and attempt + 1 < len(SETTLE):
