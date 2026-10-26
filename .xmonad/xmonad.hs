@@ -3,6 +3,7 @@ import XMonad.Config.Desktop (desktopConfig)
 import XMonad.Util.SpawnOnce (spawnOnce)
 
 import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
+import XMonad.Actions.ToggleFullFloat (toggleFullFloatEwmhFullscreen)
 
 import XMonad.Hooks.ManageDocks (avoidStruts, manageDocks)
 import XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, doRectFloat, isFullscreen, isInProperty)
@@ -249,7 +250,9 @@ myLayoutHook =
 
 main = do
     -- desktop zoom: altReplayZoom (Alt+scroll) or superHoldZoom (Super+Alt+scroll)
-    xmonad $ actionQueue . ewmhFullscreen . ewmh . altReplayZoom $ desktopConfig
+    -- toggleFullFloatEwmhFullscreen: leaving fullscreen restores a floating window's size and
+    -- place; plain ewmhFullscreen sinks it into the tiling layer
+    xmonad $ actionQueue . toggleFullFloatEwmhFullscreen . ewmhFullscreen . ewmh . altReplayZoom $ desktopConfig
         { modMask           = myModMask
         , terminal          = myTerminal
         , borderWidth       = 2
