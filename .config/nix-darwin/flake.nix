@@ -15,7 +15,7 @@
       };
 
       fonts.packages = with pkgs; [
-        ubuntu_font_family source-code-pro vistafonts dejavu_fonts powerline-fonts libertinus
+        ubuntu-classic source-code-pro vista-fonts dejavu_fonts powerline-fonts libertinus
       ];
 
       environment.pathsToLink = [
@@ -26,6 +26,8 @@
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
       environment.systemPackages = with pkgs; [
+        (pkgs.writeShellScriptBin "switch-kvm" (builtins.readFile ./switch-kvm.sh))
+        usbutils
         haskellPackages.stack
         alacritty
         nodejs_24
@@ -66,16 +68,28 @@
         mpv-unwrapped
         rclone
         discord
-        notion-app
+        # notion-app
         zotero
+        # tailscale
+        rustdesk-server
         # unfree softwares
         vscode
         google-chrome
         chatgpt
         betterdisplay
+        clash-rs
+        # AI LLM
+        gemini-cli claude-code
+        # game
+        melonDS
+        # agents
+        zeroclaw
       ];
 
       nixpkgs.config.allowUnfree = true;
+      # zotero 10 bundles Firefox ESR 140 as its runtime, end-of-life since 2026-10-13;
+      # drop this once nixpkgs moves zotero to a newer ESR
+      nixpkgs.config.permittedInsecurePackages = [ "firefox-esr-140-bin-unwrapped-140.17.0esr" ];
 
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
@@ -88,6 +102,9 @@
         source ${pkgs.grml-zsh-config}/etc/zsh/zshrc
       '';
       programs.zsh.promptInit = ""; # otherwise it'll override the grml prompt
+
+      services.openssh.enable = true;
+      # services.tailscale.enable = true;
 
       # Set Git commit hash for darwin-version.
       system.configurationRevision = self.rev or self.dirtyRev or null;
