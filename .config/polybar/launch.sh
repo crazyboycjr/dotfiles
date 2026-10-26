@@ -1,22 +1,10 @@
 #!/usr/bin/env sh
+# One bar per active monitor, the primary first so it gets the tray; logs go to journalctl -t polybar.
 
-export MONITOR=$(polybar -m|tail -1|sed -e 's/:.*$//g')
-
-# Terminate already running bar instances
 killall -q polybar
+while pgrep -u $UID -x polybar >/dev/null; do sleep 0.1; done
 
-# Wait until the processes have been shut down
-while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
-
-if type "xrandr"; then
-    PRIMARY=$(xrandr --query | grep " connected" | grep "primary" | cut -d" " -f1)
-    OTHERS=$(xrandr --query | grep " connected" | grep -v "primary" | cut -d" " -f1)
-    MONITOR=$PRIMARY TRAY_POS=right setsid polybar --reload main &
-	sleep 0.1
-    for m in $OTHERS; do
-      MONITOR=$m TRAY_POS=right setsid polybar --reload main &
-    done
-else
-  setsid polybar --reload main &
-fi
-# exec polybar --reload main
+for m in $(polybar -m | grep primary | cut -d: -f1) $(polybar -m | grep -v primary | cut -d: -f1); do
+    MONITOR=$m setsid systemd-cat -t polybar polybar --reload main &
+    sleep 0.1
+done
