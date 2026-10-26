@@ -31,9 +31,9 @@ function attach_usb {
         "https://$NODE_URL:8006/api2/json/nodes/$NODE/qemu/$vmid/config"
 }
 
-DP1='0x0f' # win11
+DP1='0x0f' # linux (DisplayPort, DP-4 on the VM)
 HDMI1='0x11' # macos
-HDMI2='0x12' # linux
+HDMI2='0x12' # win11
 
 [[ $# -ne 1 ]] && usage
 target=$1
@@ -53,7 +53,7 @@ case $target in
         # transfer the keyboard
         detach_usb $VM_LINUX usb1
         # attach_usb $VM_WIN11 usb1 Filco-Hakua-Keyboard
-        attach_usb $VM_LINUX usb1 NiZ-plum-X87-45g
+        attach_usb $VM_WIN11 usb1 NiZ-plum-X87-45g
         # transfer the mouse
         # https://github.com/marcelhoffs/input-switcher/issues/30#issuecomment-2433513220
         /usr/local/bin/hidapitester --vidpid 046D:B038 --usage 0x0202 --usagePage 0xff43 --open --length 20 --send-output 0x11,0x00,0x0b,0x1e,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
