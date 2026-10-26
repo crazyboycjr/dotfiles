@@ -7,7 +7,7 @@ import XMonad.Actions.ToggleFullFloat (toggleFullFloatEwmhFullscreen)
 
 import XMonad.Hooks.ManageDocks (avoidStruts, manageDocks)
 import XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, doRectFloat, isFullscreen, isInProperty)
-import XMonad.Hooks.BorderPerWindow (actionQueue, defineBorderWidth)
+import XMonad.Layout.NoBorders (SetsAmbiguous(..), hasBorder, lessBorders)
 
 import qualified Data.Map as M
 import Data.Monoid (All(..))
@@ -95,10 +95,16 @@ doLower = ask >>= \w -> liftX $ withDisplay $ \dpy -> io (lowerWindow dpy w) >> 
 doPreview :: ManageHook
 doPreview = doRectFloat (W.RationalRect (1/6) (1/6) (2/3) (2/3))
 
--- silent sizes itself to its content and draws its own rounded edge. A border set here would be
--- reset when the window is first laid out, so BorderPerWindow drops it right after that
+-- silent sizes itself to its content and draws its own rounded edge. hasBorder drops the border
+-- inside the layout pass that first places the window, so it never flips 1460 -> 1456 -> 1460
 doSilent :: ManageHook
-doSilent = defineBorderWidth 0 <+> doCenterFloat
+doSilent = hasBorder False <+> doCenterFloat
+
+-- lessBorders only to make hasBorder work: no window loses its border for being alone or full
+data KeepBorders = KeepBorders deriving (Read, Show)
+
+instance SetsAmbiguous KeepBorders where
+    hiddens _ _ _ _ _ = []
 
 isNotification :: Query Bool
 isNotification = isInProperty "_NET_WM_WINDOW_TYPE" "_NET_WM_WINDOW_TYPE_NOTIFICATION"
@@ -246,13 +252,13 @@ handle = const $ return ()
 -- refocusLastLayoutHook must be executed later than mkToggle
 -- minimize and boringWindows must be executed later than avoidStruts
 myLayoutHook =
-    refocusLastLayoutHook . minimize . boringWindows . avoidStruts . mkToggle (single FULL)
+    lessBorders KeepBorders . refocusLastLayoutHook . minimize . boringWindows . avoidStruts . mkToggle (single FULL)
 
 main = do
     -- desktop zoom: altReplayZoom (Alt+scroll) or superHoldZoom (Super+Alt+scroll)
     -- toggleFullFloatEwmhFullscreen: leaving fullscreen restores a floating window's size and
     -- place; plain ewmhFullscreen sinks it into the tiling layer
-    xmonad $ actionQueue . toggleFullFloatEwmhFullscreen . ewmhFullscreen . ewmh . altReplayZoom $ desktopConfig
+    xmonad $ toggleFullFloatEwmhFullscreen . ewmhFullscreen . ewmh . altReplayZoom $ desktopConfig
         { modMask           = myModMask
         , terminal          = myTerminal
         , borderWidth       = 2
