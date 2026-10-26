@@ -1,0 +1,8 @@
+#!/bin/sh
+# Opens the INNOCN colour picker. rust-script rebuilds it when ~/.config/innocn-color/innocn-color.rs
+# changes; the build is hard-linked in here so that macOS runs it as this app, with its name and icon.
+export PATH="$HOME/.cargo/bin:$PATH"
+dir=$(dirname "$0")
+bin=$(rust-script "$HOME/.config/innocn-color/innocn-color.rs" binary-path) || exit 1
+[ "$bin" -ef "$dir/INNOCN Color" ] || ln -f "$bin" "$dir/INNOCN Color" || exit 1
+exec "$dir/INNOCN Color" "$@"
