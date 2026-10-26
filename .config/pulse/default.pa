@@ -1,0 +1,5 @@
+.include /etc/pulse/default.pa
+
+# The Sound Blaster X4 behind QEMU usb-host rasps for the first half second of every stream start,
+# which is every notification sound once the sink has suspended; keep the sink open instead.
+unload-module module-suspend-on-idle
