@@ -87,6 +87,11 @@
       ];
 
       nixpkgs.config.allowUnfree = true;
+      # `nix shell nixpkgs#…` and <nixpkgs> use the nixpkgs this system was built from: a local
+      # store path, so nothing is downloaded, and it moves with every `nix flake update` + switch.
+      # Do not `nix registry pin`/`add` nixpkgs on top: the user registry wins and goes stale.
+      nixpkgs.flake.setFlakeRegistry = true;
+      nixpkgs.flake.setNixPath = true;
       # zotero 10 bundles Firefox ESR 140 as its runtime, end-of-life since 2026-10-13;
       # drop this once nixpkgs moves zotero to a newer ESR
       nixpkgs.config.permittedInsecurePackages = [ "firefox-esr-140-bin-unwrapped-140.17.0esr" ];
