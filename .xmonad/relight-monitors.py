@@ -5,7 +5,8 @@ When a DisplayPort monitor reconnects (powered back on, or the KVM script
 switches it back), the NVIDIA X driver notices but does not set its mode again,
 so the screen stays black until a VT switch forces a modeset. This watches the
 outputs and, a second after one reconnects, cycles DPMS off and on so the driver
-drives it again without taking the output out of the screen.
+drives it again without taking the output out of the screen; an output that
+came back without its mode gets it set again instead.
 
     relight-monitors.py          watch (started from .xinitrc)
     relight-monitors.py --now    xrandr off and on for every connected output
@@ -26,17 +27,31 @@ def log(msg):
     print(time.strftime("%H:%M:%S"), msg, flush=True)
 
 
+def modes(res):
+    """Mode id -> (name, refresh). The driver hands out new ids after a reconnect,
+    so a layout remembers the name and rate, which xrandr resolves again."""
+    named, pos = {}, 0
+    for m in res.modes:
+        name = res.names[pos:pos + m.name_length]
+        pos += m.name_length
+        rate = m.dot_clock / (m.h_total * m.v_total) if m.h_total and m.v_total else 0.0
+        named[m.id] = (name, rate)
+    return named
+
+
 def snapshot(d, root):
     res = root.xrandr_get_screen_resources_current()
     primary = root.xrandr_get_output_primary().output
+    named = modes(res)
     outputs = {}
     for out in res.outputs:
         info = d.xrandr_get_output_info(out, res.config_timestamp)
         layout = None
         if info.crtc:
             crtc = d.xrandr_get_crtc_info(info.crtc, res.config_timestamp)
-            if crtc.mode:
-                layout = (crtc.mode, crtc.x, crtc.y, ROTATIONS.get(crtc.rotation & 0xF, "normal"), out == primary)
+            if crtc.mode and crtc.mode in named:
+                name, rate = named[crtc.mode]
+                layout = (name, rate, crtc.x, crtc.y, ROTATIONS.get(crtc.rotation & 0xF, "normal"), out == primary)
         outputs[info.name] = (info.connection == randr.Connected, layout)
     return outputs
 
@@ -59,14 +74,26 @@ def relight(d, name):
     return True
 
 
+def mode_args(name, layout):
+    mode, rate, x, y, rotation, primary = layout
+    args = ["xrandr", "--output", name, "--mode", mode, "--rate", f"{rate:.2f}", "--pos", f"{x}x{y}", "--rotate", rotation]
+    return args + ["--primary"] if primary else args
+
+
+def set_mode(name, layout):
+    """An output that came back without its mode needs a modeset, which DPMS cannot
+    give it. Setting the mode directly never takes an active output out of the
+    screen, so the scale of GTK apps survives (unlike --off first)."""
+    args = mode_args(name, layout)
+    log(f"relight {name}: {' '.join(args[3:])}")
+    return subprocess.run(args, check=False).returncode == 0
+
+
 def relight_hard(name, layout):
-    mode, x, y, rotation, primary = layout
-    on = ["xrandr", "--output", name, "--mode", hex(mode), "--pos", f"{x}x{y}", "--rotate", rotation]
-    if primary:
-        on.append("--primary")
-    log(f"relight {name} hard: {' '.join(on[3:])}")
+    args = mode_args(name, layout)
+    log(f"relight {name} hard: {' '.join(args[3:])}")
     subprocess.run(["xrandr", "--output", name, "--off"], check=False)
-    return subprocess.run(on, check=False).returncode == 0
+    return subprocess.run(args, check=False).returncode == 0
 
 
 def configure(name):
@@ -113,8 +140,12 @@ def main():
             _, attempt = due.pop(name)
             if not state[name][0]:
                 continue
-            layout = state[name][1] or remembered.get(name)
-            ok = relight(d, name) if layout else configure(name)
+            if state[name][1]:
+                ok = relight(d, name)
+            elif name in remembered:
+                ok = set_mode(name, remembered[name])
+            else:
+                ok = configure(name)
             state = snapshot(d, root)
             lit = state[name][0] and state[name][1] is not None
             if not (ok and lit) and attempt + 1 < len(SETTLE):
