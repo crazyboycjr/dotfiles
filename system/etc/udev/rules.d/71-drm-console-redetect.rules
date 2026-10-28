@@ -1,0 +1,9 @@
+# The NVIDIA X driver drives the monitors through NVKMS, so while X runs DRM never
+# hears that a monitor came or went, and the fbdev text console keeps the monitor
+# list of its last probe. When a monitor in that list has gone, nvidia-drm rejects
+# the console's whole modeset (-EINVAL) and no monitor shows the console.
+# logind sends a synthetic "change" event for the card at every VT switch (seat
+# ACL refresh): re-detect every connector then, so a changed status reaches the
+# console as a hotplug and it reprobes. Kernel hotplug events (HOTPLUG=1) are left
+# alone, which also keeps the rule from triggering itself.
+ACTION=="change", SUBSYSTEM=="drm", KERNEL=="card[0-9]*", ENV{DEVTYPE}=="drm_minor", ENV{HOTPLUG}!="1", RUN+="/usr/bin/sh -c 'for s in /sys%p/%k-*/status; do echo detect > $$s; done'"
