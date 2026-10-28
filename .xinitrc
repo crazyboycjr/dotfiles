@@ -63,7 +63,7 @@ xfce4-clipman &
 xfce4-power-manager &
 
 # startup programs
-systemd-cat -t relight-monitors ~/.xmonad/relight-monitors.py &
+systemd-cat -t relight-monitors ~/.xmonad/relight-monitors.rs &
 nm-applet &
 blueman-applet &
 dropbox &
