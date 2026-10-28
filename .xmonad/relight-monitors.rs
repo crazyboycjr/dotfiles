@@ -148,14 +148,18 @@ impl Screen {
         Ok(self.outputs()?.into_iter().find(|o| o.name == name))
     }
 
-    /// Waits for a RandR event or the timeout, then drains the queue. Which
-    /// event arrived does not matter: the outputs are read afresh afterwards.
-    fn wait_for_change(&self, timeout: Option<Duration>) -> Result<()> {
-        if self.conn.poll_for_event()?.is_none() {
+    /// Waits for a RandR event or the timeout, then drains the queue, and says
+    /// whether anything arrived. Which event does not matter: the outputs are
+    /// read afresh afterwards.
+    fn wait_for_change(&self, timeout: Option<Duration>) -> Result<bool> {
+        let mut arrived = self.conn.poll_for_event()?.is_some();
+        if !arrived {
             wait_readable(self.conn.stream().as_raw_fd(), timeout);
         }
-        while self.conn.poll_for_event()?.is_some() {}
-        Ok(())
+        while self.conn.poll_for_event()?.is_some() {
+            arrived = true;
+        }
+        Ok(arrived)
     }
 
     fn relight(&self, name: &str, how: Relight) -> Result<bool> {
@@ -227,6 +231,16 @@ fn xrandr(args: &[String]) -> bool {
     Command::new("xrandr").args(args).status().is_ok_and(|s| s.success())
 }
 
+/// Exposes every window half a second later, so the compositor repaints after a
+/// modeset or a VT switch; until something draws, the screen stays black with
+/// only the cursor on it.
+fn repaint_soon() {
+    thread::spawn(|| {
+        thread::sleep(Duration::from_millis(500));
+        let _ = Command::new("xrefresh").status();
+    });
+}
+
 fn configure(name: &str) -> Result<bool> {
     let detected = Command::new("autorandr").arg("--detected").output()?;
     let profile = String::from_utf8_lossy(&detected.stdout).split_whitespace().next().map(str::to_owned);
@@ -272,7 +286,9 @@ impl Watcher {
 
     fn run(mut self) -> Result<()> {
         loop {
-            self.screen.wait_for_change(self.next_due())?;
+            if self.screen.wait_for_change(self.next_due())? {
+                repaint_soon();
+            }
             self.note_changes()?;
             self.relight_due()?;
         }
