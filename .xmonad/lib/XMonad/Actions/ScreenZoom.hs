@@ -1,10 +1,10 @@
--- | Desktop zoom through the compositor's @_PICOM_ZOOM@ root window property
--- (read by xcompmgr-zoom; picom-zoom introduced it). The property holds the
--- target zoom in 16.16 fixed point; the compositor eases toward it and keeps
--- the point under the pointer still. Wheel bindings live in
--- "XMonad.Actions.PicomZoom.SuperHold" and
--- "XMonad.Actions.PicomZoom.AltReplay".
-module XMonad.Actions.PicomZoom (zoomBy, zoomStep, spawnUnzoomed) where
+-- | Desktop zoom through the @_SCREEN_ZOOM@ root window property, which
+-- rxcom and xcompmgr-zoom read. The property holds the target zoom in 16.16
+-- fixed point; the compositor eases toward it and keeps the point under the
+-- pointer still. Wheel bindings live in
+-- "XMonad.Actions.ScreenZoom.SuperHold" and
+-- "XMonad.Actions.ScreenZoom.AltReplay".
+module XMonad.Actions.ScreenZoom (zoomBy, zoomStep, spawnUnzoomed) where
 
 import XMonad
 
@@ -31,13 +31,13 @@ spawnUnzoomed cmd = do
             setZoom 65536
             -- the compositor eases out in about 0.3 s
             spawn $ "sleep 0.4; " ++ cmd
-                ++ "; xprop -root -f _PICOM_ZOOM 32c -set _PICOM_ZOOM " ++ show zoom
+                ++ "; xprop -root -f _SCREEN_ZOOM 32c -set _SCREEN_ZOOM " ++ show zoom
 
 -- | The target zoom in 16.16 fixed point, 65536 when the property is unset.
 getZoom :: X Integer
 getZoom = withDisplay $ \dpy -> do
     root <- asks theRoot
-    atom <- getAtom "_PICOM_ZOOM"
+    atom <- getAtom "_SCREEN_ZOOM"
     prop <- io $ getWindowProperty32 dpy atom root
     return $ case prop of
         Just [v] -> fromIntegral v
@@ -46,5 +46,5 @@ getZoom = withDisplay $ \dpy -> do
 setZoom :: Integer -> X ()
 setZoom v = withDisplay $ \dpy -> do
     root <- asks theRoot
-    atom <- getAtom "_PICOM_ZOOM"
+    atom <- getAtom "_SCREEN_ZOOM"
     io $ changeProperty32 dpy root atom cARDINAL propModeReplace [fromIntegral v]

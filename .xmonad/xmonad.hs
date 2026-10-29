@@ -36,8 +36,8 @@ import XMonad.Actions.CycleWS (nextWS, prevWS)
 import XMonad.Actions.MouseGestures (Direction2D(D, L, R, U), mouseGesture)
 
 import XMonad.Hooks.RefocusLast (refocusLastLayoutHook)
-import XMonad.Actions.PicomZoom (spawnUnzoomed)
-import XMonad.Actions.PicomZoom.AltReplay (altReplayZoom)
+import XMonad.Actions.ScreenZoom (spawnUnzoomed)
+import XMonad.Actions.ScreenZoom.AltReplay (altReplayZoom)
 
 myModMask = mod4Mask
 altMask   = mod1Mask
@@ -153,6 +153,9 @@ myKeys conf@XConfig { modMask = modm } = M.fromList
     -- DDC/CI
     , ((modm .|. shiftMask, xK_i), spawn "~/.xmonad/switch-kvm-win11.sh")
     , ((modm .|. shiftMask, xK_o), spawn "~/.xmonad/switch-kvm-macos.sh")
+
+    -- Lock the screen with the login screen's looks, unzoomed first
+    , ((modm .|. shiftMask, xK_l), spawnUnzoomed "gpui-greeter lock")
 
     -- Screenshot; spawnUnzoomed zooms out to 1x first, a full-screen shot keeps
     -- the zoomed view

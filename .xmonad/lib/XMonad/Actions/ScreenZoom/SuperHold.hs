@@ -6,13 +6,13 @@
 -- under the pointer. So xmonad holds the pointer from the moment Super goes
 -- down. Applications never get Super+mouse anyway, since xmonad owns those
 -- bindings; while Super is down they only miss hover updates.
-module XMonad.Actions.PicomZoom.SuperHold (superHoldZoom) where
+module XMonad.Actions.ScreenZoom.SuperHold (superHoldZoom) where
 
 import qualified Data.Map as M
 import Control.Monad (when)
 import Data.Monoid (All (..))
 import XMonad
-import XMonad.Actions.PicomZoom
+import XMonad.Actions.ScreenZoom
 import qualified XMonad.Util.ExtensibleState as XS
 
 newtype PointerHeld = PointerHeld Bool

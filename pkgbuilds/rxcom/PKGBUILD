@@ -1,6 +1,6 @@
 # rxcom from ~/Developing/rxcom: an X11 compositor in Rust with full-desktop
-# zoom driven by the _PICOM_ZOOM root window property, as in picom-zoom. The X
-# server composes with XRender; Vulkan presents where DRI3 can share the scene.
+# zoom driven by the _SCREEN_ZOOM root window property. The X server composes
+# with XRender; Vulkan presents where DRI3 can share the scene.
 
 pkgname=rxcom
 pkgver=0.2.0.r0

@@ -1,6 +1,6 @@
 # xcompmgr from the zoom branch of ~/Developing/xcompmgr: full-desktop zoom
-# driven by the _PICOM_ZOOM root window property, as in picom-zoom. Based on
-# Arch's xcompmgr PKGBUILD, built with upstream's meson build.
+# driven by the _SCREEN_ZOOM root window property, as in rxcom. Based on Arch's
+# xcompmgr PKGBUILD, built with upstream's meson build.
 
 pkgname=xcompmgr-zoom
 _pkgname=xcompmgr

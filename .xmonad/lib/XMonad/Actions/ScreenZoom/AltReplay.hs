@@ -9,13 +9,13 @@
 -- hold. The Alt press itself is replayed at once, so Alt+key shortcuts are
 -- untouched. While Alt is down, applications miss hover updates and cannot
 -- grab the pointer themselves (a menu opened with Alt+F, for example).
-module XMonad.Actions.PicomZoom.AltReplay (altReplayZoom) where
+module XMonad.Actions.ScreenZoom.AltReplay (altReplayZoom) where
 
 import Data.Bits ((.&.))
 import Control.Monad (forM_, when)
 import Data.Monoid (All (..))
 import XMonad
-import XMonad.Actions.PicomZoom
+import XMonad.Actions.ScreenZoom
 import qualified XMonad.Util.ExtensibleState as XS
 
 newtype AltHeld = AltHeld Bool
