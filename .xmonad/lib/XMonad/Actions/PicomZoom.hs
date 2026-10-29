@@ -1,7 +1,8 @@
--- | Desktop zoom through picom's @_PICOM_ZOOM@ root window property (the zoom
--- branch of crazyboycjr/picom). The property holds the target zoom in 16.16
--- fixed point; picom eases toward it and keeps the point under the pointer
--- still. Wheel bindings live in "XMonad.Actions.PicomZoom.SuperHold" and
+-- | Desktop zoom through the compositor's @_PICOM_ZOOM@ root window property
+-- (read by xcompmgr-zoom; picom-zoom introduced it). The property holds the
+-- target zoom in 16.16 fixed point; the compositor eases toward it and keeps
+-- the point under the pointer still. Wheel bindings live in
+-- "XMonad.Actions.PicomZoom.SuperHold" and
 -- "XMonad.Actions.PicomZoom.AltReplay".
 module XMonad.Actions.PicomZoom (zoomBy, zoomStep, spawnUnzoomed) where
 
@@ -28,7 +29,7 @@ spawnUnzoomed cmd = do
         then spawn cmd
         else do
             setZoom 65536
-            -- picom eases out in about 0.3 s
+            -- the compositor eases out in about 0.3 s
             spawn $ "sleep 0.4; " ++ cmd
                 ++ "; xprop -root -f _PICOM_ZOOM 32c -set _PICOM_ZOOM " ++ show zoom
 

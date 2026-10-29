@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Caption modifier+wheel presses in OBS, such as "Alt + Scroll ↑ ×3".
 
-The caption is an OBS text source drawn over the screen capture, so picom's
-desktop zoom leaves it alone; an on-screen window such as screenkey's would be
+The caption is an OBS text source drawn over the screen capture, so the desktop
+zoom leaves it alone; an on-screen window such as screenkey's would be
 magnified with the rest of the desktop. Key and button events come from the X
 RECORD extension, which sees them even while xmonad holds the pointer.
 
