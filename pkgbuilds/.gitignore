@@ -1,0 +1,3 @@
+# makepkg's sources, build trees and packages when building in place
+*/*
+!*/PKGBUILD
