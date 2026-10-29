@@ -1,0 +1,33 @@
+# xcompmgr from the zoom branch of ~/Developing/xcompmgr: full-desktop zoom
+# driven by the _PICOM_ZOOM root window property, as in picom-zoom. Based on
+# Arch's xcompmgr PKGBUILD, built with upstream's meson build.
+
+pkgname=xcompmgr-zoom
+_pkgname=xcompmgr
+pkgver=1.1.10.r0
+pkgrel=1
+pkgdesc='Composite window effect manager for X.org, with full-desktop zoom'
+arch=(x86_64)
+url='https://gitlab.freedesktop.org/xorg/app/xcompmgr'
+license=(MIT)
+depends=(glibc libx11 libxcomposite libxdamage libxext libxfixes libxrender)
+makedepends=(git meson xorgproto)
+provides=(xcompmgr)
+conflicts=(xcompmgr)
+source=("$_pkgname::git+file://$HOME/Developing/xcompmgr#branch=zoom")
+b2sums=('SKIP')
+
+pkgver() {
+  cd $_pkgname
+  git describe --long --tags --abbrev=7 | sed 's/^xcompmgr-//;s/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+  arch-meson $_pkgname build
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --destdir "$pkgdir"
+  install -Dm644 $_pkgname/COPYING -t "$pkgdir/usr/share/licenses/$pkgname/"
+}
