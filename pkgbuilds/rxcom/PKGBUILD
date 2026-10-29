@@ -40,4 +40,5 @@ package() {
   cd $pkgname
   install -Dm755 target/release/rxcom -t "$pkgdir/usr/bin/"
   install -Dm644 README.md DESIGN.md -t "$pkgdir/usr/share/doc/$pkgname/"
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
 }
