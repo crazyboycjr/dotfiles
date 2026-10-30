@@ -44,7 +44,7 @@ xrandr --auto
 # mitigate the issue of screen not updating itself when using feh with xcompmgr
 hsetroot -solid "#000066"
 # start compositor, ahead of the apps it draws (limits.conf grants the nice)
-nice -n -5 rxcom --present gl -v 2>>~/.cache/nosnap/rxcom.log &
+nice -n -5 rxcom --x-present -v 2>>~/.cache/nosnap/rxcom.log &
 
 # set background
 feh --bg-fill ~/.xmonad/background.jpg
