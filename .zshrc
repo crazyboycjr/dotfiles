@@ -17,6 +17,7 @@ export SYSTEMD_EDITOR=vim
 export GOPATH=$HOME/Developing/go
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$HOME/Developing/rdma-core/build/bin
+. "$HOME/.cargo/env"
 . $HOME/export-esp.sh
 
 if [ -e ~/.nix-profile/bin/ghc ]; then
