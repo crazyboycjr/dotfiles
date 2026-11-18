@@ -1,0 +1,2 @@
+# Read by grml's /etc/zsh/zshrc before its compinit, so completion dirs go here.
+fpath=(~/.nix-profile/share/zsh/site-functions $fpath)
